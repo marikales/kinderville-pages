@@ -192,6 +192,11 @@
 
 <script>
 const special = {
+  '2026-12-31':{label:"New Year's Eve", type:'holiday'},
+  '2027-01-01':{label:"New Year's Day", type:'holiday'},
+  '2027-04-13':{label:'Songkran (Thai New Year)', type:'holiday'},
+  '2027-04-14':{label:'Songkran (Thai New Year)', type:'holiday'},
+  '2027-04-15':{label:'Songkran (Thai New Year)', type:'holiday'},
   '2026-08-29':{label:'Teachers Development Day (no students)', type:'training'},
   '2026-08-31':{label:"Parents' Orientation (no classes)", type:'closed', pmt:true},
   '2026-09-01':{label:'Knowledge Day · Module I begins · Electives intro (theory)', mod:true, cel:true, ped:true},
@@ -206,8 +211,7 @@ const special = {
   '2026-10-19':{label:'Module II begins · Electives: prep for Dec 18 (to Dec 15)', mod:true, ped:true},
   '2026-10-30':{label:'Halloween (internal event)', cel:true},
   '2026-11-25':{label:'Loy Krathong (internal event)', cel:true},
-  '2026-12-04':{label:'Bridge Holiday', type:'holiday'},
-  '2026-12-05':{label:"King's Birthday / Father's Day", type:'holiday'},
+  '2026-12-07':{label:"King's Birthday / Father's Day — day off (5 Dec = Sat)", type:'holiday'},
   '2026-12-10':{label:'Excursion + lessons (split groups) · Parent meetings', type:'short', exc:true, pmt:true},
   '2026-12-11':{label:'Excursion + lessons (split groups) · Parent meetings', type:'short', exc:true, pmt:true},
   '2026-12-17':{label:'Rehearsal day (half-study)', type:'short', reh:true},
@@ -251,7 +255,6 @@ function baseClass(s,dow){
   if(inRange(s,'2026-08-24','2026-08-28')) return 'training';
   if(weekend) return 'weekend';
   if(inRange(s,'2026-10-12','2026-10-16')) return 'closed';
-  if(s==='2026-12-04') return 'closed';
   if(inRange(s,'2026-12-21','2027-01-04')) return 'closed';
   if(inRange(s,'2027-02-15','2027-02-19')) return 'closed';
   if(inRange(s,'2027-04-12','2027-04-19')) return 'closed';

@@ -151,7 +151,8 @@
         <ul>
           <li><b>Aug 24–29</b><span>Teachers Development Days (no students)</span></li>
           <li><b>Oct 12–16</b><span>Autumn break · Teacher Dev Days 12–14</span></li>
-          <li><b>Dec 4–5</b><span>Bridge holiday · King's Birthday</span></li>
+          <li><b>Oct 13</b><span>King Bhumibol Memorial Day</span></li>
+          <li><b>Dec 7</b><span>King's Birthday · Father's Day — day off (5 Dec = Sat)</span></li>
           <li><b>Dec 19</b><span>Teachers Development Day (no students)</span></li>
           <li><b>Dec 21–22</b><span>Teacher Development Days (no students)</span></li>
           <li><b>Dec 23 – Jan 4</b><span>Winter break</span></li>
@@ -191,18 +192,22 @@
 
 <script>
 const special = {
+  '2026-12-31':{label:"New Year's Eve", type:'holiday'},
+  '2027-01-01':{label:"New Year's Day", type:'holiday'},
+  '2027-04-13':{label:'Songkran (Thai New Year)', type:'holiday'},
+  '2027-04-14':{label:'Songkran (Thai New Year)', type:'holiday'},
+  '2027-04-15':{label:'Songkran (Thai New Year)', type:'holiday'},
   '2026-08-29':{label:'Teachers Development Day (no students)', type:'training'},
   '2026-08-31':{label:"Parents' Orientation (no classes)", type:'closed', pmt:true},
   '2026-09-01':{label:'Knowledge Day · Module I begins', mod:true, cel:true},
   '2026-10-09':{label:'Electives Showcase I \u00b7 Kinderville Initiation Ceremony (open event)', cel:true, parents:true},
   '2026-10-12':{label:'Teacher Council / Development Day (no students)', type:'training'},
-  '2026-10-13':{label:'Teacher Council / Development Day (no students)', type:'training'},
+  '2026-10-13':{label:'King Bhumibol Memorial Day · Teacher Development Day (no students)', type:'training'},
   '2026-10-14':{label:'Teacher Council / Development Day (no students)', type:'training'},
   '2026-10-19':{label:'Module II begins', mod:true},
   '2026-10-30':{label:'Halloween', cel:true},
   '2026-11-25':{label:'Loy Krathong', cel:true},
-  '2026-12-04':{label:'Bridge Holiday', type:'holiday'},
-  '2026-12-05':{label:"King's Birthday / Father's Day", type:'holiday'},
+  '2026-12-07':{label:"King's Birthday / Father's Day — day off (5 Dec = Sat)", type:'holiday'},
   '2026-12-10':{label:'Parent meetings', pmt:true},
   '2026-12-11':{label:'Parent meetings', pmt:true},
   '2026-12-18':{label:'New Year celebration (with parents · no classes)', type:'closed', cel:true, parents:true},
@@ -238,7 +243,6 @@ function baseClass(s,dow){
   if(inRange(s,'2026-08-24','2026-08-28')) return 'training';
   if(weekend) return 'weekend';
   if(inRange(s,'2026-10-12','2026-10-16')) return 'closed';
-  if(s==='2026-12-04') return 'closed';
   if(inRange(s,'2026-12-21','2027-01-04')) return 'closed';
   if(inRange(s,'2027-02-15','2027-02-19')) return 'closed';
   if(inRange(s,'2027-04-12','2027-04-19')) return 'closed';
