@@ -1,84 +1,309 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kinderville Nova · For Families</title>
+<title>Kinderville Nova — школа и детский сад на Пхукете: британская и русская программы</title>
+<meta name="description" content="Международная школа и детский сад на Пхукете, 2–11 лет: британская программа Cambridge Primary и русская — в одной школе. Набор 2026/27, Раваи и Чалонг.">
+<link rel="canonical" href="https://pages.kindervilleschool.com/">
+<meta name="theme-color" content="#1C7066">
+<link rel="icon" href="assets/logo.png">
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:site_name" content="Kinderville Nova International School">
+<meta property="og:title" content="Kinderville Nova — школа и детский сад на Пхукете: британская и русская программы">
+<meta property="og:description" content="Международная школа и детский сад на Пхукете, 2–11 лет: британская программа Cambridge Primary и русская — в одной школе. Набор 2026/27, Раваи и Чалонг.">
+<meta property="og:url" content="https://pages.kindervilleschool.com/">
+<meta property="og:image" content="https://pages.kindervilleschool.com/assets/img/school-campus.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Kinderville Nova — школа и детский сад на Пхукете: британская и русская программы">
+<meta name="twitter:description" content="Международная школа и детский сад на Пхукете, 2–11 лет: британская программа Cambridge Primary и русская — в одной школе. Набор 2026/27, Раваи и Чалонг.">
+<meta name="twitter:image" content="https://pages.kindervilleschool.com/assets/img/school-campus.jpg">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;500;600;700&family=Geologica:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --petrol:#1C7066; --mint:#36A393; --orange:#F68C50; --yellow:#FFCB05;
-    --ink:#34403c; --hair:#e7e5de; --cardfill:#F8FAF9; --cardborder:#E7ECE9;
+<link rel="stylesheet" href="assets/site.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "School",
+  "name": "Kinderville Nova International School",
+  "alternateName": "Kinderville Nova",
+  "url": "https://pages.kindervilleschool.com/",
+  "image": "https://pages.kindervilleschool.com/assets/img/school-campus.jpg",
+  "description": "Международная школа и детский сад на Пхукете для детей 2–11 лет. Британская программа по Cambridge Primary и русская программа (математика по Петерсон, русский язык, литература, окружающий мир) внутри одной школы. Кампус в Раваи — детский сад и Year 1, кампус в Чалонге — Year 2–6.",
+  "telephone": "+66823701242",
+  "areaServed": "Phuket, Thailand",
+  "inLanguage": [
+    "ru",
+    "en"
+  ],
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Chalong",
+    "addressRegion": "Phuket",
+    "addressCountry": "TH"
+  },
+  "location": [
+    {
+      "@type": "Place",
+      "name": "Kinderville Nova — начальная школа, Year 2–6 (Чалонг)",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Chalong",
+        "addressRegion": "Phuket",
+        "addressCountry": "TH"
+      }
+    },
+    {
+      "@type": "Place",
+      "name": "Kinderville Nova — детский сад и Year 1 (Раваи)",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Rawai",
+        "addressRegion": "Phuket",
+        "addressCountry": "TH"
+      }
+    }
+  ],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "telephone": "+66823701242",
+    "contactType": "admissions",
+    "availableLanguage": [
+      "ru",
+      "en"
+    ]
   }
-  *{box-sizing:border-box}
-  html,body{margin:0;height:100%}
-  body{min-height:100%;background:#e4e7e4;font-family:'Albert Sans',-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-       color:var(--ink);-webkit-font-smoothing:antialiased;display:flex;align-items:center;justify-content:center;padding:32px 18px}
-  .card{position:relative;width:100%;max-width:560px;background:#fff;border-radius:22px;overflow:hidden;
-        box-shadow:0 14px 60px rgba(20,70,64,.16);padding:44px 44px 30px}
-  .bg{position:absolute;border-radius:50%;z-index:0;pointer-events:none}
-  .bg1{width:280px;height:280px;background:#f4f8f6;right:-120px;top:-90px}
-  .bg2{width:180px;height:180px;background:#fbf4ea;left:-90px;bottom:-70px}
-  .inner{position:relative;z-index:1}
-  .logo{height:60px;width:auto;display:block;margin:0 auto 20px}
-  .logo-fb{display:none;font-family:'Geologica';font-weight:700;font-size:22px;letter-spacing:3px;color:var(--petrol);text-align:center;margin-bottom:20px}
-  h1{font-family:'Geologica';font-weight:500;font-size:23px;letter-spacing:5px;text-transform:uppercase;
-     color:var(--ink);margin:0;text-align:center}
-  .yrs{font-family:'Geologica';font-weight:600;font-size:15px;color:var(--petrol);letter-spacing:1px;text-align:center;margin-top:7px}
-  .yrs small{font-family:'Albert Sans';font-weight:500;font-size:10px;letter-spacing:1.5px;color:#a7b0ab;margin-left:8px}
-  .divider{height:1px;background:var(--hair);margin:24px 0 22px}
-  .lead{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#9aa7a2;font-weight:600;text-align:center;margin-bottom:16px}
-  .links{display:flex;flex-direction:column;gap:13px}
-  a.opt{display:flex;align-items:center;gap:16px;text-decoration:none;background:var(--cardfill);
-        border:1px solid var(--cardborder);border-radius:14px;padding:18px 20px;transition:all .16s ease}
-  a.opt:hover{border-color:var(--mint);box-shadow:0 6px 20px rgba(28,112,102,.12);transform:translateY(-1px)}
-  .badge{flex:0 0 auto;width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;
-         font-family:'Geologica';font-weight:600;font-size:15px;color:#fff;letter-spacing:.5px}
-  .b36{background:var(--petrol)}
-  .b12{background:var(--orange)}
-  .bkg{background:var(--mint)}
-  .badm{background:var(--yellow);color:var(--ink)}
-  .txt{flex:1;min-width:0}
-  .txt .t{display:block;font-family:'Geologica';font-weight:600;font-size:16px;color:var(--ink)}
-  .txt .s{display:block;font-size:11.5px;color:#8a958f;margin-top:3px;letter-spacing:.3px}
-  .arr{flex:0 0 auto;color:#c3cdc8;font-size:20px;line-height:1}
-  a.opt:hover .arr{color:var(--mint)}
-  .foot{margin-top:26px;padding-top:14px;border-top:1px solid var(--hair);display:flex;justify-content:space-between;
-        align-items:center;font-size:10px;letter-spacing:1px;color:#8a958f}
-  .foot .sl{font-family:'Geologica';font-weight:500;font-size:11px;letter-spacing:3px;color:var(--petrol);text-transform:uppercase}
-  .foot .rt b{color:var(--ink);font-weight:600}
-  @media(max-width:420px){.card{padding:34px 22px 24px} h1{font-size:19px;letter-spacing:3px} .foot{flex-direction:column;gap:6px;text-align:center}}
-</style>
+}
+</script>
 </head>
 <body>
-  <div class="card">
-    <span class="bg bg1"></span><span class="bg bg2"></span>
-    <div class="inner">
-      <img class="logo" src="data:image/png;base64,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" alt="Kinderville Nova — International School"
-           onerror="this.style.display='none';document.getElementById('lfb').style.display='block'">
-      <div class="logo-fb" id="lfb">KINDERVILLE NOVA</div>
-      <h1>For Families</h1>
-      <div class="divider"></div>
-      <div class="lead">Choose a section</div>
-      <div class="links">
-        <a class="opt" href="admissions/">
-          <span class="badge badm">2–11</span>
-          <span class="txt"><span class="t">Поступление 2026/27 · сад и школа</span><span class="s">Preschool, Year 2, Year 3 — набор; остальные — донабор</span></span>
-          <span class="arr">→</span>
-        </a>
-        <a class="opt" href="calendar/">
-          <span class="badge b36">CAL</span>
-          <span class="txt"><span class="t">Academic Calendar</span><span class="s">Term dates, holidays &amp; events · 2026–2027</span></span>
-          <span class="arr">→</span>
-        </a>
-      </div>
-      <div class="foot">
-        <span class="sl">Kinderville Nova</span>
-        <span class="rt"><b>kindervilleschool.com</b> &nbsp;·&nbsp; Phuket, Thailand</span>
-      </div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="i-arrow" viewBox="0 0 24 24"><path d="M16.175 13H5q-.425 0-.712-.288T4 12t.288-.712T5 11h11.175l-4.9-4.9q-.3-.3-.288-.7t.313-.7q.3-.275.7-.288t.7.288l6.6 6.6q.15.15.213.325t.062.375t-.062.375t-.213.325l-6.6 6.6q-.275.275-.687.275T11.3 19.3q-.3-.3-.3-.712t.3-.713z"/></symbol><symbol id="i-book" viewBox="0 0 24 24"><path d="M13 17.05q1.1-.525 2.213-.788T17.5 16q.9 0 1.763.15T21 16.6V6.7q-.825-.35-1.713-.525T17.5 6q-1.175 0-2.325.3T13 7.2zm-1.662 2.338q-.313-.088-.588-.238q-.975-.575-2.05-.862T6.5 18q-1.05 0-2.062.275T2.5 19.05q-.525.275-1.012-.025T1 18.15V6.1q0-.275.138-.525T1.55 5.2q1.175-.575 2.413-.888T6.5 4q1.45 0 2.838.375T12 5.5q1.275-.75 2.663-1.125T17.5 4q1.3 0 2.538.313t2.412.887q.275.125.413.375T23 6.1v12.05q0 .575-.487.875t-1.013.025q-.925-.5-1.937-.775T17.5 18q-1.125 0-2.2.288t-2.05.862q-.275.15-.587.238t-.663.087t-.663-.088M14 8.776q0-.225.163-.462T14.525 8q.725-.25 1.45-.375T17.5 7.5q.5 0 .988.063t.962.162q.225.05.388.25t.162.45q0 .425-.275.625t-.7.1q-.35-.075-.737-.112T17.5 9q-.65 0-1.275.125t-1.2.325q-.45.175-.737-.025T14 8.775m0 5.5q0-.225.163-.462t.362-.313q.725-.25 1.45-.375T17.5 13q.5 0 .988.063t.962.162q.225.05.388.25t.162.45q0 .425-.275.625t-.7.1q-.35-.075-.737-.112T17.5 14.5q-.65 0-1.275.113t-1.2.312q-.45.175-.737-.012T14 14.275m0-2.75q0-.225.163-.462t.362-.313q.725-.25 1.45-.375t1.525-.125q.5 0 .988.063t.962.162q.225.05.388.25t.162.45q0 .425-.275.625t-.7.1q-.35-.075-.737-.112t-.788-.038q-.65 0-1.275.125t-1.2.325q-.45.175-.737-.025t-.288-.65"/></symbol><symbol id="i-bus" viewBox="0 0 24 24"><path d="M8 19v.5q0 .625-.437 1.063T6.5 21t-1.062-.437T5 19.5v-1.55q-.45-.5-.725-1.112T4 15.5V6q0-2.075 1.925-3.037T12 2q4.3 0 6.15.925T20 6v9.5q0 .725-.275 1.338T19 17.95v1.55q0 .625-.437 1.063T17.5 21t-1.062-.437T16 19.5V19zm-2-9h12V7H6zm3.563 5.563Q10 15.125 10 14.5t-.437-1.062T8.5 13t-1.062.438T7 14.5t.438 1.063T8.5 16t1.063-.437m7 0Q17 15.125 17 14.5t-.437-1.062T15.5 13t-1.062.438T14 14.5t.438 1.063T15.5 16t1.063-.437"/></symbol><symbol id="i-cal" viewBox="0 0 24 24"><path d="M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V3q0-.425.288-.712T7 2t.713.288T8 3v1h8V3q0-.425.288-.712T17 2t.713.288T18 3v1h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5zm7-6q-.425 0-.712-.288T11 13t.288-.712T12 12t.713.288T13 13t-.288.713T12 14m-4.712-.288Q7 13.426 7 13t.288-.712T8 12t.713.288T9 13t-.288.713T8 14t-.712-.288M16 14q-.425 0-.712-.288T15 13t.288-.712T16 12t.713.288T17 13t-.288.713T16 14m-4 4q-.425 0-.712-.288T11 17t.288-.712T12 16t.713.288T13 17t-.288.713T12 18m-4.712-.288Q7 17.426 7 17t.288-.712T8 16t.713.288T9 17t-.288.713T8 18t-.712-.288M16 18q-.425 0-.712-.288T15 17t.288-.712T16 16t.713.288T17 17t-.288.713T16 18"/></symbol><symbol id="i-call" viewBox="0 0 24 24"><path d="M19.95 21q-3.125 0-6.175-1.362t-5.55-3.863t-3.862-5.55T3 4.05q0-.45.3-.75t.75-.3H8.1q.35 0 .625.238t.325.562l.65 3.5q.05.4-.025.675T9.4 8.45L6.975 10.9q.5.925 1.187 1.787t1.513 1.663q.775.775 1.625 1.438T13.1 17l2.35-2.35q.225-.225.588-.337t.712-.063l3.45.7q.35.1.575.363T21 15.9v4.05q0 .45-.3.75t-.75.3"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><path d="M13 11.6V8q0-.425-.288-.712T12 7t-.712.288T11 8v3.975q0 .2.075.388t.225.337l3.3 3.3q.275.275.7.275T16 16t.275-.7t-.275-.7zM12 22q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22"/></symbol><symbol id="i-family" viewBox="0 0 24 24"><path d="M18 6q-.825 0-1.412-.587T16 4t.588-1.412T18 2t1.413.588T20 4t-.587 1.413T18 6m-1 15v-7q0-1-.513-1.8t-1.312-1.25l.875-2.575q.2-.625.738-1T18 7t1.213.375t.737 1l2.1 6.3q.175.5-.137.913T21.1 16H20v5q0 .425-.288.713T19 22h-1q-.425 0-.712-.288T17 21m-5.562-9.937Q11 10.625 11 10t.438-1.062T12.5 8.5t1.063.438T14 10t-.437 1.063t-1.063.437t-1.062-.437M5.5 6q-.825 0-1.412-.587T3.5 4t.588-1.412T5.5 2t1.413.588T7.5 4t-.587 1.413T5.5 6m-2 15v-6H3q-.425 0-.712-.288T2 14V9q0-.825.588-1.412T4 7h3q.825 0 1.413.588T9 9v5q0 .425-.288.713T8 15h-.5v6q0 .425-.288.713T6.5 22h-2q-.425 0-.712-.288T3.5 21m7.5 0v-3q-.425 0-.712-.288T10 17v-3q0-.625.438-1.062T11.5 12.5h2q.625 0 1.063.438T15 14v3q0 .425-.288.713T14 18v3q0 .425-.288.713T13 22h-1q-.425 0-.712-.288T11 21"/></symbol><symbol id="i-groups" viewBox="0 0 24 24"><path d="M1 18q-.425 0-.712-.288T0 17v-.575q0-1.075 1.1-1.75T4 14q.325 0 .625.013t.575.062q-.35.525-.525 1.1t-.175 1.2V18zm6 0q-.425 0-.712-.288T6 17v-.625q0-.8.438-1.463t1.237-1.162T9.588 13T12 12.75q1.325 0 2.438.25t1.912.75t1.225 1.163t.425 1.462V17q0 .425-.287.713T17 18zm12.5 0v-1.625q0-.65-.162-1.225t-.488-1.075q.275-.05.563-.062T20 14q1.8 0 2.9.663t1.1 1.762V17q0 .425-.288.713T23 18zM4 13q-.825 0-1.412-.587T2 11q0-.85.588-1.425T4 9q.85 0 1.425.575T6 11q0 .825-.575 1.413T4 13m16 0q-.825 0-1.412-.587T18 11q0-.85.588-1.425T20 9q.85 0 1.425.575T22 11q0 .825-.575 1.413T20 13m-8-1q-1.25 0-2.125-.875T9 9q0-1.275.875-2.137T12 6q1.275 0 2.138.863T15 9q0 1.25-.862 2.125T12 12"/></symbol><symbol id="i-list" viewBox="0 0 24 24"><path d="m5.525 16.175l3.55-3.55q.3-.3.7-.288t.7.313q.275.3.275.7t-.275.7L6.25 18.3q-.3.3-.7.3t-.7-.3L2.7 16.15q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275zm0-8l3.55-3.55q.3-.3.7-.288t.7.313q.275.3.275.7t-.275.7L6.25 10.3q-.3.3-.7.3t-.7-.3L2.7 8.15q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275zM14 17q-.425 0-.712-.288T13 16t.288-.712T14 15h7q.425 0 .713.288T22 16t-.288.713T21 17zm0-8q-.425 0-.712-.288T13 8t.288-.712T14 7h7q.425 0 .713.288T22 8t-.288.713T21 9z"/></symbol><symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 22q-2.05 0-3.875-.788t-3.187-2.15t-2.15-3.187T2 12q0-2.075.813-3.9t2.2-3.175T8.25 2.788T12.2 2q2 0 3.775.688t3.113 1.9t2.125 2.875T22 11.05q0 2.875-1.75 4.413T16 17h-1.85q-.225 0-.312.125t-.088.275q0 .3.375.863t.375 1.287q0 1.25-.687 1.85T12 22m-4.425-9.425Q8 12.15 8 11.5t-.425-1.075T6.5 10t-1.075.425T5 11.5t.425 1.075T6.5 13t1.075-.425m3-4Q11 8.15 11 7.5t-.425-1.075T9.5 6t-1.075.425T8 7.5t.425 1.075T9.5 9t1.075-.425m5 0Q16 8.15 16 7.5t-.425-1.075T14.5 6t-1.075.425T13 7.5t.425 1.075T14.5 9t1.075-.425m3 4Q19 12.15 19 11.5t-.425-1.075T17.5 10t-1.075.425T16 11.5t.425 1.075T17.5 13t1.075-.425"/></symbol><symbol id="i-pencil" viewBox="0 0 24 24"><path d="M4 21q-.425 0-.712-.288T3 20v-2.425q0-.4.15-.763t.425-.637L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.437.65T21 6.4q0 .4-.138.763t-.437.662l-12.6 12.6q-.275.275-.638.425t-.762.15zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"/></symbol><symbol id="i-restaurant" viewBox="0 0 24 24"><path d="M7 9V3q0-.425.288-.712T8 2t.713.288T9 3v6h1V3q0-.425.288-.712T11 2t.713.288T12 3v6q0 1.4-.862 2.45T9 12.85V21q0 .425-.288.713T8 22t-.712-.288T7 21v-8.15q-1.275-.35-2.137-1.4T4 9V3q0-.425.288-.712T5 2t.713.288T6 3v6zm10 5h-2q-.425 0-.712-.288T14 13V7q0-1.75 1.288-3.375T17.95 2q.45 0 .75.35t.3.825V21q0 .425-.288.713T18 22t-.712-.288T17 21z"/></symbol><symbol id="i-school" viewBox="0 0 24 24"><path d="M21 16v-5.9l-8.05 4.375q-.45.25-.95.25t-.95-.25l-8.45-4.6q-.275-.15-.388-.375T2.1 9t.113-.5t.387-.375l8.45-4.6q.225-.125.463-.188T12 3.275t.488.063t.462.187l9.525 5.2q.25.125.388.363T23 9.6V16q0 .425-.288.713T22 17t-.712-.288T21 16m-9.95 4.475l-5-2.7q-.5-.275-.775-.75T5 16v-3.8l6.05 3.275q.45.25.95.25t.95-.25L19 12.2V16q0 .55-.275 1.025t-.775.75l-5 2.7q-.225.125-.462.188t-.488.062t-.488-.062t-.462-.188"/></symbol><symbol id="i-tg" viewBox="0 0 256 256"><path d="M228.88 26.19a9 9 0 0 0-9.16-1.57L17.06 103.93a14.22 14.22 0 0 0 2.43 27.21L72 141.45V200a15.92 15.92 0 0 0 10 14.83a15.91 15.91 0 0 0 17.51-3.73l25.32-26.26L165 220a15.88 15.88 0 0 0 10.51 4a16.3 16.3 0 0 0 5-.79a15.85 15.85 0 0 0 10.67-11.63L231.77 35a9 9 0 0 0-2.89-8.81M175.53 208l-82.68-72.5l119-85.29Z"/></symbol><symbol id="i-wa" viewBox="0 0 256 256"><path d="m152.58 145.23l23 11.48A24 24 0 0 1 152 176a72.08 72.08 0 0 1-72-72a24 24 0 0 1 19.29-23.54l11.48 23L101 118a8 8 0 0 0-.73 7.51a56.47 56.47 0 0 0 30.15 30.15A8 8 0 0 0 138 155ZM232 128a104 104 0 0 1-152.88 91.82l-34.05 11.35a16 16 0 0 1-20.24-20.24l11.35-34.05A104 104 0 1 1 232 128m-40 24a8 8 0 0 0-4.42-7.16l-32-16a8 8 0 0 0-8 .5l-14.69 9.8a40.55 40.55 0 0 1-16-16l9.8-14.69a8 8 0 0 0 .5-8l-16-32A8 8 0 0 0 104 64a40 40 0 0 0-40 40a88.1 88.1 0 0 0 88 88a40 40 0 0 0 40-40"/></symbol></svg>
+<header class="site">
+  <div class="bar">
+    <a class="brand" href="./" aria-label="Kinderville Nova — на главную">
+      <img src="assets/logo.png" width="843" height="231" alt="Kinderville Nova International School">
+    </a>
+    <a class="hdr-cta" href="tel:+66823701242">
+      <svg class="i" aria-hidden="true"><use href="#i-call"></use></svg><span class="num">+66 82 370 1242</span>
+    </a>
+  </div>
+  <nav class="mainnav" aria-label="Основная навигация">
+    <div class="nav-row">
+      <a href="./" aria-current="page">Главная</a>
+      <a href="program/">Программа</a>
+      <a href="life/">Школьная жизнь</a>
+      <a href="programs/">Цены</a>
+      <a class="nav-cta" href="admissions/">Поступление</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero">
+  <img class="hero-img" src="assets/img/school-campus.jpg" alt="Кампус Kinderville Nova на Пхукете" fetchpriority="high">
+  <div class="hero-inner">
+    <span class="kicker">Пхукет · дети 2–11 лет</span>
+    <h1>Английская программа и русская — в одной школе</h1>
+    <p>Kinderville Nova — детский сад и начальная школа на Пхукете, от 2 до 11 лет. У школы лицензия
+       международной школы от Министерства образования Таиланда: программа британская, ведём её
+       по Cambridge Primary. У детского сада своя лицензия детского учреждения.</p>
+    <p>Рядом с британской программой у нас русская — не кружок и не «поддержка языка», а вторая система
+       внутри школы: математика по Петерсон, русский язык, литература, окружающий мир. Мы держим обе
+       дороги открытыми — и в англоязычную среднюю школу, и в русскую.</p>
+    <p class="hero-note"><b>Набор 2026/27.</b> Открыта новая группа Preschool в саду, основной набор —
+       в Year 2 и Year 3, в остальные классы донабор. Кто в какой класс попадает по возрасту →
+       <a href="admissions/">Поступление</a>.</p>
+    <div class="btns" style="margin-top:22px">
+      <a class="btn btn-primary" href="https://wa.me/66823701242?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D1%81%D0%BF%D1%80%D0%BE%D1%81%D0%B8%D1%82%D1%8C%20%D0%BF%D1%80%D0%BE%20%D1%88%D0%BA%D0%BE%D0%BB%D1%83%2F%D1%81%D0%B0%D0%B4%20Kinderville.%20%D0%A0%D0%B5%D0%B1%D1%91%D0%BD%D0%BA%D1%83%20___%20%D0%BB%D0%B5%D1%82."><svg class="i" aria-hidden="true"><use href="#i-wa"></use></svg>Написать в WhatsApp</a>
+      <a class="btn btn-quiet" href="https://t.me/kinderville_school"><svg class="i" aria-hidden="true"><use href="#i-tg"></use></svg>Написать в Telegram</a>
     </div>
   </div>
+</section>
+
+<section class="scene">
+  <div class="band">
+    <span class="kicker">Школьная жизнь</span>
+    <h2>В школьном меню есть пирог «Тути-фрути»</h2>
+    <p class="lead" style="color:rgba(255,255,255,.93);margin-top:4px">Его придумали дети на кукинге —
+      школьной кулинарной мастерской. Им нужно было предложить блюдо, которое кухня возьмёт в меню:
+      они сравнивали рецепты по цене и по времени готовки, потом пекли и выносили готовое на дегустацию
+      к столовой. У старших победил пирог с голубикой и манго, у младших — ленивые вареники.
+      Кухня готовит оба блюда.</p>
+    <div class="figure" style="margin-top:26px">
+      <span class="n">2 блюда</span>
+      <span class="c">придумали дети — кухня готовит оба</span>
+    </div>
+    <p style="margin-top:24px"><a class="scene-link" href="life/">Ещё из школьной жизни: дерево, выросшее из
+      печенья, «Ромео и Джульетта», старты в бассейне <svg class="i" aria-hidden="true"><use href="#i-arrow"></use></svg></a></p>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Как здесь устроено</h2>
+  <ul class="signs">
+    <li>
+      <span class="ic"><svg class="i" aria-hidden="true"><use href="#i-clock"></use></svg></span>
+      <p><b>Занятия начинаются в 8:45.</b> Ребёнок высыпается, а утро семьи проходит без гонки.</p>
+    </li>
+    <li>
+      <span class="ic"><svg class="i" aria-hidden="true"><use href="#i-book"></use></svg></span>
+      <p><b>День открывают круг и пятнадцать минут чтения</b> — каждый день, на обеих программах.</p>
+    </li>
+    <li>
+      <span class="ic"><svg class="i" aria-hidden="true"><use href="#i-pencil"></use></svg></span>
+      <p><b>Домашнюю работу в Year 3–6 дети делают в школе, днём.</b> Это зона ответственности ребёнка —
+         вечер дома остаётся семье. На программе Light часть английской домашней работы уезжает домой —
+         <a href="programs/">почему так</a>.</p>
+    </li>
+    <li>
+      <span class="ic"><svg class="i" aria-hidden="true"><use href="#i-groups"></use></svg></span>
+      <p><b>Куратор ведёт класс весь год.</b> Раз в неделю родители получают обзор недели: чем жили,
+         что проходили.</p>
+    </li>
+    <li>
+      <span class="ic"><svg class="i" aria-hidden="true"><use href="#i-restaurant"></use></svg></span>
+      <p><b>Питание со своей кухни:</b> в школе четыре раза в день, в саду пять. В саду ещё бассейн
+         с детским тренером.</p>
+    </li>
+    <li>
+      <span class="ic"><svg class="i" aria-hidden="true"><use href="#i-bus"></use></svg></span>
+      <p><b>Два кампуса.</b> Сад и Year 1 — в Раваи, школа Year 2–6 — в Чалонге. Между ними утром
+         и вечером ходит школьный трансфер.</p>
+    </li>
+  </ul>
+</section>
+
+<div class="band" aria-hidden="true">
+  <div class="gallery">
+    <img src="assets/img/reading-nook.jpg" alt="" loading="lazy">
+    <img src="assets/img/kg-pool-coach.jpg" alt="" loading="lazy">
+  </div>
+</div>
+
+<section class="card">
+  <h2>Куда смотреть дальше</h2>
+  <div class="tiles">
+    <a class="tile" href="program/">
+      <span class="ic b-petrol"><svg class="i" aria-hidden="true"><use href="#i-school"></use></svg></span>
+      <h3>Программа и ступени</h3>
+      <p>Какие предметы и зачем каждый; два подготовительных года перед первым классом; как выглядит
+         день; что ребёнок получает на выходе из Year 6.</p>
+    </a>
+    <a class="tile" href="life/">
+      <span class="ic b-orange"><svg class="i" aria-hidden="true"><use href="#i-palette"></use></svg></span>
+      <h3>Школьная жизнь</h3>
+      <p>Мастерские, спектакль, старты в бассейне. То, что дети сделали своими руками, и что из этого
+         вышло.</p>
+    </a>
+    <a class="tile" href="admissions/">
+      <span class="ic b-mint"><svg class="i" aria-hidden="true"><use href="#i-family"></use></svg></span>
+      <h3>Поступление</h3>
+      <p>Возраст и ступень, шаги от первого сообщения до договора, экскурсия, визы, два кампуса.</p>
+    </a>
+    <a class="tile" href="programs/">
+      <span class="ic b-yellow"><svg class="i" aria-hidden="true"><use href="#i-list"></use></svg></span>
+      <h3>Цены</h3>
+      <p>Сад, Year 1–2, Year 3–6: полный день и Light рядом, что входит в каждую программу, скидки
+         и разовые платежи.</p>
+    </a>
+  </div>
+
+  <div class="callout mint" style="margin-top:22px">
+    <p style="margin:0 0 12px"><b>Календарь года.</b> Учебные модули, каникулы, праздники. Отдельно для сада,
+       для Year 1–2 и для Year 3–6.</p>
+    <div class="btns" style="margin:0">
+      <a class="btn btn-ghost" href="calendar/kindergarten.html"><svg class="i" aria-hidden="true"><use href="#i-cal"></use></svg>Детский сад</a>
+      <a class="btn btn-ghost" href="calendar/year1-2.html"><svg class="i" aria-hidden="true"><use href="#i-cal"></use></svg>Year 1–2</a>
+      <a class="btn btn-ghost" href="calendar/year3-6.html"><svg class="i" aria-hidden="true"><use href="#i-cal"></use></svg>Year 3–6</a>
+    </div>
+  </div>
+</section>
+
+<section class="pricebar" aria-label="Стоимость обучения">
+  <div class="inner">
+    <div class="pb-grid">
+      <div class="pb">
+        <span class="lbl">Детский сад</span>
+        <span class="amt">29 900 ฿</span>
+        <span class="per">в месяц</span>
+      </div>
+      <div class="pb">
+        <span class="lbl">Year 1–2</span>
+        <span class="amt">329 000 ฿</span>
+        <span class="per">в год</span>
+      </div>
+      <div class="pb main">
+        <span class="lbl">Year 3–6</span>
+        <span class="amt">394 700 ฿</span>
+        <span class="per">в год</span>
+        <span class="light"><span class="badge">Доступный вход</span>программа Light — 299 000 ฿</span>
+      </div>
+    </div>
+    <p class="note">Разовые платежи, скидки и что входит — на <a href="programs/">странице цен</a>.</p>
+  </div>
+</section>
+
+<section class="cta">
+  <img src="assets/img/kids-two.jpg" alt="Дети Kinderville Nova">
+  <div class="tx">
+    <h2>Написать нам</h2>
+    <p>Расскажите, сколько лет ребёнку и с какого месяца рассматриваете школу. Ответим в переписке,
+       звонить не нужно.</p>
+    <div class="btns" style="margin-top:20px">
+      <a class="btn btn-primary" href="https://wa.me/66823701242?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D1%81%D0%BF%D1%80%D0%BE%D1%81%D0%B8%D1%82%D1%8C%20%D0%BF%D1%80%D0%BE%20%D1%88%D0%BA%D0%BE%D0%BB%D1%83%2F%D1%81%D0%B0%D0%B4%20Kinderville.%20%D0%A0%D0%B5%D0%B1%D1%91%D0%BD%D0%BA%D1%83%20___%20%D0%BB%D0%B5%D1%82."><svg class="i" aria-hidden="true"><use href="#i-wa"></use></svg>Написать в WhatsApp</a>
+    </div>
+      <div class="contacts">
+        <a class="contact c-wa" href="https://wa.me/66823701242?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D1%81%D0%BF%D1%80%D0%BE%D1%81%D0%B8%D1%82%D1%8C%20%D0%BF%D1%80%D0%BE%20%D1%88%D0%BA%D0%BE%D0%BB%D1%83%2F%D1%81%D0%B0%D0%B4%20Kinderville.%20%D0%A0%D0%B5%D0%B1%D1%91%D0%BD%D0%BA%D1%83%20___%20%D0%BB%D0%B5%D1%82."><svg class="i" aria-hidden="true"><use href="#i-wa"></use></svg>WhatsApp</a>
+        <a class="contact c-tg" href="https://t.me/kinderville_school"><svg class="i" aria-hidden="true"><use href="#i-tg"></use></svg>Telegram</a>
+        <a class="contact c-tel" href="tel:+66823701242"><svg class="i" aria-hidden="true"><use href="#i-call"></use></svg>+66 82 370 1242</a>
+      </div>
+    <p class="note" style="margin-top:20px">Kinderville Nova International School · Раваи и Чалонг, Пхукет</p>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="f-grid">
+    <div>
+      <img class="f-logo" src="assets/logo.png" width="843" height="231" alt="Kinderville Nova International School">
+      <p>Kinderville Nova International School<br>Детский сад и начальная школа, 2–11 лет</p>
+      <p>Кампус в Раваи — сад и Year 1<br>Кампус в Чалонге — Year 2–6<br>Пхукет, Таиланд</p>
+      <p><a href="https://kindervilleschool.com">kindervilleschool.com</a></p>
+    </div>
+    <div>
+      <h4>Разделы</h4>
+      <ul>
+        <li><a href="./">Главная</a></li>
+        <li><a href="program/">Программа и ступени</a></li>
+        <li><a href="life/">Школьная жизнь</a></li>
+        <li><a href="programs/">Программы и цены</a></li>
+        <li><a href="admissions/">Поступление 2026/27</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Написать нам</h4>
+      <ul>
+        <li><a href="https://wa.me/66823701242?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D1%81%D0%BF%D1%80%D0%BE%D1%81%D0%B8%D1%82%D1%8C%20%D0%BF%D1%80%D0%BE%20%D1%88%D0%BA%D0%BE%D0%BB%D1%83%2F%D1%81%D0%B0%D0%B4%20Kinderville.%20%D0%A0%D0%B5%D0%B1%D1%91%D0%BD%D0%BA%D1%83%20___%20%D0%BB%D0%B5%D1%82.">WhatsApp</a></li>
+        <li><a href="https://t.me/kinderville_school">Telegram</a></li>
+        <li><a href="tel:+66823701242">+66 82 370 1242</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Календарь 2026/27</h4>
+      <ul>
+        <li><a href="calendar/kindergarten.html">Детский сад</a></li>
+        <li><a href="calendar/year1-2.html">Year 1–2</a></li>
+        <li><a href="calendar/year3-6.html">Year 3–6</a></li>
+        <li><a href="calendar/">Все календари</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="f-bottom">
+    <span class="sl">Kinderville Nova</span>
+    <span>Раваи и Чалонг, Пхукет · Таиланд</span>
+  </div>
+</footer>
 </body>
 </html>
