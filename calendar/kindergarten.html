@@ -146,7 +146,7 @@
     </div>
 
     <div class="modstrip">
-      <div class="ms" style="flex:83"><b>Trimester 1</b><span>31 Aug – 25 Dec · 83 days</span></div>
+      <div class="ms" style="flex:82"><b>Trimester 1</b><span>31 Aug – 25 Dec · 82 days</span></div>
       <div class="ms" style="flex:70"><b>Trimester 2</b><span>4 Jan – 9 Apr · 70 days</span></div>
       <div class="ms" style="flex:48"><b>Trimester 3</b><span>19 Apr – 25 Jun · 48 days</span></div>
       <div class="ms summer" style="flex:25"><b>Summer</b><span>Jun 28 – Jul · childcare</span></div>
@@ -172,15 +172,16 @@
         <ul>
           <li><b>Aug 29</b><span>Teachers Development Day (no students)</span></li>
           <li><b>Oct 13</b><span>King Bhumibol Memorial Day — closed</span></li>
-          <li><b>Dec 5 (Sat)</b><span>King's Birthday · Father's Day</span></li>
+          <li><b>Dec 7</b><span>King's Birthday · Father's Day — day off (5 Dec = Sat)</span></li>
           <li><b>Dec 19</b><span>Teachers Development Day (no students)</span></li>
           <li><b>Dec 26 – Jan 3</b><span>Winter break · one week</span></li>
           <li><b>Apr 12–16</b><span>Songkran break · one week</span></li>
           <li><b>Jun 3</b><span>Queen Suthida's Birthday — closed</span></li>
           <li><b>Jun 18</b><span>No classes — day off (Reception graduation)</span></li>
+          <li><b>Jun 26</b><span>Teachers Development Day (no students)</span></li>
           <li><b>Jul 28</b><span>King Vajiralongkorn's Birthday — closed</span></li>
         </ul>
-        <p style="margin:7px 0 0;font-size:8.5px;line-height:1.35;color:#8a958f">Kindergarten works through the days the school breaks for camp or teacher-development, and the Dec 4 bridge — it closes only for public holidays and the two week-long breaks. Minimal downtime for families.</p>
+        <p style="margin:7px 0 0;font-size:8.5px;line-height:1.35;color:#8a958f">Kindergarten works through the days the school breaks for camp or teacher-development — it closes only for public holidays and the two week-long breaks. Minimal downtime for families.</p>
       </div>
       <div>
         <h4>Events &amp; celebrations</h4>
@@ -208,13 +209,17 @@
 
 <script>
 const special = {
+  '2026-12-31':{label:"New Year's Eve", type:'holiday'},
+  '2027-01-01':{label:"New Year's Day", type:'holiday'},
+  '2027-04-13':{label:'Songkran (Thai New Year)', type:'holiday'},
+  '2027-04-14':{label:'Songkran (Thai New Year)', type:'holiday'},
+  '2027-04-15':{label:'Songkran (Thai New Year)', type:'holiday'},
   '2026-08-29':{label:'Teachers Development Day (no students)', type:'training'},
   '2026-08-31':{label:'Start of Year · Trimester 1 begins', mod:true, cel:true},
   '2026-10-13':{label:'King Bhumibol Memorial Day — closed', type:'holiday'},
   '2026-10-30':{label:'Halloween (themed study day)', cel:true},
   '2026-11-25':{label:'Loy Krathong (themed study day)', cel:true},
-  '2026-12-04':{label:'Kindergarten open · bridge (Y1–2 closed)'},
-  '2026-12-05':{label:"King's Birthday / Father's Day", type:'holiday'},
+  '2026-12-07':{label:"King's Birthday / Father's Day — substituted day off (5 Dec falls on Sat)", type:'holiday'},
   '2026-12-19':{label:'Teachers Development Day (no students)', type:'training'},
   '2026-12-25':{label:'New Year party with parents · no lessons', type:'holiday', cel:true, parents:true},
   '2027-01-04':{label:'Trimester 2 begins', mod:true},
@@ -223,6 +228,7 @@ const special = {
   '2027-06-03':{label:"Queen Suthida's Birthday — closed", type:'holiday'},
   '2027-06-18':{label:'Reception Graduation · no classes (parents invited)', type:'closed', cel:true, parents:true},
   '2027-06-25':{label:'Last day of academic year', cel:true},
+  '2027-06-26':{label:'Teachers Development Day (no students)', type:'training'},
   '2027-07-28':{label:"King Vajiralongkorn's Birthday — closed", type:'holiday'},
 };
 
