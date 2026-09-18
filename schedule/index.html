@@ -232,6 +232,7 @@ const T = {
   lesson:["урок","lesson"],
   arrive:["Приход, встреча и завтрак","Arrival, welcome & breakfast"],
   arrive_d:["приходить можно с 8:00, к 8:45 все на месте","doors open at 8:00, everyone in by 8:45"],
+  wake:["Зарядка","Morning exercise"], wake_d:["для тех, кто уже пришёл","for those already in"],
   circle:["Утренний круг","Morning circle"], circle_d:["с куратором класса","with the class curator"],
   brk:["Перемена","Break"], snack1:["Перемена · перекус","Break · snack"],
   lunch:["Обед и отдых","Lunch & rest"],
@@ -271,7 +272,7 @@ const lesN = n => L() ? `${t("lesson")} ${n}` : `${n} ${t("lesson")}`;
 
 // каркас дня: [время, код]; уроки — кодом слота, остальное — событием дня
 function frame(low){
-  const rows = [["8:00–8:45","arrive"],["8:45–9:00","circle"],["9:05–9:55","1"],["9:55–10:05","brk"],
+  const rows = [["8:00–8:45","arrive"],["8:20–8:30","wake"],["8:45–9:00","circle"],["9:05–9:55","1"],["9:55–10:05","brk"],
     ["10:05–10:55","2"],["10:55–11:05","snack1"],["11:05–11:55","3"]];
   if (low) rows.push(["11:55–12:25","lunch"],["12:25–13:10","hw"],["13:15–14:05","4L"]);
   else rows.push(["12:00–12:50","4U"],["12:50–13:20","lunch"],["13:20–14:05","hw"]);
@@ -279,11 +280,11 @@ function frame(low){
     ["16:05–16:20","reflect"],["16:20–17:00","play"]);
   return rows;
 }
-const ICON = {arrive:"i-family", circle:"i-groups", brk:"i-clock", snack1:"i-restaurant", lunch:"i-restaurant",
+const ICON = {arrive:"i-family", wake:"i-clock", circle:"i-groups", brk:"i-clock", snack1:"i-restaurant", lunch:"i-restaurant",
   hw:"i-pencil", snack2:"i-restaurant", reflect:"i-groups", play:"i-family"};
-const KIND = {arrive:"meal", circle:"calm", brk:"brk mini", snack1:"brk mini", lunch:"meal", hw:"hw",
+const KIND = {arrive:"meal", wake:"calm mini", circle:"calm", brk:"brk mini", snack1:"brk mini", lunch:"meal", hw:"hw",
   snack2:"meal mini", reflect:"calm", play:"play"};
-const DESC = {arrive:"arrive_d", circle:"circle_d", reflect:"reflect_d", play:"play_d"};
+const DESC = {arrive:"arrive_d", wake:"wake_d", circle:"circle_d", reflect:"reflect_d", play:"play_d"};
 
 function chip(lang){ return `<span class="chip ${lang}">${lang === "ru" ? (L() ? "RU" : "рус") : (L() ? "EN" : "англ")}</span>`; }
 function lessonHtml(v){
