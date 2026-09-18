@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Расписание класса — Kinderville Nova, Year 2–6</title>
+<meta name="description" content="Как устроен день и неделя ребёнка в начальной школе Kinderville Nova: уроки на русском и английском, обед и отдых, домашняя работа в школе, спорт и мастерские. Выберите класс — Year 2–6.">
+<link rel="canonical" href="https://pages.kindervilleschool.com/schedule/">
+<meta name="theme-color" content="#1C7066">
+<link rel="icon" href="../assets/logo.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Kinderville Nova International School">
+<meta property="og:title" content="Расписание класса — Kinderville Nova, Year 2–6">
+<meta property="og:description" content="Как устроен день и неделя ребёнка в начальной школе Kinderville Nova. Выберите класс — Year 2–6.">
+<meta property="og:url" content="https://pages.kindervilleschool.com/schedule/">
+<meta property="og:image" content="https://pages.kindervilleschool.com/assets/img/school-campus.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;500;600;700&family=Geologica:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+/* ── страница «Расписание класса» (для семей) ───────────────────────────
+   Компоненты — на переменных assets/site.css. Генерируется из сетки школы
+   (make_leads_schedule.py); правки текста — в генератор, не сюда.          */
+.hero-flat::after{display:none}
+.hero-flat .hero-inner{padding-top:34px;padding-bottom:30px}
+.hero.compact{min-height:0}
+.hero-flat .hero-inner{position:relative}
+.hero-top{padding-right:110px}
+.langsw{position:absolute;right:20px;top:34px;display:inline-flex;border:1px solid rgba(255,255,255,.4);border-radius:999px;overflow:hidden}
+.langsw button{background:transparent;border:0;color:rgba(255,255,255,.85);font-family:var(--g);font-weight:600;
+  font-size:13px;padding:7px 13px;cursor:pointer;letter-spacing:.5px}
+.langsw button[aria-pressed="true"]{background:var(--yellow);color:#26302b}
+.hero h1{font-size:clamp(28px,7vw,44px);margin-bottom:10px}
+.hero .lead{color:rgba(255,255,255,.92);max-width:58ch;margin:0 0 6px}
+.pick{margin:22px 0 0}
+.pick .lbl{display:block;font-family:var(--g);font-weight:600;font-size:12px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--yellow);margin:0 0 10px}
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pills button{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.32);color:#fff;font-family:var(--g);
+  font-weight:500;font-size:14.5px;line-height:1.2;padding:10px 15px;border-radius:999px;cursor:pointer}
+.pills button:hover{background:rgba(255,255,255,.24)}
+.pills button[aria-pressed="true"]{background:#fff;color:var(--petrol);border-color:#fff;font-weight:600}
+.pills button small{display:block;font-weight:400;font-size:12px;opacity:.8;margin-top:2px}
+
+/* шапка класса */
+.cls-head{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:baseline;margin:0 0 6px}
+.cls-head h2{margin:0}
+.cls-head .age{font-size:15.5px;color:var(--muted)}
+.cls-staff{margin:0 0 16px;font-size:15.5px}
+.cls-staff b{font-weight:600}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin:0 0 14px;font-size:14px;color:var(--muted);align-items:center}
+.chip{display:inline-block;font-family:var(--g);font-weight:600;font-size:10.5px;letter-spacing:.6px;text-transform:uppercase;
+  padding:2px 7px;border-radius:6px;line-height:1.4;vertical-align:middle}
+.chip.ru{background:#f1efe9;color:#6b6257}
+.chip.en{background:var(--mint);color:#fff}
+.legend .sw{display:inline-block;width:22px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:6px;border:1px solid var(--cardborder)}
+.legend .sw.en{background:#dff1ec;box-shadow:inset 3px 0 0 var(--mint)}
+.who h3{margin:18px 0 4px;font-size:17px;display:flex;align-items:center;gap:8px}
+.who h3:first-child{margin-top:4px}
+
+/* сетка недели (десктоп) */
+.wk-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -6px}
+table.wk{width:100%;min-width:760px;border-collapse:separate;border-spacing:0;border:1px solid var(--cardborder);
+  border-radius:16px;overflow:hidden;font-size:14.5px;table-layout:fixed}
+table.wk th{background:var(--petrol);color:#fff;font-family:var(--g);font-weight:500;font-size:13px;letter-spacing:.2px;
+  padding:11px 10px;text-align:left}
+table.wk th.tm{width:98px}
+table.wk td{border-top:1px solid var(--cardborder);padding:9px 10px;vertical-align:top;color:var(--body);line-height:1.4}
+table.wk td.tm{font-family:var(--g);font-weight:600;font-size:13px;color:var(--petrol);white-space:nowrap;background:#fbfcfb}
+table.wk td.les{border-left:1px solid var(--cardborder)}
+table.wk td .s{display:block;font-family:var(--g);font-weight:600;font-size:14.5px;color:var(--ink);margin-bottom:2px}
+table.wk td .w{display:block;font-size:12.5px;color:var(--muted);line-height:1.38}
+/* язык урока — цветом всей клетки: английский заметен с первого взгляда (Марика 18.09) */
+table.wk td.les.en{background:#dff1ec;box-shadow:inset 3px 0 0 var(--mint)}
+table.wk td.les.ru{background:#fff}
+table.wk td.les.en .s{color:#0f5c53}
+table.wk tr.fr td{background:#f6f8f7;color:var(--body);padding:8px 12px}
+table.wk tr.fr.mini td{padding:5px 12px;font-size:13px;color:var(--muted)}
+table.wk tr.fr td.tm{background:#f6f8f7;color:var(--muted);font-weight:500}
+table.wk tr.fr td .f{display:flex;align-items:center;gap:9px}
+table.wk tr.fr td .f .i{width:17px;height:17px;fill:var(--petrol);flex:0 0 auto}
+table.wk tr.fr td .f b{font-family:var(--g);font-weight:600;color:var(--ink)}
+table.wk tr.fr td .f span.d{color:var(--muted);font-size:13px}
+table.wk tr.hw td{background:#f1f8f6}
+table.wk tr.light td{background:#fff;color:var(--muted);font-size:13px;padding:6px 12px;border-top:2px dashed #e2c9a6}
+table.wk tr.light td b{color:#a94d18;font-weight:600}
+table.wk tr.play td{background:#fbf6ea}
+
+/* по дням (мобильный) */
+.days{display:none}
+.daytabs{display:flex;gap:6px;margin:4px 0 12px;flex-wrap:wrap}
+.daytabs button{flex:1 1 auto;background:#fff;border:1px solid var(--cardborder);border-radius:10px;font-family:var(--g);
+  font-weight:500;font-size:14px;padding:9px 6px;color:var(--body);cursor:pointer}
+.daytabs button[aria-pressed="true"]{background:var(--petrol);color:#fff;border-color:var(--petrol);font-weight:600}
+.dl{list-style:none;margin:0;padding:0;border:1px solid var(--cardborder);border-radius:16px;overflow:hidden}
+.dl li{display:grid;grid-template-columns:86px 1fr;gap:10px;padding:10px 12px;border-top:1px solid var(--cardborder);align-items:start}
+.dl li:first-child{border-top:0}
+.dl .tm{font-family:var(--g);font-weight:600;font-size:13px;color:var(--petrol);padding-top:2px}
+.dl .s{display:block;font-family:var(--g);font-weight:600;font-size:15px;color:var(--ink)}
+.dl .w{display:block;font-size:13px;color:var(--muted);line-height:1.4}
+.dl li.fr{background:#f6f8f7}
+.dl li.fr .tm{color:var(--muted);font-weight:500}
+.dl li.fr .f{display:grid;grid-template-columns:16px 1fr;gap:1px 8px;align-items:center;color:var(--body)}
+.dl li.fr .f .i{width:16px;height:16px;fill:var(--petrol)}
+.dl li.fr .f b{font-family:var(--g);font-weight:600;color:var(--ink)}
+.dl li.fr .f span.d{grid-column:2;color:var(--muted);font-size:12.5px;line-height:1.35}
+.dl li.hw{background:#f1f8f6}
+.dl li.en{background:#dff1ec;box-shadow:inset 3px 0 0 var(--mint)}
+.dl li.en .s{color:#0f5c53}
+.dl li.light{background:#fff;border-top:2px dashed #e2c9a6;color:var(--muted);font-size:13px}
+.dl li.light b{color:#a94d18}
+.dl li.play{background:#fbf6ea}
+@media(max-width:760px){.week{display:none}.days{display:block}}
+
+/* кто ведёт */
+.who{list-style:none;margin:6px 0 0;padding:0}
+.who li{display:grid;grid-template-columns:1fr;gap:2px;padding:11px 0;border-bottom:1px solid var(--hair)}
+.who li:last-child{border-bottom:0}
+@media(min-width:600px){.who li{grid-template-columns:minmax(200px,.9fr) 1.4fr;gap:14px}}
+.who .s{font-family:var(--g);font-weight:600;color:var(--ink);font-size:16px}
+.who .w{font-size:15px;color:var(--body)}
+.who .w a{text-decoration:none;font-weight:500}
+.who .w a:hover{text-decoration:underline}
+
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin:0 0 14px}
+.toolbar .btn-ghost{font-size:14px;padding:9px 14px;border-radius:10px}
+.toolbar .btn-ghost .i{width:17px;height:17px}
+.upd{font-size:13.5px;color:var(--muted)}
+
+@media print{
+  header.site,footer.site,.hero .pick,.langsw,.toolbar,.cta,.days,.legend{display:none !important}
+  .week{display:block !important}
+  .hero{min-height:0;background:#fff !important;color:#000}
+  .hero-inner{padding:0 0 8px}
+  .hero h1,.hero .lead,.hero .kicker{color:#000 !important;text-shadow:none}
+  section.card{box-shadow:none;border:0;padding:0;margin:0 0 10px;page-break-inside:avoid}
+  table.wk{min-width:0;font-size:11px}
+  table.wk td{padding:5px 6px}
+  table.wk td .s{font-size:11px}table.wk td .w{font-size:9.5px}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  @page{size:A4 landscape;margin:9mm}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="i-call" viewBox="0 0 24 24"><path d="M19.95 21q-3.125 0-6.175-1.362t-5.55-3.863t-3.862-5.55T3 4.05q0-.45.3-.75t.75-.3H8.1q.35 0 .625.238t.325.562l.65 3.5q.05.4-.025.675T9.4 8.45L6.975 10.9q.5.925 1.187 1.787t1.513 1.663q.775.775 1.625 1.438T13.1 17l2.35-2.35q.225-.225.588-.337t.712-.063l3.45.7q.35.1.575.363T21 15.9v4.05q0 .45-.3.75t-.75.3"/></symbol><symbol id="i-wa" viewBox="0 0 256 256"><path d="m152.58 145.23l23 11.48A24 24 0 0 1 152 176a72.08 72.08 0 0 1-72-72a24 24 0 0 1 19.29-23.54l11.48 23L101 118a8 8 0 0 0-.73 7.51a56.47 56.47 0 0 0 30.15 30.15A8 8 0 0 0 138 155ZM232 128a104 104 0 0 1-152.88 91.82l-34.05 11.35a16 16 0 0 1-20.24-20.24l11.35-34.05A104 104 0 1 1 232 128m-40 24a8 8 0 0 0-4.42-7.16l-32-16a8 8 0 0 0-8 .5l-14.69 9.8a40.55 40.55 0 0 1-16-16l9.8-14.69a8 8 0 0 0 .5-8l-16-32A8 8 0 0 0 104 64a40 40 0 0 0-40 40a88.1 88.1 0 0 0 88 88a40 40 0 0 0 40-40"/></symbol><symbol id="i-tg" viewBox="0 0 256 256"><path d="M228.88 26.19a9 9 0 0 0-9.16-1.57L17.06 103.93a14.22 14.22 0 0 0 2.43 27.21L72 141.45V200a15.92 15.92 0 0 0 10 14.83a15.91 15.91 0 0 0 17.51-3.73l25.32-26.26L165 220a15.88 15.88 0 0 0 10.51 4a16.3 16.3 0 0 0 5-.79a15.85 15.85 0 0 0 10.67-11.63L231.77 35a9 9 0 0 0-2.89-8.81M175.53 208l-82.68-72.5l119-85.29Z"/></symbol><symbol id="i-restaurant" viewBox="0 0 24 24"><path d="M7 9V3q0-.425.288-.712T8 2t.713.288T9 3v6h1V3q0-.425.288-.712T11 2t.713.288T12 3v6q0 1.4-.862 2.45T9 12.85V21q0 .425-.288.713T8 22t-.712-.288T7 21v-8.15q-1.275-.35-2.137-1.4T4 9V3q0-.425.288-.712T5 2t.713.288T6 3v6zm10 5h-2q-.425 0-.712-.288T14 13V7q0-1.75 1.288-3.375T17.95 2q.45 0 .75.35t.3.825V21q0 .425-.288.713T18 22t-.712-.288T17 21z"/></symbol><symbol id="i-family" viewBox="0 0 24 24"><path d="M18 6q-.825 0-1.412-.587T16 4t.588-1.412T18 2t1.413.588T20 4t-.587 1.413T18 6m-1 15v-7q0-1-.513-1.8t-1.312-1.25l.875-2.575q.2-.625.738-1T18 7t1.213.375t.737 1l2.1 6.3q.175.5-.137.913T21.1 16H20v5q0 .425-.288.713T19 22h-1q-.425 0-.712-.288T17 21m-5.562-9.937Q11 10.625 11 10t.438-1.062T12.5 8.5t1.063.438T14 10t-.437 1.063t-1.063.437t-1.062-.437M5.5 6q-.825 0-1.412-.587T3.5 4t.588-1.412T5.5 2t1.413.588T7.5 4t-.587 1.413T5.5 6m-2 15v-6H3q-.425 0-.712-.288T2 14V9q0-.825.588-1.412T4 7h3q.825 0 1.413.588T9 9v5q0 .425-.288.713T8 15h-.5v6q0 .425-.288.713T6.5 22h-2q-.425 0-.712-.288T3.5 21m7.5 0v-3q-.425 0-.712-.288T10 17v-3q0-.625.438-1.062T11.5 12.5h2q.625 0 1.063.438T15 14v3q0 .425-.288.713T14 18v3q0 .425-.288.713T13 22h-1q-.425 0-.712-.288T11 21"/></symbol><symbol id="i-groups" viewBox="0 0 24 24"><path d="M1 18q-.425 0-.712-.288T0 17v-.575q0-1.075 1.1-1.75T4 14q.325 0 .625.013t.575.062q-.35.525-.525 1.1t-.175 1.2V18zm6 0q-.425 0-.712-.288T6 17v-.625q0-.8.438-1.463t1.237-1.162T9.588 13T12 12.75q1.325 0 2.438.25t1.912.75t1.225 1.163t.425 1.462V17q0 .425-.287.713T17 18zm12.5 0v-1.625q0-.65-.162-1.225t-.488-1.075q.275-.05.563-.062T20 14q1.8 0 2.9.663t1.1 1.762V17q0 .425-.288.713T23 18zM4 13q-.825 0-1.412-.587T2 11q0-.85.588-1.425T4 9q.85 0 1.425.575T6 11q0 .825-.575 1.413T4 13m16 0q-.825 0-1.412-.587T18 11q0-.85.588-1.425T20 9q.85 0 1.425.575T22 11q0 .825-.575 1.413T20 13m-8-1q-1.25 0-2.125-.875T9 9q0-1.275.875-2.137T12 6q1.275 0 2.138.863T15 9q0 1.25-.862 2.125T12 12"/></symbol><symbol id="i-pencil" viewBox="0 0 24 24"><path d="M4 21q-.425 0-.712-.288T3 20v-2.425q0-.4.15-.763t.425-.637L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.437.65T21 6.4q0 .4-.138.763t-.437.662l-12.6 12.6q-.275.275-.638.425t-.762.15zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><path d="M13 11.6V8q0-.425-.288-.712T12 7t-.712.288T11 8v3.975q0 .2.075.388t.225.337l3.3 3.3q.275.275.7.275T16 16t.275-.7t-.275-.7zM12 22q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22"/></symbol><symbol id="i-book" viewBox="0 0 24 24"><path d="M13 17.05q1.1-.525 2.213-.788T17.5 16q.9 0 1.763.15T21 16.6V6.7q-.825-.35-1.713-.525T17.5 6q-1.175 0-2.325.3T13 7.2zm-1.662 2.338q-.313-.088-.588-.238q-.975-.575-2.05-.862T6.5 18q-1.05 0-2.062.275T2.5 19.05q-.525.275-1.012-.025T1 18.15V6.1q0-.275.138-.525T1.55 5.2q1.175-.575 2.413-.888T6.5 4q1.45 0 2.838.375T12 5.5q1.275-.75 2.663-1.125T17.5 4q1.3 0 2.538.313t2.412.887q.275.125.413.375T23 6.1v12.05q0 .575-.487.875t-1.013.025q-.925-.5-1.937-.775T17.5 18q-1.125 0-2.2.288t-2.05.862q-.275.15-.587.238t-.663.087t-.663-.088M14 8.776q0-.225.163-.462T14.525 8q.725-.25 1.45-.375T17.5 7.5q.5 0 .988.063t.962.162q.225.05.388.25t.162.45q0 .425-.275.625t-.7.1q-.35-.075-.737-.112T17.5 9q-.65 0-1.275.125t-1.2.325q-.45.175-.737-.025T14 8.775m0 5.5q0-.225.163-.462t.362-.313q.725-.25 1.45-.375T17.5 13q.5 0 .988.063t.962.162q.225.05.388.25t.162.45q0 .425-.275.625t-.7.1q-.35-.075-.737-.112T17.5 14.5q-.65 0-1.275.113t-1.2.312q-.45.175-.737-.012T14 14.275m0-2.75q0-.225.163-.462t.362-.313q.725-.25 1.45-.375t1.525-.125q.5 0 .988.063t.962.162q.225.05.388.25t.162.45q0 .425-.275.625t-.7.1q-.35-.075-.737-.112t-.788-.038q-.65 0-1.275.125t-1.2.325q-.45.175-.737-.025t-.288-.65"/></symbol><symbol id="i-arrow" viewBox="0 0 24 24"><path d="M16.175 13H5q-.425 0-.712-.288T4 12t.288-.712T5 11h11.175l-4.9-4.9q-.3-.3-.288-.7t.313-.7q.3-.275.7-.288t.7.288l6.6 6.6q.15.15.213.325t.062.375t-.062.375t-.213.325l-6.6 6.6q-.275.275-.687.275T11.3 19.3q-.3-.3-.3-.712t.3-.713z"/></symbol></svg>
+<header class="site">
+  <div class="bar">
+    <a class="brand" href="../" aria-label="Kinderville Nova — на главную">
+      <img src="../assets/logo.png" width="843" height="231" alt="Kinderville Nova International School">
+    </a>
+    <a class="hdr-cta" href="tel:+66823701242">
+      <svg class="i" aria-hidden="true"><use href="#i-call"></use></svg><span class="num">+66 82 370 1242</span>
+    </a>
+  </div>
+  <nav class="mainnav" aria-label="Основная навигация">
+    <div class="nav-row">
+      <a href="../" data-t="nav_home">Главная</a>
+      <a href="../program/" data-t="nav_program">Программа</a>
+      <a href="../life/" data-t="nav_life">Школьная жизнь</a>
+      <a href="../teachers/" data-t="nav_teachers">Педагоги</a>
+      <a href="../programs/" data-t="nav_prices">Цены</a>
+      <a class="nav-cta" href="../admissions/" data-t="nav_adm">Поступление</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero hero-flat compact">
+  <div class="hero-inner">
+    <div class="hero-top">
+      <span class="kicker" data-t="kicker">Начальная школа · Чалонг · 2026/27</span>
+      <div class="langsw" role="group" aria-label="Язык страницы">
+        <button type="button" id="lang-ru" onclick="setLang('ru')">RU</button>
+        <button type="button" id="lang-en" onclick="setLang('en')">EN</button>
+      </div>
+    </div>
+    <h1 data-t="h1">Расписание класса</h1>
+    <p class="lead" data-t="lead">Так выглядит неделя ребёнка в Kinderville Nova: уроки на двух языках, еда, отдых, домашняя работа и игры — всё внутри школьного дня.</p>
+    <div class="pick">
+      <span class="lbl" data-t="pick">Выберите класс</span>
+      <div class="pills" id="pills"></div>
+    </div>
+  </div>
+</section>
+
+<section class="card" id="sched">
+  <div class="toolbar">
+    <span class="upd" data-t="upd">Действует с 14 сентября 2026 · Модуль I. Расписание пересобирается на каждый модуль, в течение года порядок уроков может немного меняться.</span>
+    <button type="button" class="btn btn-ghost" onclick="window.print()"><svg class="i" aria-hidden="true"><use href="#i-book"></use></svg><span data-t="print">Распечатать</span></button>
+  </div>
+  <div id="clsbox"></div>
+</section>
+
+<section class="card" id="whobox"></section>
+
+<section class="card" id="notes"></section>
+
+<section class="cta">
+  <img src="../assets/img/kids-reading.jpg" alt="">
+  <div class="tx">
+    <span class="kicker" data-t="cta_k">Есть вопросы?</span>
+    <h2 data-t="cta_h">Расскажем, как это работает для вашего ребёнка</h2>
+    <p data-t="cta_p">Напишите нам — ответим, в какой класс попадёт ребёнок, как проходит первый день и как устроен приём.</p>
+    <div class="contacts">
+      <a class="contact c-wa" href="https://wa.me/66823701242?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D1%81%D0%BF%D1%80%D0%BE%D1%81%D0%B8%D1%82%D1%8C%20%D0%BF%D1%80%D0%BE%20%D1%80%D0%B0%D1%81%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5%20%D0%B2%20Kinderville."><svg class="i" aria-hidden="true"><use href="#i-wa"></use></svg>WhatsApp</a>
+      <a class="contact c-tg" href="https://t.me/kinderville_school"><svg class="i" aria-hidden="true"><use href="#i-tg"></use></svg>Telegram</a>
+      <a class="contact c-tel" href="tel:+66823701242"><svg class="i" aria-hidden="true"><use href="#i-call"></use></svg>+66 82 370 1242</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="f-grid">
+    <div>
+      <img class="f-logo" src="../assets/logo.png" width="843" height="231" alt="Kinderville Nova International School">
+      <p data-t="f1">Kinderville Nova International School<br>Детский сад и начальная школа, 2–11 лет</p>
+      <p data-t="f2">Кампус в Раваи — сад и Year 1<br>Кампус в Чалонге — Year 2–6<br>Пхукет, Таиланд</p>
+      <p><a href="https://kindervilleschool.com">kindervilleschool.com</a></p>
+    </div>
+    <div>
+      <h4 data-t="f_sections">Разделы</h4>
+      <ul>
+        <li><a href="../" data-t="nav_home">Главная</a></li>
+        <li><a href="../program/" data-t="f_program">Программа и ступени</a></li>
+        <li><a href="../life/" data-t="nav_life">Школьная жизнь</a></li>
+        <li><a href="../teachers/" data-t="f_teachers">Наши педагоги</a></li>
+        <li><a href="../programs/" data-t="f_prices">Программы и цены</a></li>
+        <li><a href="../admissions/" data-t="f_adm">Поступление 2026/27</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 data-t="f_write">Написать нам</h4>
+      <ul>
+        <li><a href="https://wa.me/66823701242?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D1%81%D0%BF%D1%80%D0%BE%D1%81%D0%B8%D1%82%D1%8C%20%D0%BF%D1%80%D0%BE%20%D1%80%D0%B0%D1%81%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5%20%D0%B2%20Kinderville.">WhatsApp</a></li>
+        <li><a href="https://t.me/kinderville_school">Telegram</a></li>
+        <li><a href="tel:+66823701242">+66 82 370 1242</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 data-t="f_cal">Календарь 2026/27</h4>
+      <ul>
+        <li><a href="../calendar/kindergarten.html" data-t="f_cal1">Сад и Year 1 · Раваи</a></li>
+        <li><a href="../calendar/year2-6.html" data-t="f_cal2">Year 2–6 · Чалонг</a></li>
+        <li><a href="../calendar/" data-t="f_cal3">Все календари</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="f-bottom">
+    <span class="sl">Kinderville Nova</span>
+    <span data-t="f_bottom">Раваи и Чалонг, Пхукет · Таиланд</span>
+  </div>
+</footer>
+
+<script>
+const DATA = {"Y2": {"label": "Year 2", "label_en": "Year 2", "age": "6–7", "grade": "подготовительный / «нулевой» класс", "grade_en": "pre-school year", "stage": "L", "light": false, "slots": ["1", "2", "3", "4L", "5", "6"], "grid": {"0|1": ["Математика", "Mathematics", "ru", "Ольга Сальникова", "Olga Salnikova", ""], "0|2": ["English Literature", "English Literature", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "0|3": ["Русский язык", "Russian", "ru", "Маргарита Боряева", "Margarita Boriaeva", ""], "0|4L": ["Подготовка руки к письму", "Pre-writing Skills", "ru", "Маргарита Боряева", "Margarita Boriaeva", ""], "0|5": ["Lego и настольные игры", "Lego & Board Games", "en", "Pee Ann", "Pee Ann", ""], "0|6": ["Спорт", "Sport", "en", "по выбору ребёнка: танцы — Маргарита Боряева, футбол — Coach Nai, плавание — Александр Смирнов", "child's choice: dance — Margarita Boriaeva, football — Coach Nai, swimming — Alexander Smirnov", "elect"], "1|1": ["Окружающий мир (Science)", "Science (in Russian)", "ru", "Ольга Сальникова", "Olga Salnikova", ""], "1|2": ["Soft Skills (PSHE)", "Soft Skills (PSHE)", "ru", "Ольга Сальникова", "Olga Salnikova", ""], "1|3": ["Hand Made", "Hand Made", "en", "Kru Pim", "Kru Pim", ""], "1|4L": ["English", "English", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "1|5": ["Творческая мастерская", "Creative Workshop", "en", "по выбору ребёнка: крафт — Альбина Коренева, живопись — Мария Ветлова, кулинария — Елизавета Хоша", "child's choice: craft — Albina Koreneva, painting — Maria Vetlova, cooking — Elizaveta Khosha", "elect"], "1|6": ["Science in English", "Science in English", "en", "Альбина Коренева", "Albina Koreneva", ""], "2|1": ["Cambridge Maths", "Cambridge Maths", "en", "Сэм (Samragni Bose)", "Sam (Samragni Bose)", ""], "2|2": ["Математика", "Mathematics", "ru", "Ольга Сальникова", "Olga Salnikova", ""], "2|3": ["English Literature", "English Literature", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "2|4L": ["Литература", "Literature (in Russian)", "ru", "Маргарита Боряева", "Margarita Boriaeva", ""], "2|5": ["English", "English", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "2|6": ["Спорт", "Sport", "en", "по выбору ребёнка: танцы — Маргарита Боряева, футбол — Coach Nai, плавание — Александр Смирнов", "child's choice: dance — Margarita Boriaeva, football — Coach Nai, swimming — Alexander Smirnov", "elect"], "3|1": ["Тайская культура", "Thai Culture", "en", "Pee Dee", "Pee Dee", ""], "3|2": ["Soft Skills (PSHE)", "Soft Skills (PSHE)", "ru", "Ольга Сальникова", "Olga Salnikova", ""], "3|3": ["English", "English", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "3|4L": ["Lego и настольные игры", "Lego & Board Games", "en", "Pee Ann", "Pee Ann", ""], "3|5": ["Творческая мастерская", "Creative Workshop", "en", "по выбору ребёнка: крафт — Альбина Коренева, живопись — Мария Ветлова, кулинария — Елизавета Хоша", "child's choice: craft — Albina Koreneva, painting — Maria Vetlova, cooking — Elizaveta Khosha", "elect"], "3|6": ["Hand Made", "Hand Made", "en", "Kru Pim", "Kru Pim", ""], "4|1": ["Математика", "Mathematics", "ru", "Ольга Сальникова", "Olga Salnikova", ""], "4|2": ["Hand Made", "Hand Made", "en", "Kru Pim", "Kru Pim", ""], "4|3": ["English Literature", "English Literature", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "4|4L": ["Русский язык", "Russian", "ru", "Маргарита Боряева", "Margarita Boriaeva", ""], "4|5": ["English", "English", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "4|6": ["Спорт", "Sport", "en", "по выбору ребёнка: танцы — Маргарита Боряева, футбол — Coach Nai, плавание — Александр Смирнов", "child's choice: dance — Margarita Boriaeva, football — Coach Nai, swimming — Alexander Smirnov", "elect"]}, "teach": [["Soft Skills (PSHE)", "Soft Skills (PSHE)", "ru", "Ольга Сальникова", "Olga Salnikova", ""], ["Литература", "Literature (in Russian)", "ru", "Маргарита Боряева", "Margarita Boriaeva", ""], ["Математика", "Mathematics", "ru", "Ольга Сальникова", "Olga Salnikova", ""], ["Окружающий мир (Science)", "Science (in Russian)", "ru", "Ольга Сальникова", "Olga Salnikova", ""], ["Подготовка руки к письму", "Pre-writing Skills", "ru", "Маргарита Боряева", "Margarita Boriaeva", ""], ["Русский язык", "Russian", "ru", "Маргарита Боряева", "Margarita Boriaeva", ""], ["Cambridge Maths", "Cambridge Maths", "en", "Сэм (Samragni Bose)", "Sam (Samragni Bose)", ""], ["Hand Made", "Hand Made", "en", "Kru Pim", "Kru Pim", ""], ["Lego и настольные игры", "Lego & Board Games", "en", "Pee Ann", "Pee Ann", ""], ["Science in English", "Science in English", "en", "Альбина Коренева", "Albina Koreneva", ""], ["Тайская культура", "Thai Culture", "en", "Pee Dee", "Pee Dee", ""], ["English", "English", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], ["English Literature", "English Literature", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], ["Спорт", "Sport", "en", "по выбору ребёнка: танцы — Маргарита Боряева, футбол — Coach Nai, плавание — Александр Смирнов", "child's choice: dance — Margarita Boriaeva, football — Coach Nai, swimming — Alexander Smirnov", "elect"], ["Творческая мастерская", "Creative Workshop", "en", "по выбору ребёнка: крафт — Альбина Коренева, живопись — Мария Ветлова, кулинария — Елизавета Хоша", "child's choice: craft — Albina Koreneva, painting — Maria Vetlova, cooking — Elizaveta Khosha", "elect"]], "curator": ["Ольга Сальникова", "Olga Salnikova"], "assist": ["Pee Ann, Pee Mon", "Pee Ann, Pee Mon"]}, "Y3-1": {"label": "Year 3 · группа 1", "label_en": "Year 3 · group 1", "age": "7–8", "grade": "1 класс", "grade_en": "Grade 1", "stage": "L", "light": true, "slots": ["1", "2", "3", "4L", "5", "6"], "grid": {"0|1": ["Русский язык", "Russian", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], "0|2": ["English Literature", "English Literature", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "0|3": ["Литература", "Literature (in Russian)", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], "0|4L": ["Математика", "Mathematics", "ru", "Ольга Порубова", "Olga Porubova", ""], "0|5": ["Cambridge Maths", "Cambridge Maths", "en", "Сэм (Samragni Bose)", "Sam (Samragni Bose)", ""], "0|6": ["Спорт", "Sport", "en", "по выбору ребёнка: танцы — Маргарита Боряева, футбол — Coach Nai, плавание — Александр Смирнов", "child's choice: dance — Margarita Boriaeva, football — Coach Nai, swimming — Alexander Smirnov", "elect"], "1|1": ["Русский язык", "Russian", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], "1|2": ["Тайская культура", "Thai Culture", "en", "Pee Dee", "Pee Dee", ""], "1|3": ["Математика", "Mathematics", "ru", "Ольга Порубова", "Olga Porubova", ""], "1|4L": ["English", "English", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "1|5": ["Творческая мастерская", "Creative Workshop", "en", "по выбору ребёнка: крафт — Альбина Коренева, живопись — Мария Ветлова, кулинария — Елизавета Хоша", "child's choice: craft — Albina Koreneva, painting — Maria Vetlova, cooking — Elizaveta Khosha", "elect"], "1|6": ["Cambridge Maths", "Cambridge Maths", "en", "Сэм (Samragni Bose)", "Sam (Samragni Bose)", ""], "2|1": ["Soft Skills (PSHE)", "Soft Skills (PSHE)", "ru", "Ольга Сальникова", "Olga Salnikova", ""], "2|2": ["Русский язык", "Russian", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], "2|3": ["English Literature", "English Literature", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "2|4L": ["Математика", "Mathematics", "ru", "Ольга Порубова", "Olga Porubova", ""], "2|5": ["English", "English", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "2|6": ["Спорт", "Sport", "en", "по выбору ребёнка: танцы — Маргарита Боряева, футбол — Coach Nai, плавание — Александр Смирнов", "child's choice: dance — Margarita Boriaeva, football — Coach Nai, swimming — Alexander Smirnov", "elect"], "3|1": ["Окружающий мир (Science)", "Science (in Russian)", "ru", "Ольга Сальникова", "Olga Salnikova", ""], "3|2": ["Литература", "Literature (in Russian)", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], "3|3": ["English", "English", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "3|4L": ["Математика", "Mathematics", "ru", "Ольга Порубова", "Olga Porubova", ""], "3|5": ["Творческая мастерская", "Creative Workshop", "en", "по выбору ребёнка: крафт — Альбина Коренева, живопись — Мария Ветлова, кулинария — Елизавета Хоша", "child's choice: craft — Albina Koreneva, painting — Maria Vetlova, cooking — Elizaveta Khosha", "elect"], "3|6": ["Science in English", "Science in English", "en", "Альбина Коренева", "Albina Koreneva", ""], "4|1": ["Русский язык", "Russian", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], "4|2": ["Soft Skills (PSHE)", "Soft Skills (PSHE)", "ru", "Ольга Сальникова", "Olga Salnikova", ""], "4|3": ["English Literature", "English Literature", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "4|4L": ["Литература", "Literature (in Russian)", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], "4|5": ["English", "English", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "4|6": ["Спорт", "Sport", "en", "по выбору ребёнка: танцы — Маргарита Боряева, футбол — Coach Nai, плавание — Александр Смирнов", "child's choice: dance — Margarita Boriaeva, football — Coach Nai, swimming — Alexander Smirnov", "elect"]}, "teach": [["Soft Skills (PSHE)", "Soft Skills (PSHE)", "ru", "Ольга Сальникова", "Olga Salnikova", ""], ["Литература", "Literature (in Russian)", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], ["Математика", "Mathematics", "ru", "Ольга Порубова", "Olga Porubova", ""], ["Окружающий мир (Science)", "Science (in Russian)", "ru", "Ольга Сальникова", "Olga Salnikova", ""], ["Русский язык", "Russian", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], ["Cambridge Maths", "Cambridge Maths", "en", "Сэм (Samragni Bose)", "Sam (Samragni Bose)", ""], ["Science in English", "Science in English", "en", "Альбина Коренева", "Albina Koreneva", ""], ["Тайская культура", "Thai Culture", "en", "Pee Dee", "Pee Dee", ""], ["English", "English", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], ["English Literature", "English Literature", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], ["Спорт", "Sport", "en", "по выбору ребёнка: танцы — Маргарита Боряева, футбол — Coach Nai, плавание — Александр Смирнов", "child's choice: dance — Margarita Boriaeva, football — Coach Nai, swimming — Alexander Smirnov", "elect"], ["Творческая мастерская", "Creative Workshop", "en", "по выбору ребёнка: крафт — Альбина Коренева, живопись — Мария Ветлова, кулинария — Елизавета Хоша", "child's choice: craft — Albina Koreneva, painting — Maria Vetlova, cooking — Elizaveta Khosha", "elect"]], "curator": ["Ольга Сальникова", "Olga Salnikova"], "assist": ["Pee Ann, Pee Mon", "Pee Ann, Pee Mon"]}, "Y3-2": {"label": "Year 3 · группа 2", "label_en": "Year 3 · group 2", "age": "7–8", "grade": "1 класс", "grade_en": "Grade 1", "stage": "L", "light": false, "slots": ["1", "2", "3", "4L", "5", "6"], "grid": {"0|1": ["English Literature", "English Literature", "en", "Альбина Коренева", "Albina Koreneva", "eng"], "0|2": ["Тайская культура", "Thai Culture", "en", "Pee Dee", "Pee Dee", ""], "0|3": ["Математика", "Mathematics", "ru", "Ольга Порубова", "Olga Porubova", ""], "0|4L": ["Cambridge Maths", "Cambridge Maths", "en", "Сэм (Samragni Bose)", "Sam (Samragni Bose)", ""], "0|5": ["Окружающий мир (Science)", "Science (in Russian)", "ru", "Ольга Сальникова", "Olga Salnikova", ""], "0|6": ["Спорт", "Sport", "en", "по выбору ребёнка: танцы — Маргарита Боряева, футбол — Coach Nai, плавание — Александр Смирнов", "child's choice: dance — Margarita Boriaeva, football — Coach Nai, swimming — Alexander Smirnov", "elect"], "1|1": ["English Literature", "English Literature", "en", "Альбина Коренева", "Albina Koreneva", "eng"], "1|2": ["English", "English", "en", "Сэм (Samragni Bose)", "Sam (Samragni Bose)", "eng"], "1|3": ["Русский язык", "Russian", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], "1|4L": ["Математика", "Mathematics", "ru", "Ольга Порубова", "Olga Porubova", ""], "1|5": ["Творческая мастерская", "Creative Workshop", "en", "по выбору ребёнка: крафт — Альбина Коренева, живопись — Мария Ветлова, кулинария — Елизавета Хоша", "child's choice: craft — Albina Koreneva, painting — Maria Vetlova, cooking — Elizaveta Khosha", "elect"], "1|6": ["Литература", "Literature (in Russian)", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], "2|1": ["Soft Skills (PSHE)", "Soft Skills (PSHE)", "ru", "Ольга Сальникова", "Olga Salnikova", ""], "2|2": ["Математика", "Mathematics", "ru", "Ольга Порубова", "Olga Porubova", ""], "2|3": ["Русский язык", "Russian", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], "2|4L": ["English Literature", "English Literature", "en", "Альбина Коренева", "Albina Koreneva", "eng"], "2|5": ["Литература", "Literature (in Russian)", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], "2|6": ["Спорт", "Sport", "en", "по выбору ребёнка: танцы — Маргарита Боряева, футбол — Coach Nai, плавание — Александр Смирнов", "child's choice: dance — Margarita Boriaeva, football — Coach Nai, swimming — Alexander Smirnov", "elect"], "3|1": ["Science in English", "Science in English", "en", "Альбина Коренева", "Albina Koreneva", ""], "3|2": ["English", "English", "en", "Сэм (Samragni Bose)", "Sam (Samragni Bose)", "eng"], "3|3": ["Литература", "Literature (in Russian)", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], "3|4L": ["Cambridge Maths", "Cambridge Maths", "en", "Сэм (Samragni Bose)", "Sam (Samragni Bose)", ""], "3|5": ["Творческая мастерская", "Creative Workshop", "en", "по выбору ребёнка: крафт — Альбина Коренева, живопись — Мария Ветлова, кулинария — Елизавета Хоша", "child's choice: craft — Albina Koreneva, painting — Maria Vetlova, cooking — Elizaveta Khosha", "elect"], "3|6": ["Русский язык", "Russian", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], "4|1": ["English", "English", "en", "Сэм (Samragni Bose)", "Sam (Samragni Bose)", "eng"], "4|2": ["Soft Skills (PSHE)", "Soft Skills (PSHE)", "ru", "Ольга Сальникова", "Olga Salnikova", ""], "4|3": ["Русский язык", "Russian", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], "4|4L": ["English", "English", "en", "Сэм (Samragni Bose)", "Sam (Samragni Bose)", "eng"], "4|5": ["Математика", "Mathematics", "ru", "Ольга Порубова", "Olga Porubova", ""], "4|6": ["Спорт", "Sport", "en", "по выбору ребёнка: танцы — Маргарита Боряева, футбол — Coach Nai, плавание — Александр Смирнов", "child's choice: dance — Margarita Boriaeva, football — Coach Nai, swimming — Alexander Smirnov", "elect"]}, "teach": [["Soft Skills (PSHE)", "Soft Skills (PSHE)", "ru", "Ольга Сальникова", "Olga Salnikova", ""], ["Литература", "Literature (in Russian)", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], ["Математика", "Mathematics", "ru", "Ольга Порубова", "Olga Porubova", ""], ["Окружающий мир (Science)", "Science (in Russian)", "ru", "Ольга Сальникова", "Olga Salnikova", ""], ["Русский язык", "Russian", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], ["Cambridge Maths", "Cambridge Maths", "en", "Сэм (Samragni Bose)", "Sam (Samragni Bose)", ""], ["Science in English", "Science in English", "en", "Альбина Коренева", "Albina Koreneva", ""], ["Тайская культура", "Thai Culture", "en", "Pee Dee", "Pee Dee", ""], ["English", "English", "en", "Сэм (Samragni Bose)", "Sam (Samragni Bose)", "eng"], ["English Literature", "English Literature", "en", "Альбина Коренева", "Albina Koreneva", "eng"], ["Спорт", "Sport", "en", "по выбору ребёнка: танцы — Маргарита Боряева, футбол — Coach Nai, плавание — Александр Смирнов", "child's choice: dance — Margarita Boriaeva, football — Coach Nai, swimming — Alexander Smirnov", "elect"], ["Творческая мастерская", "Creative Workshop", "en", "по выбору ребёнка: крафт — Альбина Коренева, живопись — Мария Ветлова, кулинария — Елизавета Хоша", "child's choice: craft — Albina Koreneva, painting — Maria Vetlova, cooking — Elizaveta Khosha", "elect"]], "curator": ["Ольга Сальникова", "Olga Salnikova"], "assist": ["Pee Ann, Pee Mon", "Pee Ann, Pee Mon"]}, "Y4": {"label": "Year 4", "label_en": "Year 4", "age": "8–9", "grade": "2 класс", "grade_en": "Grade 2", "stage": "U", "light": true, "slots": ["1", "2", "3", "4U", "5", "6"], "grid": {"0|1": ["Математика", "Mathematics", "ru", "Ольга Порубова", "Olga Porubova", ""], "0|2": ["Русский язык", "Russian", "ru", "Маргарита Боряева", "Margarita Boriaeva", ""], "0|3": ["English Literature", "English Literature", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "0|4U": ["Литература", "Literature (in Russian)", "ru", "Маргарита Боряева", "Margarita Boriaeva", ""], "0|5": ["Спорт", "Sport", "en", "по выбору ребёнка: танцы — Маргарита Боряева, футбол — Coach Nai, плавание — Александр Смирнов", "child's choice: dance — Margarita Boriaeva, football — Coach Nai, swimming — Alexander Smirnov", "elect"], "0|6": ["English", "English", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "1|1": ["Математика", "Mathematics", "ru", "Ольга Порубова", "Olga Porubova", ""], "1|2": ["Soft Skills (PSHE)", "Soft Skills (PSHE)", "ru", "Елизавета Хоша", "Elizaveta Khosha", ""], "1|3": ["English", "English", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "1|4U": ["Science in English", "Science in English", "en", "Альбина Коренева", "Albina Koreneva", ""], "1|5": ["Cambridge Maths", "Cambridge Maths", "en", "Сэм (Samragni Bose)", "Sam (Samragni Bose)", ""], "1|6": ["Творческая мастерская", "Creative Workshop", "en", "по выбору ребёнка: живопись — Мария Ветлова, кулинария — Елизавета Хоша", "child's choice: painting — Maria Vetlova, cooking — Elizaveta Khosha", "elect"], "2|1": ["Русский язык", "Russian", "ru", "Маргарита Боряева", "Margarita Boriaeva", ""], "2|2": ["English Literature", "English Literature", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "2|3": ["Окружающий мир (Science)", "Science (in Russian)", "ru", "Елизавета Хоша", "Elizaveta Khosha", ""], "2|4U": ["Литература", "Literature (in Russian)", "ru", "Маргарита Боряева", "Margarita Boriaeva", ""], "2|5": ["Спорт", "Sport", "en", "по выбору ребёнка: танцы — Маргарита Боряева, футбол — Coach Nai, плавание — Александр Смирнов", "child's choice: dance — Margarita Boriaeva, football — Coach Nai, swimming — Alexander Smirnov", "elect"], "2|6": ["English", "English", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "3|1": ["Русский язык", "Russian", "ru", "Маргарита Боряева", "Margarita Boriaeva", ""], "3|2": ["Soft Skills (PSHE)", "Soft Skills (PSHE)", "ru", "Елизавета Хоша", "Elizaveta Khosha", ""], "3|3": ["Математика", "Mathematics", "ru", "Ольга Порубова", "Olga Porubova", ""], "3|4U": ["English", "English", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "3|5": ["Cambridge Maths", "Cambridge Maths", "en", "Сэм (Samragni Bose)", "Sam (Samragni Bose)", ""], "3|6": ["Творческая мастерская", "Creative Workshop", "en", "по выбору ребёнка: живопись — Мария Ветлова, кулинария — Елизавета Хоша", "child's choice: painting — Maria Vetlova, cooking — Elizaveta Khosha", "elect"], "4|1": ["Русский язык", "Russian", "ru", "Маргарита Боряева", "Margarita Boriaeva", ""], "4|2": ["English", "English", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "4|3": ["Литература", "Literature (in Russian)", "ru", "Маргарита Боряева", "Margarita Boriaeva", ""], "4|4U": ["Математика", "Mathematics", "ru", "Ольга Порубова", "Olga Porubova", ""], "4|5": ["Спорт", "Sport", "en", "по выбору ребёнка: танцы — Маргарита Боряева, футбол — Coach Nai, плавание — Александр Смирнов", "child's choice: dance — Margarita Boriaeva, football — Coach Nai, swimming — Alexander Smirnov", "elect"], "4|6": ["Тайская культура", "Thai Culture", "en", "Pee Dee", "Pee Dee", ""]}, "teach": [["Soft Skills (PSHE)", "Soft Skills (PSHE)", "ru", "Елизавета Хоша", "Elizaveta Khosha", ""], ["Литература", "Literature (in Russian)", "ru", "Маргарита Боряева", "Margarita Boriaeva", ""], ["Математика", "Mathematics", "ru", "Ольга Порубова", "Olga Porubova", ""], ["Окружающий мир (Science)", "Science (in Russian)", "ru", "Елизавета Хоша", "Elizaveta Khosha", ""], ["Русский язык", "Russian", "ru", "Маргарита Боряева", "Margarita Boriaeva", ""], ["Cambridge Maths", "Cambridge Maths", "en", "Сэм (Samragni Bose)", "Sam (Samragni Bose)", ""], ["Science in English", "Science in English", "en", "Альбина Коренева", "Albina Koreneva", ""], ["Тайская культура", "Thai Culture", "en", "Pee Dee", "Pee Dee", ""], ["English", "English", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], ["English Literature", "English Literature", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], ["Спорт", "Sport", "en", "по выбору ребёнка: танцы — Маргарита Боряева, футбол — Coach Nai, плавание — Александр Смирнов", "child's choice: dance — Margarita Boriaeva, football — Coach Nai, swimming — Alexander Smirnov", "elect"], ["Творческая мастерская", "Creative Workshop", "en", "по выбору ребёнка: живопись — Мария Ветлова, кулинария — Елизавета Хоша", "child's choice: painting — Maria Vetlova, cooking — Elizaveta Khosha", "elect"]], "curator": ["Елизавета Хоша", "Elizaveta Khosha"], "assist": ["Pee Dee, Kru Pim", "Pee Dee, Kru Pim"]}, "Y5": {"label": "Year 5", "label_en": "Year 5", "age": "9–10", "grade": "3 класс", "grade_en": "Grade 3", "stage": "U", "light": true, "slots": ["1", "2", "3", "4U", "5", "6"], "grid": {"0|1": ["Окружающий мир (Science)", "Science (in Russian)", "ru", "Елизавета Хоша", "Elizaveta Khosha", ""], "0|2": ["Математика", "Mathematics", "ru", "Ольга Порубова", "Olga Porubova", ""], "0|3": ["English Literature", "English Literature", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "0|4U": ["Русский язык", "Russian", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], "0|5": ["Спорт", "Sport", "en", "по выбору ребёнка: танцы — Маргарита Боряева, футбол — Coach Nai, плавание — Александр Смирнов", "child's choice: dance — Margarita Boriaeva, football — Coach Nai, swimming — Alexander Smirnov", "elect"], "0|6": ["English", "English", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "1|1": ["Soft Skills (PSHE)", "Soft Skills (PSHE)", "ru", "Елизавета Хоша", "Elizaveta Khosha", ""], "1|2": ["Математика", "Mathematics", "ru", "Ольга Порубова", "Olga Porubova", ""], "1|3": ["English", "English", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "1|4U": ["Русский язык", "Russian", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], "1|5": ["Cambridge Maths", "Cambridge Maths", "en", "Ольга Порубова", "Olga Porubova", ""], "1|6": ["Творческая мастерская", "Creative Workshop", "en", "по выбору ребёнка: живопись — Мария Ветлова, кулинария — Елизавета Хоша", "child's choice: painting — Maria Vetlova, cooking — Elizaveta Khosha", "elect"], "2|1": ["Русский язык", "Russian", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], "2|2": ["English Literature", "English Literature", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "2|3": ["Литература", "Literature (in Russian)", "ru", "Маргарита Боряева", "Margarita Boriaeva", ""], "2|4U": ["Математика", "Mathematics", "ru", "Ольга Порубова", "Olga Porubova", ""], "2|5": ["Спорт", "Sport", "en", "по выбору ребёнка: танцы — Маргарита Боряева, футбол — Coach Nai, плавание — Александр Смирнов", "child's choice: dance — Margarita Boriaeva, football — Coach Nai, swimming — Alexander Smirnov", "elect"], "2|6": ["English", "English", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "3|1": ["Математика", "Mathematics", "ru", "Ольга Порубова", "Olga Porubova", ""], "3|2": ["Литература", "Literature (in Russian)", "ru", "Маргарита Боряева", "Margarita Boriaeva", ""], "3|3": ["Тайская культура", "Thai Culture", "en", "Pee Dee", "Pee Dee", ""], "3|4U": ["English", "English", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "3|5": ["Cambridge Maths", "Cambridge Maths", "en", "Ольга Порубова", "Olga Porubova", ""], "3|6": ["Творческая мастерская", "Creative Workshop", "en", "по выбору ребёнка: живопись — Мария Ветлова, кулинария — Елизавета Хоша", "child's choice: painting — Maria Vetlova, cooking — Elizaveta Khosha", "elect"], "4|1": ["Science in English", "Science in English", "en", "Альбина Коренева", "Albina Koreneva", ""], "4|2": ["English", "English", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "4|3": ["Soft Skills (PSHE)", "Soft Skills (PSHE)", "ru", "Елизавета Хоша", "Elizaveta Khosha", ""], "4|4U": ["Литература", "Literature (in Russian)", "ru", "Маргарита Боряева", "Margarita Boriaeva", ""], "4|5": ["Спорт", "Sport", "en", "по выбору ребёнка: танцы — Маргарита Боряева, футбол — Coach Nai, плавание — Александр Смирнов", "child's choice: dance — Margarita Boriaeva, football — Coach Nai, swimming — Alexander Smirnov", "elect"], "4|6": ["Русский язык", "Russian", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""]}, "teach": [["Soft Skills (PSHE)", "Soft Skills (PSHE)", "ru", "Елизавета Хоша", "Elizaveta Khosha", ""], ["Литература", "Literature (in Russian)", "ru", "Маргарита Боряева", "Margarita Boriaeva", ""], ["Математика", "Mathematics", "ru", "Ольга Порубова", "Olga Porubova", ""], ["Окружающий мир (Science)", "Science (in Russian)", "ru", "Елизавета Хоша", "Elizaveta Khosha", ""], ["Русский язык", "Russian", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], ["Cambridge Maths", "Cambridge Maths", "en", "Ольга Порубова", "Olga Porubova", ""], ["Science in English", "Science in English", "en", "Альбина Коренева", "Albina Koreneva", ""], ["Тайская культура", "Thai Culture", "en", "Pee Dee", "Pee Dee", ""], ["English", "English", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], ["English Literature", "English Literature", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], ["Спорт", "Sport", "en", "по выбору ребёнка: танцы — Маргарита Боряева, футбол — Coach Nai, плавание — Александр Смирнов", "child's choice: dance — Margarita Boriaeva, football — Coach Nai, swimming — Alexander Smirnov", "elect"], ["Творческая мастерская", "Creative Workshop", "en", "по выбору ребёнка: живопись — Мария Ветлова, кулинария — Елизавета Хоша", "child's choice: painting — Maria Vetlova, cooking — Elizaveta Khosha", "elect"]], "curator": ["Елизавета Хоша", "Elizaveta Khosha"], "assist": ["Pee Dee, Kru Pim", "Pee Dee, Kru Pim"]}, "Y6": {"label": "Year 6", "label_en": "Year 6", "age": "10–11", "grade": "4 класс", "grade_en": "Grade 4", "stage": "U", "light": false, "slots": ["1", "2", "3", "4U", "5", "6"], "grid": {"0|1": ["Окружающий мир (Science)", "Science (in Russian)", "ru", "Елизавета Хоша", "Elizaveta Khosha", ""], "0|2": ["Русский язык", "Russian", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], "0|3": ["English Literature", "English Literature", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "0|4U": ["Математика", "Mathematics", "ru", "Ольга Порубова", "Olga Porubova", ""], "0|5": ["Спорт", "Sport", "en", "по выбору ребёнка: танцы — Маргарита Боряева, футбол — Coach Nai, плавание — Александр Смирнов", "child's choice: dance — Margarita Boriaeva, football — Coach Nai, swimming — Alexander Smirnov", "elect"], "0|6": ["English", "English", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "1|1": ["Soft Skills (PSHE)", "Soft Skills (PSHE)", "ru", "Елизавета Хоша", "Elizaveta Khosha", ""], "1|2": ["Русский язык", "Russian", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], "1|3": ["English", "English", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "1|4U": ["Математика", "Mathematics", "ru", "Ольга Порубова", "Olga Porubova", ""], "1|5": ["Литература", "Literature (in Russian)", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], "1|6": ["Творческая мастерская", "Creative Workshop", "en", "по выбору ребёнка: живопись — Мария Ветлова, кулинария — Елизавета Хоша", "child's choice: painting — Maria Vetlova, cooking — Elizaveta Khosha", "elect"], "2|1": ["Математика", "Mathematics", "ru", "Ольга Порубова", "Olga Porubova", ""], "2|2": ["English Literature", "English Literature", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "2|3": ["Cambridge Maths", "Cambridge Maths", "en", "Ольга Порубова", "Olga Porubova", ""], "2|4U": ["Русский язык", "Russian", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], "2|5": ["Спорт", "Sport", "en", "по выбору ребёнка: танцы — Маргарита Боряева, футбол — Coach Nai, плавание — Александр Смирнов", "child's choice: dance — Margarita Boriaeva, football — Coach Nai, swimming — Alexander Smirnov", "elect"], "2|6": ["English", "English", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "3|1": ["Русский язык", "Russian", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], "3|2": ["Математика", "Mathematics", "ru", "Ольга Порубова", "Olga Porubova", ""], "3|3": ["Тайская культура", "Thai Culture", "en", "Pee Dee", "Pee Dee", ""], "3|4U": ["English", "English", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "3|5": ["Литература", "Literature (in Russian)", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], "3|6": ["Творческая мастерская", "Creative Workshop", "en", "по выбору ребёнка: живопись — Мария Ветлова, кулинария — Елизавета Хоша", "child's choice: painting — Maria Vetlova, cooking — Elizaveta Khosha", "elect"], "4|1": ["Science in English", "Science in English", "en", "Альбина Коренева", "Albina Koreneva", ""], "4|2": ["English", "English", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], "4|3": ["Soft Skills (PSHE)", "Soft Skills (PSHE)", "ru", "Елизавета Хоша", "Elizaveta Khosha", ""], "4|4U": ["Литература", "Literature (in Russian)", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], "4|5": ["Спорт", "Sport", "en", "по выбору ребёнка: танцы — Маргарита Боряева, футбол — Coach Nai, плавание — Александр Смирнов", "child's choice: dance — Margarita Boriaeva, football — Coach Nai, swimming — Alexander Smirnov", "elect"], "4|6": ["Cambridge Maths", "Cambridge Maths", "en", "Ольга Порубова", "Olga Porubova", ""]}, "teach": [["Soft Skills (PSHE)", "Soft Skills (PSHE)", "ru", "Елизавета Хоша", "Elizaveta Khosha", ""], ["Литература", "Literature (in Russian)", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], ["Математика", "Mathematics", "ru", "Ольга Порубова", "Olga Porubova", ""], ["Окружающий мир (Science)", "Science (in Russian)", "ru", "Елизавета Хоша", "Elizaveta Khosha", ""], ["Русский язык", "Russian", "ru", "Гаянэ Аллахвердянц", "Gaiane Allakhverdiants", ""], ["Cambridge Maths", "Cambridge Maths", "en", "Ольга Порубова", "Olga Porubova", ""], ["Science in English", "Science in English", "en", "Альбина Коренева", "Albina Koreneva", ""], ["Тайская культура", "Thai Culture", "en", "Pee Dee", "Pee Dee", ""], ["English", "English", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], ["English Literature", "English Literature", "en", "группы по уровню · Альбина Коренева, Сэм (Samragni Bose)", "level groups · Albina Koreneva, Sam (Samragni Bose)", "eng"], ["Спорт", "Sport", "en", "по выбору ребёнка: танцы — Маргарита Боряева, футбол — Coach Nai, плавание — Александр Смирнов", "child's choice: dance — Margarita Boriaeva, football — Coach Nai, swimming — Alexander Smirnov", "elect"], ["Творческая мастерская", "Creative Workshop", "en", "по выбору ребёнка: живопись — Мария Ветлова, кулинария — Елизавета Хоша", "child's choice: painting — Maria Vetlova, cooking — Elizaveta Khosha", "elect"]], "curator": ["Елизавета Хоша", "Elizaveta Khosha"], "assist": ["Pee Dee, Kru Pim", "Pee Dee, Kru Pim"]}};
+const CLASSES = ["Y2", "Y3-1", "Y3-2", "Y4", "Y5", "Y6"];
+const T = {
+  nav_home:["Главная","Home"], nav_program:["Программа","Programme"], nav_life:["Школьная жизнь","School life"],
+  nav_teachers:["Педагоги","Teachers"], nav_prices:["Цены","Fees"], nav_adm:["Поступление","Admissions"],
+  kicker:["Начальная школа · Чалонг · 2026/27","Primary school · Chalong · 2026/27"],
+  h1:["Расписание класса","Class timetable"],
+  lead:["Так выглядит неделя ребёнка в Kinderville Nova: уроки на двух языках, еда, отдых, домашняя работа и игры — всё внутри школьного дня.",
+        "This is a child's week at Kinderville Nova: lessons in two languages, meals, rest, homework and play — all within the school day."],
+  pick:["Выберите класс","Choose a class"],
+  upd:["Действует с 14 сентября 2026 · Модуль I. Расписание пересобирается на каждый модуль, в течение года порядок уроков может немного меняться.",
+       "In effect from 14 September 2026 · Module I. The timetable is rebuilt for each module, so the order of lessons may shift slightly during the year."],
+  print:["Распечатать","Print"],
+  years:["лет","years old"], inRu:["в России —","Russian equivalent:"],
+  curator:["Куратор класса","Class curator"], assist:["ассистенты","assistants"],
+  legend_ru:["уроки на русском","lessons in Russian"], legend_en:["уроки на английском","lessons in English"],
+  who_ru:["На русском","In Russian"], who_en:["На английском","In English"],
+  legend_lvl:["English — в группах по уровню","English — in level groups"],
+  legend_el:["спорт и мастерская — по выбору ребёнка","sport and workshop — child's choice"],
+  time:["Время","Time"], days:[["Пн","Вт","Ср","Чт","Пт"],["Mon","Tue","Wed","Thu","Fri"]],
+  daysFull:[["Понедельник","Вторник","Среда","Четверг","Пятница"],["Monday","Tuesday","Wednesday","Thursday","Friday"]],
+  lesson:["урок","lesson"],
+  arrive:["Приход, встреча и завтрак","Arrival, welcome & breakfast"],
+  arrive_d:["приходить можно с 8:00, к 8:45 все на месте","doors open at 8:00, everyone in by 8:45"],
+  circle:["Утренний круг","Morning circle"], circle_d:["с куратором класса","with the class curator"],
+  brk:["Перемена","Break"], snack1:["Перемена · перекус","Break · snack"],
+  lunch:["Обед и отдых","Lunch & rest"],
+  hw:["Домашняя работа — в школе, с куратором","Homework — at school, with the curator"],
+  hw_d:["почти вся домашняя работа делается здесь, домой уходит немногое","almost all homework is done here; very little goes home"],
+  light:["Light: учебный день закончен, дети уходят домой","Light: the school day ends, children go home"],
+  snack2:["Полдник","Afternoon snack"],
+  reflect:["Рефлексия","Reflection"], reflect_d:["итоги дня с куратором","the day's wrap-up with the curator"],
+  play:["Свободное время и игры","Free time & play"], play_d:["забрать ребёнка до 17:00","pick-up by 17:00"],
+  who_k:["Кто ведёт","Who teaches"], who_h:["Уроки и педагоги класса","Lessons and teachers of the class"],
+  who_p:["Подробнее о каждом педагоге — на странице","More about each teacher — on the page"], who_link:["Наши педагоги","Our teachers"],
+  notes_k:["Как читать расписание","How to read the timetable"], notes_h:["Что важно знать","Good to know"],
+  n1:["<b>Два языка.</b> Русский язык, литература, математика, окружающий мир и Soft Skills идут на русском; English, Cambridge Maths, Science in English, тайская культура, спорт и мастерские — на английском.",
+      "<b>Two languages.</b> Russian, literature, mathematics, science and Soft Skills are taught in Russian; English, Cambridge Maths, Science in English, Thai culture, sport and workshops — in English."],
+  n2:["<b>English — в группах по уровню.</b> На английском класс делится на группы, каждую ведёт свой педагог: так ребёнок занимается в своём темпе.",
+      "<b>English in level groups.</b> For English the class splits into groups, each with its own teacher, so every child works at the right pace."],
+  n3:["<b>Домашняя работа делается в школе.</b> После обеда дети работают самостоятельно под присмотром куратора; домой уходит немногое.",
+      "<b>Homework is done at school.</b> After lunch the children work on their own with the curator nearby; very little goes home."],
+  n4:["<b>Спорт и мастерская — по выбору ребёнка.</b> Футбол, плавание или танцы; живопись, кулинария или крафт — ребёнок выбирает сам.",
+      "<b>Sport and workshop are the child's choice.</b> Football, swimming or dance; painting, cooking or craft — the child picks."],
+  n5:["<b>Программа Light</b> — тот же учебный день до 14:00, без второй половины. Возможна в Year 3 (группа 1), Year 4 и Year 5. Подробнее — на странице <a href=\"../programs/\">Программы и цены</a>.",
+      "<b>The Light programme</b> is the same school day until 14:00, without the afternoon. Available in Year 3 (group 1), Year 4 and Year 5. Details on the <a href=\"../programs/\">Programmes & fees</a> page."],
+  n6:["<b>Year 3 — две группы.</b> В какую группу попадёт ребёнок, школа решает при зачислении; учебная программа у групп одна.",
+      "<b>Year 3 has two groups.</b> The school assigns the group at enrolment; both groups follow the same curriculum."],
+  soft:["Soft Skills (PSHE) — курс куратора: эмоции, дружба и конфликты, безопасность, правила жизни в классе.",
+        "Soft Skills (PSHE) — the curator's course: emotions, friendship and conflicts, safety, rules of classroom life."],
+  cta_k:["Есть вопросы?","Questions?"],
+  cta_h:["Расскажем, как это работает для вашего ребёнка","We'll explain how it works for your child"],
+  cta_p:["Напишите нам — ответим, в какой класс попадёт ребёнок, как проходит первый день и как устроен приём.",
+         "Write to us — we'll tell you which class your child joins, what the first day looks like and how admission works."],
+  f1:["Kinderville Nova International School<br>Детский сад и начальная школа, 2–11 лет","Kinderville Nova International School<br>Kindergarten and primary school, ages 2–11"],
+  f2:["Кампус в Раваи — сад и Year 1<br>Кампус в Чалонге — Year 2–6<br>Пхукет, Таиланд","Rawai campus — kindergarten and Year 1<br>Chalong campus — Year 2–6<br>Phuket, Thailand"],
+  f_sections:["Разделы","Sections"], f_program:["Программа и ступени","Programme and stages"], f_teachers:["Наши педагоги","Our teachers"],
+  f_prices:["Программы и цены","Programmes and fees"], f_adm:["Поступление 2026/27","Admissions 2026/27"], f_write:["Написать нам","Contact us"],
+  f_cal:["Календарь 2026/27","Calendar 2026/27"], f_cal1:["Сад и Year 1 · Раваи","Kindergarten and Year 1 · Rawai"],
+  f_cal2:["Year 2–6 · Чалонг","Year 2–6 · Chalong"], f_cal3:["Все календари","All calendars"],
+  f_bottom:["Раваи и Чалонг, Пхукет · Таиланд","Rawai and Chalong, Phuket · Thailand"],
+};
+const q = new URLSearchParams(location.search);
+let LANG = q.get("lang") === "en" ? "en" : "ru";
+let CUR = CLASSES.includes(q.get("class")) ? q.get("class") : "Y3-1";
+let DAY = (() => { const w = new Date().getDay(); return (w >= 1 && w <= 5) ? w - 1 : 0; })();
+const L = () => LANG === "en" ? 1 : 0;
+const t = k => T[k][L()];
+const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+
+// каркас дня: [время, код]; уроки — кодом слота, остальное — событием дня
+function frame(low){
+  const rows = [["8:00–8:45","arrive"],["8:45–9:00","circle"],["9:05–9:55","1"],["9:55–10:05","brk"],
+    ["10:05–10:55","2"],["10:55–11:05","snack1"],["11:05–11:55","3"]];
+  if (low) rows.push(["11:55–12:25","lunch"],["12:25–13:10","hw"],["13:15–14:05","4L"]);
+  else rows.push(["12:00–12:50","4U"],["12:50–13:20","lunch"],["13:20–14:05","hw"]);
+  rows.push(["14:05","light"],["14:10–15:00","5"],["15:00–15:10","snack2"],["15:10–16:00","6"],
+    ["16:05–16:20","reflect"],["16:20–17:00","play"]);
+  return rows;
+}
+const ICON = {arrive:"i-family", circle:"i-groups", brk:"i-clock", snack1:"i-restaurant", lunch:"i-restaurant",
+  hw:"i-pencil", snack2:"i-restaurant", reflect:"i-groups", play:"i-family", light:null};
+const DESC = {arrive:"arrive_d", circle:"circle_d", hw:"hw_d", reflect:"reflect_d", play:"play_d"};
+const MINI = new Set(["brk","snack1","snack2"]);
+
+function chip(lang){ return `<span class="chip ${lang}">${lang === "ru" ? (L() ? "RU" : "рус") : (L() ? "EN" : "англ")}</span>`; }
+function lessonHtml(v){
+  if (!v) return `<span class="w">—</span>`;
+  return `<span class="s">${esc(v[L()])} ${chip(v[2])}</span><span class="w">${esc(v[3 + L()])}</span>`;
+}
+function frameHtml(code){
+  const ic = ICON[code] ? `<svg class="i" aria-hidden="true"><use href="#${ICON[code]}"></use></svg>` : "";
+  const d = DESC[code] ? `<span class="d">${t(DESC[code])}</span>` : "";
+  return `<div class="f">${ic}<b>${t(code)}</b>${d}</div>`;
+}
+
+function renderClass(){
+  const c = DATA[CUR], low = c.stage === "L", rows = frame(low);
+  let h = `<div class="cls-head"><h2>${L() ? c.label_en : c.label}</h2>` +
+          `<span class="age">${c.age} ${t("years")} · ${t("inRu")} ${L() ? c.grade_en : c.grade}</span></div>`;
+  h += `<p class="cls-staff"><b>${t("curator")}</b> — ${c.curator[L()]} · ${t("assist")}: ${c.assist[L()]}</p>`;
+  h += `<div class="legend"><span><span class="sw en"></span>${t("legend_en")}</span><span><span class="sw"></span>${t("legend_ru")}</span><span>· ${t("legend_lvl")}</span><span>· ${t("legend_el")}</span></div>`;
+  // неделя (десктоп)
+  h += `<div class="week"><div class="wk-wrap"><table class="wk"><thead><tr><th class="tm">${t("time")}</th>` +
+       T.days[L()].map(d => `<th>${d}</th>`).join("") + `</tr></thead><tbody>`;
+  for (const [tm, code] of rows){
+    if (code === "light"){
+      if (!c.light) continue;
+      h += `<tr class="fr light"><td class="tm">${tm}</td><td colspan="5"><b>${tm}</b> · ${t("light")}</td></tr>`;
+      continue;
+    }
+    if (T[code]){
+      const cls = "fr" + (MINI.has(code) ? " mini" : "") + (code === "hw" ? " hw" : "") + (code === "play" ? " play" : "");
+      h += `<tr class="${cls}"><td class="tm">${tm}</td><td colspan="5">${frameHtml(code)}</td></tr>`;
+      continue;
+    }
+    const n = c.slots.indexOf(code) + 1;
+    h += `<tr><td class="tm">${tm}<br><span style="font-weight:400;color:var(--muted)">${n} ${t("lesson")}</span></td>`;
+    for (let d = 0; d < 5; d++){
+      const v = c.grid[d + "|" + code];
+      h += `<td class="les ${v ? v[2] : ""}">${lessonHtml(v)}</td>`;
+    }
+    h += "</tr>";
+  }
+  h += `</tbody></table></div></div>`;
+  // по дням (мобильный)
+  h += `<div class="days"><div class="daytabs">` +
+       T.days[L()].map((d, i) => `<button type="button" aria-pressed="${i === DAY}" onclick="setDay(${i})">${d}</button>`).join("") +
+       `</div><ul class="dl">`;
+  for (const [tm, code] of rows){
+    if (code === "light"){
+      if (!c.light) continue;
+      h += `<li class="light"><span class="tm">${tm}</span><span><b>${t("light")}</b></span></li>`;
+      continue;
+    }
+    if (T[code]){
+      h += `<li class="fr${code === "hw" ? " hw" : ""}${code === "play" ? " play" : ""}"><span class="tm">${tm}</span>${frameHtml(code)}</li>`;
+      continue;
+    }
+    const v = c.grid[DAY + "|" + code];
+    h += `<li class="${v ? v[2] : ""}"><span class="tm">${tm}</span><span>${lessonHtml(v)}</span></li>`;
+  }
+  h += `</ul></div>`;
+  document.getElementById("clsbox").innerHTML = h;
+
+  // кто ведёт
+  let w = `<span class="kicker">${t("who_k")}</span><h2>${t("who_h")}</h2><div class="who">`;
+  for (const lang of ["en","ru"]){
+    const items = c.teach.filter(v => v[2] === lang);
+    if (!items.length) continue;
+    w += `<h3>${chip(lang)} ${t("who_" + lang)}</h3><ul class="who">` +
+         items.map(v => `<li><span class="s">${esc(v[L()])}</span><span class="w">${esc(v[3 + L()])}</span></li>`).join("") + `</ul>`;
+  }
+  w += `</div><p class="note" style="margin-top:14px">${t("soft")}</p>` +
+       `<p class="note">${t("who_p")} <a href="../teachers/">${t("who_link")}</a>.</p>`;
+  document.getElementById("whobox").innerHTML = w;
+
+  // что важно знать
+  const keys = ["n1","n2","n3","n4"];
+  if (c.light) keys.push("n5");
+  if (CUR.startsWith("Y3")) keys.push("n6");
+  document.getElementById("notes").innerHTML =
+    `<span class="kicker">${t("notes_k")}</span><h2>${t("notes_h")}</h2><ul class="bullets">` +
+    keys.map(k => `<li>${t(k)}</li>`).join("") + `</ul>`;
+}
+function renderPills(){
+  document.getElementById("pills").innerHTML = CLASSES.map(k => {
+    const c = DATA[k];
+    return `<button type="button" aria-pressed="${k === CUR}" onclick="setClass('${k}')">${L() ? c.label_en : c.label}<small>${c.age} ${t("years")}</small></button>`;
+  }).join("");
+}
+function applyLang(){
+  document.documentElement.lang = LANG;
+  document.title = LANG === "en" ? "Class timetable — Kinderville Nova, Year 2–6" : "Расписание класса — Kinderville Nova, Year 2–6";
+  document.querySelectorAll("[data-t]").forEach(el => { el.innerHTML = t(el.dataset.t); });
+  document.getElementById("lang-ru").setAttribute("aria-pressed", LANG === "ru");
+  document.getElementById("lang-en").setAttribute("aria-pressed", LANG === "en");
+}
+function pushUrl(){
+  const p = new URLSearchParams(); p.set("class", CUR); if (LANG === "en") p.set("lang", "en");
+  history.replaceState(null, "", "?" + p.toString());
+}
+function setLang(l){ LANG = l; applyLang(); renderPills(); renderClass(); pushUrl(); }
+function setClass(k){ CUR = k; renderPills(); renderClass(); pushUrl();
+  const y = document.getElementById("sched").getBoundingClientRect().top + window.scrollY - 120;
+  if (window.scrollY > y) window.scrollTo({top: y, behavior: "smooth"}); }
+function setDay(i){ DAY = i; renderClass(); }
+applyLang(); renderPills(); renderClass();
+</script>
+</body>
+</html>
