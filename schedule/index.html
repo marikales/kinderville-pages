@@ -103,6 +103,7 @@ button{font-family:inherit}
 .wk .tc.mini{padding:4px 6px;font-size:12px;font-weight:500;color:var(--muted);background:transparent}
 .wk .fr.meal{background:var(--meal)} .wk .fr.calm{background:var(--calm)} .wk .fr.hw{background:var(--hw)}
 .wk .fr.play{background:var(--play)} .wk .fr.brk{background:var(--brk)}
+.wk .les.hw{background:var(--hw);border-color:#d5e5e0}
 .wk .fr.light{background:transparent;border:1.5px dashed #e6c79a;color:var(--muted);font-size:13px;padding:6px 14px}
 .wk .fr.light b{color:#b3501d}
 .wk .tc.light{background:transparent;color:#b3501d}
@@ -234,7 +235,7 @@ const T = {
   circle:["Утренний круг","Morning circle"], circle_d:["с куратором класса","with the class curator"],
   brk:["Перемена","Break"], snack1:["Перемена · перекус","Break · snack"],
   lunch:["Обед и отдых","Lunch & rest"],
-  hw:["Домашняя работа — в школе, с куратором","Homework — at school, with the curator"],
+  hw:["Домашняя работа","Homework"], hw_w:["в школе, с куратором","at school, with the curator"],
   hw_d:["почти вся домашняя работа делается здесь","almost all homework is done here"],
   light:["Light: учебный день закончен, дети уходят домой","Light: the school day ends, children go home"],
   snack2:["Полдник","Afternoon snack"],
@@ -282,7 +283,7 @@ const ICON = {arrive:"i-family", circle:"i-groups", brk:"i-clock", snack1:"i-res
   hw:"i-pencil", snack2:"i-restaurant", reflect:"i-groups", play:"i-family"};
 const KIND = {arrive:"meal", circle:"calm", brk:"brk mini", snack1:"brk mini", lunch:"meal", hw:"hw",
   snack2:"meal mini", reflect:"calm", play:"play"};
-const DESC = {arrive:"arrive_d", circle:"circle_d", hw:"hw_d", reflect:"reflect_d", play:"play_d"};
+const DESC = {arrive:"arrive_d", circle:"circle_d", reflect:"reflect_d", play:"play_d"};
 
 function chip(lang){ return `<span class="chip ${lang}">${lang === "ru" ? (L() ? "RU" : "рус") : (L() ? "EN" : "англ")}</span>`; }
 function lessonHtml(v){
@@ -310,6 +311,11 @@ function renderClass(){
       h += `<div class="tc light">${tm}</div><div class="fr light"><b>${tm}</b> · ${t("light")}</div>`;
       continue;
     }
+    if (code === "hw"){
+      h += `<div class="tc">${tm}</div>` + T.days[L()].map(() =>
+        `<div class="les hw"><span class="s">${t("hw")}</span><span class="w">${t("hw_w")} · ${c.curator[L()]}</span></div>`).join("");
+      continue;
+    }
     if (T[code]){
       const mini = KIND[code].includes("mini");
       h += `<div class="tc${mini ? " mini" : ""}">${tm}</div><div class="fr ${KIND[code]}">${frameHtml(code)}</div>`;
@@ -328,6 +334,10 @@ function renderClass(){
     if (code === "light"){
       if (!c.light) continue;
       h += `<li class="light"><span class="tm">${tm}</span><span><b>${t("light")}</b></span></li>`;
+      continue;
+    }
+    if (code === "hw"){
+      h += `<li class="hw"><span class="tm">${tm}</span><span><span class="s">${t("hw")}</span><span class="w">${t("hw_w")} · ${c.curator[L()]}</span></span></li>`;
       continue;
     }
     if (T[code]){
