@@ -239,7 +239,7 @@ const T = {
   hw:["Домашняя работа","Homework"], hw_w:["в школе, с куратором","at school, with the curator"],
   hw_d:["почти вся домашняя работа делается здесь","almost all homework is done here"],
   light:["Light: учебный день закончен, дети уходят домой","Light: the school day ends, children go home"],
-  snack2:["Полдник","Afternoon snack"],
+  snack2:["Большая перемена и полдник","Long break & afternoon snack"],
   reflect:["Рефлексия","Reflection"], reflect_d:["итоги дня с куратором","the day's wrap-up with the curator"],
   play:["Свободное время и игры","Free time & play"], play_d:["забрать ребёнка до 17:00","pick-up by 17:00"],
   who_h:["Уроки и педагоги класса","Lessons and teachers"], who_sub:["Кто ведёт каждый предмет","Who teaches each subject"],
@@ -274,9 +274,9 @@ const lesN = n => L() ? `${t("lesson")} ${n}` : `${n} ${t("lesson")}`;
 function frame(low){
   const rows = [["8:00–8:45","arrive"],["8:20–8:30","wake"],["8:45–9:00","circle"],["9:05–9:55","1"],["9:55–10:05","brk"],
     ["10:05–10:55","2"],["10:55–11:05","snack1"],["11:05–11:55","3"]];
-  if (low) rows.push(["11:55–12:25","lunch"],["12:25–13:10","hw"],["13:15–14:05","4L"]);
-  else rows.push(["12:00–12:50","4U"],["12:50–13:20","lunch"],["13:20–14:05","hw"]);
-  rows.push(["14:05","light"],["14:10–15:00","5"],["15:00–15:10","snack2"],["15:10–16:00","6"],
+  if (low) rows.push(["11:55–12:25","lunch"],["12:25–13:00","hw"],["13:05–13:55","4L"]);
+  else rows.push(["12:00–12:50","4U"],["12:50–13:15","lunch"],["13:15–13:55","hw"]);
+  rows.push(["14:00","light"],["14:00–14:50","5"],["14:50–15:10","snack2"],["15:10–16:00","6"],
     ["16:05–16:20","reflect"],["16:20–17:00","play"]);
   return rows;
 }
