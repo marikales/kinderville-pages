@@ -115,7 +115,8 @@ h1 { font-weight:700; font-size:48px; line-height:1; letter-spacing:-.02em; marg
 .rrow .go { margin-left:auto; }
 #mainCard { position:relative; }
 .introbox { position:absolute; top:14px; right:16px; display:flex; flex-direction:column; align-items:flex-end; gap:6px; z-index:2; max-width:260px; }
-.introbtn { font:500 14px/1 "Geologica", sans-serif; color:var(--mute); background:transparent; border-radius:999px; padding:8px 12px; box-shadow:0 0 0 1px var(--line) inset; }
+.introbtn svg { width:16px; height:16px; flex:none; }
+.introbtn { display:inline-flex; align-items:center; gap:5px; font:500 14px/1 "Geologica", sans-serif; color:var(--mute); background:transparent; border-radius:999px; padding:8px 12px; box-shadow:0 0 0 1px var(--line) inset; }
 .introbtn.armed { color:#fff; background:var(--petrol); box-shadow:none; }
 .introwarn { font-size:13px; line-height:1.35; color:var(--ink); background:#EAF4F1; border-radius:12px; padding:8px 12px; text-align:right; }
 .ru { font-size:18px; color:var(--ink); background:#EAF4F1; border-radius:12px; padding:6px 12px; margin:-4px 0 12px; display:inline-block; }
@@ -238,7 +239,7 @@ input.copy { border-style:dashed; border-color:var(--petrol); }
 .mirror { display:none; }
 .kb { display:none; }
 body.vkmode .mirror { display:block; position:absolute; inset:0; padding:16px 20px; font:600 34px/1.2 "Geologica", -apple-system, sans-serif; letter-spacing:.01em; color:var(--ink); pointer-events:none; white-space:pre; overflow:hidden; text-align:left; }
-body.vkmode input:not(.ok):not(.bad) { color:transparent; caret-color:transparent; border-color:var(--petrol); }
+body.vkmode #inp:not(.ok):not(.bad) { color:transparent; caret-color:transparent; border-color:var(--petrol); }
 body.vkmode input.ok + .mirror, body.vkmode input.bad + .mirror { display:none; }
 .caret { display:inline-block; width:3px; height:1.05em; background:var(--petrol); vertical-align:-.15em; margin-left:2px; animation:blink 1s steps(1) infinite; }
 @keyframes blink { 50% { opacity:0 } }
@@ -346,7 +347,76 @@ body.vkmode footer { margin-top:20px; }
   #words .top { flex-wrap:wrap; } #words .top .wtitle { order:3; flex:1 1 100%; margin:2px 0 0; } #words .top #wall { padding:8px 14px; font-size:15px; }
   footer { margin-top:20px; font-size:10.5px; }
 }
-@media (max-width:370px) { .k { height:42px; font-size:18px; } .kr { gap:3px; } .top .prevb span { font-size:13px; } h1 { font-size:32px; } }
+/* ---- телефон: экран слова целиком в видимой области; запас снизу под панели браузера ---- */
+.pstrip, .helprow, .plaque, .cta { display:none; }
+#hivepage .hivebig { position:static; max-width:420px; }
+@media (max-width:600px) {
+  .hive:not(.hivebig) { display:none !important; }
+  main { grid-template-columns:minmax(0,1fr); }
+  body[data-view="play"] header, body[data-view="play"] footer { display:none; }
+  body[data-view="play"] .wrap { padding-bottom:calc(90px + env(safe-area-inset-bottom)); min-height:0; }
+  body[data-view="play"] main > section { grid-row:1; }
+  /* верхняя строка: стрелка выхода · соты шага · мёд */
+  #play .top { gap:10px; margin-bottom:8px; min-height:40px; }
+  #quit { width:40px; height:40px; padding:0; justify-content:center; flex:none; } #quit span { display:none; } #quit svg { width:22px; height:22px; }
+  .pstrip { display:flex; align-items:center; gap:10px; flex:1; min-width:0; }
+  .pstrip .pcells { flex:1; min-width:0; } .pstrip .pcells svg { width:100%; max-width:260px; height:auto; max-height:26px; display:block; margin:0; }
+  .pstrip polygon.cur { stroke:var(--petrol); stroke-width:2.2; }
+  .pstrip polygon.fill { transform-box:fill-box; transform-origin:center; animation:pop .5s ease-out both; }
+  .pstrip .phoney { display:flex; align-items:baseline; gap:3px; white-space:nowrap; font-size:13px; color:var(--mute); } .pstrip .phoney svg { width:12px; height:auto; align-self:center; margin:0 2px 0 0; } .pstrip .phoney b { font-size:16px; color:var(--ink); font-weight:600; }
+  #play .top > span[style] { display:none; }
+  body.fewcells #play .top #pos { display:none; }
+  /* карточка слова */
+  #mainCard { --p: var(--pic, 132px); grid-template-columns:var(--p) minmax(0,1fr) 44px; grid-template-areas:"help help help" "pic tag spk" "pic sent sent" "pic ru ru" "fld fld fld" "kb kb kb"; gap:6px 12px; padding:10px 12px 12px; align-items:start; }
+  #mainCard > .pic { grid-area:pic; width:var(--p); height:var(--p); }
+  #mainCard .pic img { width:calc(var(--p) * .7); height:calc(var(--p) * .7); } #mainCard .pic.many img { width:calc(var(--p) * .39); height:calc(var(--p) * .39); }
+  #mainCard .pic .num { font-size:calc(var(--p) * .46); }
+  #mainCard .speak { grid-area:spk; justify-self:end; } #mainCard .tag { grid-area:tag; align-self:center; min-height:0; } #mainCard .sent { grid-area:sent; } #mainCard .ru { grid-area:ru; justify-self:start; margin:0; font-size:16px; }
+  #mainCard .frow { grid-area:fld; display:flex; gap:8px; align-items:stretch; } #mainCard .frow .field { flex:1; min-width:0; }
+  #mainCard .frow #go { flex:none; height:auto; min-height:52px; padding:0 16px; border-radius:14px; font-size:16px; }
+  #mainCard .kb { grid-area:kb; }
+  #again { width:44px; height:44px; padding:0; justify-content:center; border-radius:50%; } #again span { display:none; } #again img { width:24px; height:24px; }
+  body.vkmode .kb { margin-top:2px; }
+  .k, .kr #go { height:var(--kh, 52px); }
+  /* строка помощи: «Прошлое слово» и «Не знаю слово» — маленькие значки с подписью */
+  .helprow { grid-area:help; display:flex; align-items:center; gap:8px; position:relative; min-height:32px; }
+  .helprow .chip, .helprow .introbtn { display:inline-flex; align-items:center; gap:5px; font:500 13px/1 "Geologica", sans-serif; padding:7px 11px 7px 8px; border-radius:999px; background:var(--paper); color:var(--mute); box-shadow:0 0 0 1px var(--line) inset; white-space:nowrap; }
+  .helprow .chip svg, .helprow .introbtn svg { width:17px; height:17px; }
+  .helprow .prevb { color:var(--petrol); box-shadow:0 0 0 1.5px #BFDCD6 inset; } .helprow .prevb:disabled { opacity:.4; }
+  .helprow .introbtn.armed { color:#fff; background:var(--petrol); box-shadow:none; }
+  .helprow .introbox { position:static; display:block; max-width:none; margin:0; }
+  .helprow .introwarn { position:absolute; left:0; right:0; top:calc(100% + 6px); z-index:4; text-align:left; box-shadow:0 8px 24px rgba(52,64,60,.16); font-size:14px; }
+  /* разбор и «Верно!» — поверх предложения, без сдвига вёрстки */
+  #mainCard .fb { grid-area:2 / 2 / 5 / 4; position:relative; z-index:3; background:var(--paper); margin:0; min-height:0; display:flex; flex-direction:column; justify-content:center; overflow:hidden; }
+  #mainCard .fb:empty { display:none; }
+  #mainCard .fb { align-self:stretch; } #mainCard .fb:has(.yes) { grid-area:2 / 2 / 3 / 4; justify-content:flex-start; }
+  #mainCard .fb .yes { padding-top:0; font-size:20px; } #mainCard .fb .label { font-size:13px; }
+  #mainCard .fb .right { font-size:26px; line-height:1.15; } #mainCard .fb .note { font-size:13px; line-height:1.3; }
+  /* старт: одна главная кнопка, улей — плашкой */
+  .plaque { display:flex; align-items:center; gap:12px; width:100%; text-align:left; background:var(--paper); border-radius:18px; box-shadow:0 0 0 1px var(--line) inset; padding:8px 12px; margin:6px 0 12px; }
+  .plaque .pl-ico { width:44px; height:44px; flex:none; border-radius:50%; background:var(--honey); display:flex; align-items:center; justify-content:center; } .plaque .pl-ico img { width:28px; height:28px; }
+  .plaque .pl-t { flex:1; display:flex; flex-direction:column; } .plaque small { font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--mute); font-weight:600; } .plaque b { font-size:17px; font-weight:600; }
+  .plaque > svg { width:22px; height:22px; color:var(--soft); }
+  .cta { display:flex; width:100%; justify-content:center; font-size:19px; padding:18px 20px; border-radius:18px; margin:0 0 18px; }
+  .cta[hidden] { display:none; }
+  #home .hero > div { display:flex; flex-direction:column; }
+  #home h1 { order:0; } #home .lvlnote { order:1; margin-bottom:4px; } #home .warn { order:2; } #home .plaque { order:3; } #home .cta { order:4; }
+  #home .levels { order:5; margin-top:0; } #home .modes { order:6; margin-top:22px; } #home .story { order:7; margin-top:22px; } #home .adults { order:8; }
+  #home .modes .mode.main { background:var(--paper); color:var(--ink); box-shadow:0 0 0 1px var(--line) inset; } #home .modes .mode.main span { color:var(--mute); }
+  .mode { min-height:0; padding:14px 16px; }
+  /* финал шага: результат и следующий шаг; остальное ниже */
+  .done .round { display:none; }
+  .done > div { display:flex; flex-direction:column; }
+  .done .dtitle { order:0; } .done .big { order:1; } #stepCellsDone { order:2; } .done .row { order:3; flex-wrap:wrap; gap:8px; margin-top:18px !important; }
+  #plaque2 { order:4; margin-top:16px; } .done .grow { order:5; margin-top:16px; } .done .news { order:6; } .done .rec { order:7; } .done .marks { order:8; } #trickyBox { order:9; }
+  /* экран «Наш улей» */
+  #hivepage .hivebig { display:block; padding:16px; border-radius:22px; }
+  #hivepage .hivebig .hv-body { display:block; } #hivepage .hivebig svg { max-height:none; margin:10px auto 0; }
+  #hivepage .hivebig .track { display:grid; } #hivepage .hivebig h2 { font-size:13px; } #hivepage .hivebig .next { font-size:14.5px; margin-top:12px; }
+  /* слова: компактнее */
+  .wr { gap:4px 12px; padding:8px 12px; } .wr .wru { margin-top:-2px; }
+}
+@media (max-width:370px) { .k { font-size:18px; } .kr { gap:3px; } .top .prevb span { font-size:13px; } h1 { font-size:32px; } }
 
 </style></head>
 <body><div class="wrap">
@@ -358,6 +428,8 @@ body.vkmode footer { margin-top:20px; }
     <div>
       <h1 data-t="title"></h1>
       <p class="lvlnote" data-t="levelNote"></p>
+      <button class="plaque" id="plaque" type="button"></button>
+      <button class="btn go cta" id="cta" type="button"></button>
       <div class="story"><div class="st-text"><p data-t="story"></p><p class="task" data-t="task"></p></div><div class="scene" aria-hidden="true"><svg class="path" viewBox="0 0 160 100" aria-hidden="true"><path d="M30 64 C 40 30, 70 22, 92 30 S 128 46, 134 60" fill="none" stroke="#1C7066" stroke-opacity=".28" stroke-width=".9" stroke-dasharray="2.4 2.4" stroke-linecap="round"/></svg><div style="left:3%;top:50%;width:40%;z-index:1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 194.5 104.0"><defs><linearGradient id="sch" x1="0" y1="0" x2="0" y2="1"><stop offset=".5" stop-color="#F6EEDC"/><stop offset=".5" stop-color="#FFCB05"/></linearGradient></defs><polygon points="54.0,4.4 69.2,13.2 69.2,30.8 54.0,39.6 38.7,30.8 38.7,13.2" fill="#FFCB05" stroke="#E9A800" stroke-width="2.4" stroke-linejoin="round"/><polygon points="88.6,4.4 103.8,13.2 103.8,30.8 88.6,39.6 73.4,30.8 73.4,13.2" fill="#F2B705" stroke="#E9A800" stroke-width="2.4" stroke-linejoin="round"/><polygon points="123.2,4.4 138.5,13.2 138.5,30.8 123.2,39.6 108.0,30.8 108.0,13.2" fill="#F6EEDC" stroke="#E8DDC6" stroke-width="2.4" stroke-linejoin="round"/><polygon points="36.6,34.4 51.9,43.2 51.9,60.8 36.6,69.6 21.4,60.8 21.4,43.2" fill="#FFCB05" stroke="#E9A800" stroke-width="2.4" stroke-linejoin="round"/><polygon points="71.3,34.4 86.5,43.2 86.5,60.8 71.3,69.6 56.0,60.8 56.0,43.2" fill="url(#sch)" stroke="#E9A800" stroke-width="2.4" stroke-linejoin="round"/><polygon points="105.9,34.4 121.2,43.2 121.2,60.8 105.9,69.6 90.7,60.8 90.7,43.2" fill="#FFCB05" stroke="#E9A800" stroke-width="2.4" stroke-linejoin="round"/><polygon points="140.6,34.4 155.8,43.2 155.8,60.8 140.6,69.6 125.3,60.8 125.3,43.2" fill="#F6EEDC" stroke="#E8DDC6" stroke-width="2.4" stroke-linejoin="round"/><polygon points="175.2,34.4 190.4,43.2 190.4,60.8 175.2,69.6 160.0,60.8 160.0,43.2" fill="#F6EEDC" stroke="#E8DDC6" stroke-width="2.4" stroke-linejoin="round"/><polygon points="54.0,64.4 69.2,73.2 69.2,90.8 54.0,99.6 38.7,90.8 38.7,73.2" fill="#F2B705" stroke="#E9A800" stroke-width="2.4" stroke-linejoin="round"/><polygon points="88.6,64.4 103.8,73.2 103.8,90.8 88.6,99.6 73.4,90.8 73.4,73.2" fill="#FFCB05" stroke="#E9A800" stroke-width="2.4" stroke-linejoin="round"/><polygon points="123.2,64.4 138.5,73.2 138.5,90.8 123.2,99.6 108.0,90.8 108.0,73.2" fill="url(#sch)" stroke="#E9A800" stroke-width="2.4" stroke-linejoin="round"/></svg></div><img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Cg fill=%22none%22%3E%3Cpath fill=%22%2344911b%22 d=%22M17.107 19.75h-2v8.228c-.755-1.844-2.56-3.158-4.67-3.158h-2.07a.28.28 0 0 0-.28.28v.42c0 2.4 1.95 4.35 4.26 4.37l2.88.01a.3.3 0 0 0 .097-.02h1.783v-.006a.3.3 0 0 0 .12.026h2.07c2.7 0 4.9-2.15 5.04-4.81a.253.253 0 0 0-.25-.27l-2.88.01c-1.92.017-3.59 1.365-4.1 3.197z%22/%3E%3Cpath fill=%22%23fcd53f%22 d=%22M23.847 11.78c1.91.53 3.23 1.6 3.1 2.67s-1.66 1.78-3.63 1.84c1.32 1.48 1.85 3.1 1.15 3.93c-.69.82-2.36.58-4.04-.45c.3 1.96-.15 3.61-1.18 3.92s-2.3-.8-3.15-2.58c-.82 1.81-2.08 2.95-3.12 2.65c-1.03-.3-1.5-1.93-1.24-3.88c-1.67 1.07-3.35 1.34-4.06.52s-.21-2.43 1.07-3.93c-1.99-.02-3.54-.71-3.69-1.78s1.15-2.15 3.04-2.71c-1.66-1.09-2.58-2.52-2.13-3.49c.47-1 2.21-1.2 4.15-.58c-.83-1.85-.84-3.61.09-4.19c.89-.56 2.38.15 3.64 1.6c.34-1.89 1.25-3.25 2.31-3.22c.98.01 1.8 1.21 2.13 2.91c1.19-1.27 2.53-1.86 3.37-1.35c.92.55.95 2.24.19 4.06c1.89-.6 3.58-.42 4.05.55c.47.96-.42 2.4-2.05 3.51%22/%3E%3Cpath fill=%22%238c5543%22 d=%22M16 19a5.861 5.861 0 1 0 0-11.722A5.861 5.861 0 0 0 16 19%22/%3E%3Cpath fill=%22%236d4534%22 d=%22m21.118 10.281l-.8.8l1.117 1.117l.295-.295a5.9 5.9 0 0 1 .071 2.076l-.366-.366l-1.114 1.114l.96.958a5.9 5.9 0 0 1-2.462 2.594l-1.027-1.023l-1.106 1.106l.515.515a5.9 5.9 0 0 1-2.437-.008l.508-.507l-1.117-1.117l-1.013 1.012a5.9 5.9 0 0 1-1.916-1.717l1.11 1.11l1.112-1.112l-1.112-1.112l-1.112 1.112a6 6 0 0 1-.523-.891l.928-.928l-1.112-1.112l-.325.325a5.9 5.9 0 0 1 .07-1.994l.255.255l1.096-1.095l-.762-.76q.245-.45.564-.85l.905.902l1.12-1.12l-.88-.877a6 6 0 0 1 .885-.53l.702.7l1.12-1.12l-.107-.105a6 6 0 0 1 1.633-.007l-.113.113l1.112 1.112l.716-.716q.47.224.89.523l-.899.9l1.112 1.111l.935-.935q.322.395.572.842m-.392 6.264l-1.113-1.111l-1.114 1.115l1.114 1.11zM11.224 12.9l1.112 1.112l1.098-1.099l-1.113-1.11zm1.804-1.804l1.114 1.11l1.118-1.118l-1.112-1.111zm1.827-1.826l1.112 1.11l1.118-1.117l-1.112-1.112zm1.82 1.817l1.113 1.11l1.116-1.115l-1.112-1.112zm-1.825 1.825l1.114 1.11l1.116-1.117l-1.112-1.11zm-1.807 1.807l1.112 1.112l1.102-1.102l-1.114-1.11zm7.685-1.814L19.61 11.79l-1.116 1.115l1.118 1.116zm-1.822 1.822l-1.118-1.116l-1.116 1.117l1.119 1.115zm-1.822 1.823l-1.12-1.115l-1.102 1.103l1.117 1.117z%22/%3E%3C/g%3E%3C/svg%3E" alt="" style="left:74%;top:47%;width:23%;transform:rotate(-6deg);z-index:2"><img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Cg fill=%22none%22%3E%3Cpath fill=%22%2386d72f%22 d=%22M16.83 20.16h-2v8.253c-.748-1.858-2.56-3.183-4.68-3.183H8.08a.28.28 0 0 0-.28.28v.42c0 2.4 1.95 4.35 4.26 4.37l2.88.01a.3.3 0 0 0 .097-.02h1.793v-.007a.3.3 0 0 0 .12.027h2.07c2.7 0 4.9-2.15 5.04-4.81a.253.253 0 0 0-.25-.27l-2.88.01c-1.919.017-3.59 1.365-4.1 3.197z%22/%3E%3Cpath fill=%22%23f70a8d%22 d=%22M20.83 19.26H10.81v-6.02c0-3.71 1.48-7.26 4.1-9.87l.01-.01c.48-.48 1.26-.48 1.74 0c2.67 2.62 4.17 6.21 4.17 9.95z%22/%3E%3Cpath fill=%22%23ff6dc6%22 d=%22M24.64 4.11c0-.58-.37-1.08-.83-1.09c-3.27-.02-6.08 4.77-7.32 9.46c-.22.83-1.12.81-1.34-.02c-1.23-4.67-4.03-9.44-7.29-9.44c-.47 0-.85.49-.85 1.09v6.21L7 10.31c0 .39.02.78.05 1.16c.08 1.1.29 3.08.62 4.05c1.32 4.09 4.47 6.03 8.16 6.03c3.41 0 6.37-1.54 7.83-5.15c.63-1.46.99-4.06.99-5.84z%22/%3E%3C/g%3E%3C/svg%3E" alt="" style="left:63%;top:66%;width:12%;transform:rotate(8deg);z-index:2"><img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Cg fill=%22none%22%3E%3Cpath fill=%22%2386d72f%22 d=%22M17.096 19.84h-2v8.409c-.708-1.939-2.562-3.339-4.74-3.339h-2.07a.28.28 0 0 0-.28.28v.42c0 2.4 1.95 4.35 4.26 4.37l2.88.01a.3.3 0 0 0 .097-.02h1.808a.3.3 0 0 0 .105.02h2.07c2.7 0 4.9-2.15 5.04-4.81a.253.253 0 0 0-.25-.27l-2.88.01c-1.85.016-3.468 1.27-4.04 3z%22/%3E%3Cpath fill=%22%23d3d3d3%22 d=%22M16.055 2c-2.35 0-4.19 2.02-3.97 4.36l.18 1.91l-1.98-.68a3.98 3.98 0 0 0-5.17 2.82c-.55 2.25.92 4.49 3.21 4.88l1.78.3l-1.46 1.8a3.984 3.984 0 0 0 .88 5.83c1.92 1.29 4.54.67 5.69-1.34l.91-1.45l.74 1.45a3.995 3.995 0 0 0 5.69 1.34c1.95-1.31 2.36-4.01.88-5.83l-1.44-1.78l1.9-.32a3.993 3.993 0 0 0 3.21-4.88a3.99 3.99 0 0 0-5.18-2.82l-2 .69l.14-2.01c.13-2.3-1.7-4.27-4.01-4.27%22/%3E%3Cpath fill=%22%23ffb02e%22 d=%22M15.996 17.36a3.78 3.78 0 1 0 0-7.56a3.78 3.78 0 0 0 0 7.56%22/%3E%3C/g%3E%3C/svg%3E" alt="" style="left:88%;top:74%;width:10%;transform:rotate(0deg);z-index:3"><img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Cg fill=%22none%22%3E%3Cpath fill=%22%23ff6dc6%22 d=%22M26.23 19.766c2.47-.8 3.96-3.19 3.76-5.68a.53.53 0 0 0-.43-.47s-.89-.19-1.09-.23c-.1-.02-.14-.15-.08-.22c.13-.14.75-.84.75-.84c.16-.17.19-.44.07-.64c-1.29-2.13-3.9-3.19-6.38-2.38c-.71.23-1.33.65-1.87 1.18c.34-.68.54-1.39.54-2.14c0-2.6-1.81-4.76-4.24-5.33a.56.56 0 0 0-.59.26s-.46.79-.56.97c-.05.09-.19.08-.23.01c-.1-.17-.56-.98-.56-.98c-.12-.2-.36-.32-.58-.26c-2.42.56-4.24 2.72-4.24 5.32c0 .75.21 1.46.54 2.14c-.54-.53-1.15-.94-1.86-1.17c-2.48-.81-5.09.25-6.38 2.38c-.12.2-.09.46.07.64c0 0 .61.68.75.83c.07.07.02.21-.07.23l-1.1.23c-.23.05-.41.24-.43.47a5.48 5.48 0 0 0 3.76 5.68c.72.23 1.46.26 2.22.14c-.68.35-1.28.81-1.72 1.42c-1.53 2.1-1.33 4.91.3 6.8c.15.18.41.23.63.13c0 0 .83-.37 1.02-.46c.09-.04.2.04.19.13l-.12 1.12c-.02.23.1.47.32.56c2.3.96 5.03.28 6.56-1.82c.44-.61.69-1.3.82-2.05c.13.75.38 1.45.82 2.05c1.53 2.1 4.26 2.78 6.56 1.82c.22-.09.34-.32.32-.56c0 0-.1-.91-.12-1.11c-.01-.1.1-.18.19-.14l1.03.46c.21.1.48.05.63-.13c1.63-1.89 1.83-4.7.3-6.8c-.44-.61-1.04-1.06-1.72-1.42c.76.12 1.5.09 2.22-.14%22/%3E%3Cpath fill=%22%23fff%22 d=%22M16.51 13.252a1 1 0 1 0-1 0v1.284a2.47 2.47 0 0 0-1.648 1.198l-1.224-.397a1 1 0 1 0-.309.951l1.225.397q-.014.134-.014.27c0 .64.243 1.224.643 1.663l-.758 1.043a1 1 0 1 0 .809.588l.757-1.043a2.46 2.46 0 0 0 2.033.002l.752 1.04a1 1 0 1 0 .81-.587l-.753-1.04a2.46 2.46 0 0 0 .632-1.937l1.215-.395a1 1 0 1 0-.31-.951l-1.214.394a2.47 2.47 0 0 0-1.646-1.196z%22/%3E%3C/g%3E%3C/svg%3E" alt="" style="left:55%;top:52%;width:8%;transform:rotate(-12deg);z-index:2"><img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Cg fill=%22none%22%3E%3Cpath fill=%22%23212121%22 d=%22M5.43 13.36c-.28 0-.5-.22-.5-.5V12c0-.71-.4-1.35-1.04-1.67l-.67-.38a.5.5 0 1 1 .44-.9l.68.38c.98.49 1.59 1.47 1.59 2.57v.86c0 .28-.22.5-.5.5M24.3 27.001h-1.47c-1.02 0-1.84-.83-1.84-1.84v-3.36c0-.41.34-.75.75-.75s.75.34.75.75v3.35c0 .19.15.34.34.34h1.47c.41 0 .75.34.75.75s-.34.76-.75.76m-14.5 1.98c-.19 0-.38-.07-.53-.22a.754.754 0 0 1 0-1.06l.65-.65c.36-.36.56-.85.56-1.36v-1.89c0-.41.34-.75.75-.75s.75.34.75.75v1.89c0 .91-.36 1.77-1 2.42l-.65.65c-.15.15-.34.22-.53.22m8.84-.22c.15.15.34.22.53.22s.38-.07.53-.22c.29-.29.29-.77 0-1.06l-.65-.65c-.36-.36-.56-.85-.56-1.36v-1.89c0-.41-.34-.75-.75-.75s-.75.34-.75.75v1.89c0 .91.35 1.77 1 2.42zM28 16.36l1.78.38c.29.06.29.47 0 .54l-1.78.38l-1-.66z%22/%3E%3Cpath fill=%22%23ffb02e%22 d=%22M17 25.001h2.11c.647 0 1.282-.09 1.89-.26L23.5 17L21 9.28a7 7 0 0 0-1.89-.259H17L15 17zM12 9.147a8 8 0 0 0-4.819 2.884L7.5 13.5v7l-.306 1.507A8 8 0 0 0 12 24.875L14.5 17zM24.5 17l1.5-3.377l2 2.755v1.267l-2 2.754z%22/%3E%3Cpath fill=%22%23533566%22 d=%22M16.98 9.021h-3.77c-.42.01-.83.06-1.23.13v15.72c.4.07.81.12 1.23.13h3.77zm-8.61 4.36c0-.75-.6-1.35-1.34-1.36h-.08c-2.74 0-4.95 2.24-4.95 5s2.22 5 4.95 5h.08c.75-.02 1.34-.62 1.34-1.37zm16.67-1.08l.94 1.3v6.8l-.94 1.3c-.94 1.5-2.4 2.57-4.06 3.03V9.271c1.67.47 3.12 1.53 4.06 3.03%22/%3E%3Cpath fill=%22%23aeddff%22 d=%22M14.94 4.74A4.47 4.47 0 0 1 18.57 3c2.39.04 4.35 1.99 4.41 4.38a4.49 4.49 0 0 1-4.49 4.6H10.9c-.55 0-.86-.63-.54-1.07l4.5-6.06c.02-.03.04-.05.06-.08z%22/%3E%3Cpath fill=%22%23212121%22 d=%22M5.44 18.001a1 1 0 1 0 0-2a1 1 0 0 0 0 2%22/%3E%3C/g%3E%3C/svg%3E" alt="" style="left:34%;top:13%;width:25%;transform:rotate(-9deg);z-index:4"><img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Cg fill=%22none%22%3E%3Cpath fill=%22%23212121%22 d=%22M5.43 13.36c-.28 0-.5-.22-.5-.5V12c0-.71-.4-1.35-1.04-1.67l-.67-.38a.5.5 0 1 1 .44-.9l.68.38c.98.49 1.59 1.47 1.59 2.57v.86c0 .28-.22.5-.5.5M24.3 27.001h-1.47c-1.02 0-1.84-.83-1.84-1.84v-3.36c0-.41.34-.75.75-.75s.75.34.75.75v3.35c0 .19.15.34.34.34h1.47c.41 0 .75.34.75.75s-.34.76-.75.76m-14.5 1.98c-.19 0-.38-.07-.53-.22a.754.754 0 0 1 0-1.06l.65-.65c.36-.36.56-.85.56-1.36v-1.89c0-.41.34-.75.75-.75s.75.34.75.75v1.89c0 .91-.36 1.77-1 2.42l-.65.65c-.15.15-.34.22-.53.22m8.84-.22c.15.15.34.22.53.22s.38-.07.53-.22c.29-.29.29-.77 0-1.06l-.65-.65c-.36-.36-.56-.85-.56-1.36v-1.89c0-.41-.34-.75-.75-.75s-.75.34-.75.75v1.89c0 .91.35 1.77 1 2.42zM28 16.36l1.78.38c.29.06.29.47 0 .54l-1.78.38l-1-.66z%22/%3E%3Cpath fill=%22%23ffb02e%22 d=%22M17 25.001h2.11c.647 0 1.282-.09 1.89-.26L23.5 17L21 9.28a7 7 0 0 0-1.89-.259H17L15 17zM12 9.147a8 8 0 0 0-4.819 2.884L7.5 13.5v7l-.306 1.507A8 8 0 0 0 12 24.875L14.5 17zM24.5 17l1.5-3.377l2 2.755v1.267l-2 2.754z%22/%3E%3Cpath fill=%22%23533566%22 d=%22M16.98 9.021h-3.77c-.42.01-.83.06-1.23.13v15.72c.4.07.81.12 1.23.13h3.77zm-8.61 4.36c0-.75-.6-1.35-1.34-1.36h-.08c-2.74 0-4.95 2.24-4.95 5s2.22 5 4.95 5h.08c.75-.02 1.34-.62 1.34-1.37zm16.67-1.08l.94 1.3v6.8l-.94 1.3c-.94 1.5-2.4 2.57-4.06 3.03V9.271c1.67.47 3.12 1.53 4.06 3.03%22/%3E%3Cpath fill=%22%23aeddff%22 d=%22M14.94 4.74A4.47 4.47 0 0 1 18.57 3c2.39.04 4.35 1.99 4.41 4.38a4.49 4.49 0 0 1-4.49 4.6H10.9c-.55 0-.86-.63-.54-1.07l4.5-6.06c.02-.03.04-.05.06-.08z%22/%3E%3Cpath fill=%22%23212121%22 d=%22M5.44 18.001a1 1 0 1 0 0-2a1 1 0 0 0 0 2%22/%3E%3C/g%3E%3C/svg%3E" alt="" style="left:72%;top:4%;width:15%;transform:rotate(13deg) scaleX(-1);z-index:4"><img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Cg fill=%22none%22%3E%3Cpath fill=%22%23212121%22 d=%22M5.43 13.36c-.28 0-.5-.22-.5-.5V12c0-.71-.4-1.35-1.04-1.67l-.67-.38a.5.5 0 1 1 .44-.9l.68.38c.98.49 1.59 1.47 1.59 2.57v.86c0 .28-.22.5-.5.5M24.3 27.001h-1.47c-1.02 0-1.84-.83-1.84-1.84v-3.36c0-.41.34-.75.75-.75s.75.34.75.75v3.35c0 .19.15.34.34.34h1.47c.41 0 .75.34.75.75s-.34.76-.75.76m-14.5 1.98c-.19 0-.38-.07-.53-.22a.754.754 0 0 1 0-1.06l.65-.65c.36-.36.56-.85.56-1.36v-1.89c0-.41.34-.75.75-.75s.75.34.75.75v1.89c0 .91-.36 1.77-1 2.42l-.65.65c-.15.15-.34.22-.53.22m8.84-.22c.15.15.34.22.53.22s.38-.07.53-.22c.29-.29.29-.77 0-1.06l-.65-.65c-.36-.36-.56-.85-.56-1.36v-1.89c0-.41-.34-.75-.75-.75s-.75.34-.75.75v1.89c0 .91.35 1.77 1 2.42zM28 16.36l1.78.38c.29.06.29.47 0 .54l-1.78.38l-1-.66z%22/%3E%3Cpath fill=%22%23ffb02e%22 d=%22M17 25.001h2.11c.647 0 1.282-.09 1.89-.26L23.5 17L21 9.28a7 7 0 0 0-1.89-.259H17L15 17zM12 9.147a8 8 0 0 0-4.819 2.884L7.5 13.5v7l-.306 1.507A8 8 0 0 0 12 24.875L14.5 17zM24.5 17l1.5-3.377l2 2.755v1.267l-2 2.754z%22/%3E%3Cpath fill=%22%23533566%22 d=%22M16.98 9.021h-3.77c-.42.01-.83.06-1.23.13v15.72c.4.07.81.12 1.23.13h3.77zm-8.61 4.36c0-.75-.6-1.35-1.34-1.36h-.08c-2.74 0-4.95 2.24-4.95 5s2.22 5 4.95 5h.08c.75-.02 1.34-.62 1.34-1.37zm16.67-1.08l.94 1.3v6.8l-.94 1.3c-.94 1.5-2.4 2.57-4.06 3.03V9.271c1.67.47 3.12 1.53 4.06 3.03%22/%3E%3Cpath fill=%22%23aeddff%22 d=%22M14.94 4.74A4.47 4.47 0 0 1 18.57 3c2.39.04 4.35 1.99 4.41 4.38a4.49 4.49 0 0 1-4.49 4.6H10.9c-.55 0-.86-.63-.54-1.07l4.5-6.06c.02-.03.04-.05.06-.08z%22/%3E%3Cpath fill=%22%23212121%22 d=%22M5.44 18.001a1 1 0 1 0 0-2a1 1 0 0 0 0 2%22/%3E%3C/g%3E%3C/svg%3E" alt="" style="left:9%;top:9%;width:11%;transform:rotate(-20deg) scaleX(-1);z-index:4"><img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Cg fill=%22none%22%3E%3Cpath fill=%22%23212121%22 d=%22M5.43 13.36c-.28 0-.5-.22-.5-.5V12c0-.71-.4-1.35-1.04-1.67l-.67-.38a.5.5 0 1 1 .44-.9l.68.38c.98.49 1.59 1.47 1.59 2.57v.86c0 .28-.22.5-.5.5M24.3 27.001h-1.47c-1.02 0-1.84-.83-1.84-1.84v-3.36c0-.41.34-.75.75-.75s.75.34.75.75v3.35c0 .19.15.34.34.34h1.47c.41 0 .75.34.75.75s-.34.76-.75.76m-14.5 1.98c-.19 0-.38-.07-.53-.22a.754.754 0 0 1 0-1.06l.65-.65c.36-.36.56-.85.56-1.36v-1.89c0-.41.34-.75.75-.75s.75.34.75.75v1.89c0 .91-.36 1.77-1 2.42l-.65.65c-.15.15-.34.22-.53.22m8.84-.22c.15.15.34.22.53.22s.38-.07.53-.22c.29-.29.29-.77 0-1.06l-.65-.65c-.36-.36-.56-.85-.56-1.36v-1.89c0-.41-.34-.75-.75-.75s-.75.34-.75.75v1.89c0 .91.35 1.77 1 2.42zM28 16.36l1.78.38c.29.06.29.47 0 .54l-1.78.38l-1-.66z%22/%3E%3Cpath fill=%22%23ffb02e%22 d=%22M17 25.001h2.11c.647 0 1.282-.09 1.89-.26L23.5 17L21 9.28a7 7 0 0 0-1.89-.259H17L15 17zM12 9.147a8 8 0 0 0-4.819 2.884L7.5 13.5v7l-.306 1.507A8 8 0 0 0 12 24.875L14.5 17zM24.5 17l1.5-3.377l2 2.755v1.267l-2 2.754z%22/%3E%3Cpath fill=%22%23533566%22 d=%22M16.98 9.021h-3.77c-.42.01-.83.06-1.23.13v15.72c.4.07.81.12 1.23.13h3.77zm-8.61 4.36c0-.75-.6-1.35-1.34-1.36h-.08c-2.74 0-4.95 2.24-4.95 5s2.22 5 4.95 5h.08c.75-.02 1.34-.62 1.34-1.37zm16.67-1.08l.94 1.3v6.8l-.94 1.3c-.94 1.5-2.4 2.57-4.06 3.03V9.271c1.67.47 3.12 1.53 4.06 3.03%22/%3E%3Cpath fill=%22%23aeddff%22 d=%22M14.94 4.74A4.47 4.47 0 0 1 18.57 3c2.39.04 4.35 1.99 4.41 4.38a4.49 4.49 0 0 1-4.49 4.6H10.9c-.55 0-.86-.63-.54-1.07l4.5-6.06c.02-.03.04-.05.06-.08z%22/%3E%3Cpath fill=%22%23212121%22 d=%22M5.44 18.001a1 1 0 1 0 0-2a1 1 0 0 0 0 2%22/%3E%3C/g%3E%3C/svg%3E" alt="" style="left:49%;top:56%;width:9%;transform:rotate(24deg);z-index:4"><img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Cg fill=%22none%22%3E%3Cpath fill=%22%23212121%22 d=%22M5.43 13.36c-.28 0-.5-.22-.5-.5V12c0-.71-.4-1.35-1.04-1.67l-.67-.38a.5.5 0 1 1 .44-.9l.68.38c.98.49 1.59 1.47 1.59 2.57v.86c0 .28-.22.5-.5.5M24.3 27.001h-1.47c-1.02 0-1.84-.83-1.84-1.84v-3.36c0-.41.34-.75.75-.75s.75.34.75.75v3.35c0 .19.15.34.34.34h1.47c.41 0 .75.34.75.75s-.34.76-.75.76m-14.5 1.98c-.19 0-.38-.07-.53-.22a.754.754 0 0 1 0-1.06l.65-.65c.36-.36.56-.85.56-1.36v-1.89c0-.41.34-.75.75-.75s.75.34.75.75v1.89c0 .91-.36 1.77-1 2.42l-.65.65c-.15.15-.34.22-.53.22m8.84-.22c.15.15.34.22.53.22s.38-.07.53-.22c.29-.29.29-.77 0-1.06l-.65-.65c-.36-.36-.56-.85-.56-1.36v-1.89c0-.41-.34-.75-.75-.75s-.75.34-.75.75v1.89c0 .91.35 1.77 1 2.42zM28 16.36l1.78.38c.29.06.29.47 0 .54l-1.78.38l-1-.66z%22/%3E%3Cpath fill=%22%23ffb02e%22 d=%22M17 25.001h2.11c.647 0 1.282-.09 1.89-.26L23.5 17L21 9.28a7 7 0 0 0-1.89-.259H17L15 17zM12 9.147a8 8 0 0 0-4.819 2.884L7.5 13.5v7l-.306 1.507A8 8 0 0 0 12 24.875L14.5 17zM24.5 17l1.5-3.377l2 2.755v1.267l-2 2.754z%22/%3E%3Cpath fill=%22%23533566%22 d=%22M16.98 9.021h-3.77c-.42.01-.83.06-1.23.13v15.72c.4.07.81.12 1.23.13h3.77zm-8.61 4.36c0-.75-.6-1.35-1.34-1.36h-.08c-2.74 0-4.95 2.24-4.95 5s2.22 5 4.95 5h.08c.75-.02 1.34-.62 1.34-1.37zm16.67-1.08l.94 1.3v6.8l-.94 1.3c-.94 1.5-2.4 2.57-4.06 3.03V9.271c1.67.47 3.12 1.53 4.06 3.03%22/%3E%3Cpath fill=%22%23aeddff%22 d=%22M14.94 4.74A4.47 4.47 0 0 1 18.57 3c2.39.04 4.35 1.99 4.41 4.38a4.49 4.49 0 0 1-4.49 4.6H10.9c-.55 0-.86-.63-.54-1.07l4.5-6.06c.02-.03.04-.05.06-.08z%22/%3E%3Cpath fill=%22%23212121%22 d=%22M5.44 18.001a1 1 0 1 0 0-2a1 1 0 0 0 0 2%22/%3E%3C/g%3E%3C/svg%3E" alt="" style="left:25%;top:44%;width:7%;transform:rotate(-3deg) scaleX(-1);z-index:4"></div></div>
       <div class="warn" id="novoice" hidden data-t="novoice"></div>
       <div class="warn soft" id="nostore" hidden data-t="nostore"></div>
@@ -369,8 +441,9 @@ body.vkmode footer { margin-top:20px; }
 </section>
 
 <section id="play" hidden>
-  <div class="top"><button class="chip" id="quit"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="m7.825 13l4.9 4.9q.3.3.288.7t-.313.7q-.3.275-.7.288t-.7-.288l-6.6-6.6q-.15-.15-.213-.325T4.426 12t.063-.375t.212-.325l6.6-6.6q.275-.275.688-.275t.712.275q.3.3.3.713t-.3.712L7.825 11H19q.425 0 .713.288T20 12t-.288.713T19 13z"/></svg><span data-t="quit"></span></button><button class="chip prevb" id="prev" disabled><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 21q-3.15 0-5.575-1.912T3.275 14.2q-.1-.375.15-.687t.675-.363q.4-.05.725.15t.45.6q.6 2.25 2.475 3.675T12 19q2.925 0 4.963-2.037T19 12t-2.037-4.962T12 5q-1.725 0-3.225.8T6.25 8H8q.425 0 .713.288T9 9t-.288.713T8 10H4q-.425 0-.712-.288T3 9V5q0-.425.288-.712T4 4t.713.288T5 5v1.35q1.275-1.6 3.113-2.475T12 3q1.875 0 3.513.713t2.85 1.924t1.925 2.85T21 12t-.712 3.513t-1.925 2.85t-2.85 1.925T12 21m1-9.4l2.5 2.5q.275.275.275.7t-.275.7t-.7.275t-.7-.275l-2.8-2.8q-.15-.15-.225-.337T11 11.975V8q0-.425.288-.712T12 7t.713.288T13 8z"/></svg><span data-t="prevWord"></span></button><span style="flex:1"></span><span id="pos"></span></div>
+  <div class="top"><button class="chip" id="quit"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="m7.825 13l4.9 4.9q.3.3.288.7t-.313.7q-.3.275-.7.288t-.7-.288l-6.6-6.6q-.15-.15-.213-.325T4.426 12t.063-.375t.212-.325l6.6-6.6q.275-.275.688-.275t.712.275q.3.3.3.713t-.3.712L7.825 11H19q.425 0 .713.288T20 12t-.288.713T19 13z"/></svg><span data-t="quit"></span></button><button class="chip prevb" id="prev" disabled><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 21q-3.15 0-5.575-1.912T3.275 14.2q-.1-.375.15-.687t.675-.363q.4-.05.725.15t.45.6q.6 2.25 2.475 3.675T12 19q2.925 0 4.963-2.037T19 12t-2.037-4.962T12 5q-1.725 0-3.225.8T6.25 8H8q.425 0 .713.288T9 9t-.288.713T8 10H4q-.425 0-.712-.288T3 9V5q0-.425.288-.712T4 4t.713.288T5 5v1.35q1.275-1.6 3.113-2.475T12 3q1.875 0 3.513.713t2.85 1.924t1.925 2.85T21 12t-.712 3.513t-1.925 2.85t-2.85 1.925T12 21m1-9.4l2.5 2.5q.275.275.275.7t-.275.7t-.7.275t-.7-.275l-2.8-2.8q-.15-.15-.225-.337T11 11.975V8q0-.425.288-.712T12 7t.713.288T13 8z"/></svg><span data-t="prevWord"></span></button><span class="pstrip" id="pstrip"></span><span style="flex:1"></span><span id="pos"></span></div>
   <div class="card" id="mainCard">
+    <div class="helprow" id="helpRow"></div>
     <div class="introbox" id="introBox" hidden><button class="introbtn" id="introBtn" type="button"></button><div class="introwarn" id="introWarn" hidden data-t="introWarn"></div></div>
     <div class="pic" id="pic"></div>
     <div class="side">
@@ -378,7 +451,7 @@ body.vkmode footer { margin-top:20px; }
       <div class="tag" id="tag"></div>
       <div class="sent" id="sent"></div>
       <div class="ru" id="ru" hidden></div>
-      <div class="field"><input id="inp" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" aria-label=""><div class="mirror" id="mirror" aria-hidden="true"></div></div>
+      <div class="frow" id="frow"><div class="field"><input id="inp" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" aria-label=""><div class="mirror" id="mirror" aria-hidden="true"></div></div></div>
       <div class="fb" id="fb" aria-live="polite"></div>
       <div class="row"><button class="btn go" id="go" data-t="check"></button></div>
     </div>
@@ -398,6 +471,12 @@ body.vkmode footer { margin-top:20px; }
   </div>
 </section>
 
+<div id="sab" aria-hidden="true" style="position:fixed;left:0;bottom:0;width:0;height:0;visibility:hidden;padding-bottom:env(safe-area-inset-bottom)"></div>
+<section id="hivepage" hidden>
+  <div class="top"><button class="chip" id="hiveBack"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="m7.825 13l4.9 4.9q.3.3.288.7t-.313.7q-.3.275-.7.288t-.7-.288l-6.6-6.6q-.15-.15-.213-.325T4.426 12t.063-.375t.212-.325l6.6-6.6q.275-.275.688-.275t.712.275q.3.3.3.713t-.3.712L7.825 11H19q.425 0 .713.288T20 12t-.288.713T19 13z"/></svg><span data-t="wordsBack"></span></button></div>
+  <div class="hive hivebig" id="hiveBig"></div>
+</section>
+
 <section id="done" hidden>
   <div class="done">
     <div>
@@ -414,6 +493,7 @@ body.vkmode footer { margin-top:20px; }
         <div class="sublabel" id="hardNote" style="margin:-12px 0 0" data-t="hardNote"></div>
       </div>
       <div class="row" style="margin-top:22px"><button class="btn go" id="nextStep" hidden data-t="nextStep"></button><button class="btn" id="retry" hidden data-t="retry"></button><button class="btn" id="stepWords" hidden data-t="stepWordsBtn"></button><button class="btn" id="back" data-t="back"></button></div>
+      <button class="plaque" id="plaque2" type="button"></button>
     </div>
     <div class="round">
       <div id="roundSvg"></div>
@@ -465,8 +545,8 @@ const QUEEN = "матка", QUEEN_ACC = "матку";
 const T = {
   title: "Spelling Bee",                                                                              // [Д]
   story: "Маленький рой поселился в пустом улье, где нет ни капли мёда. Пчёлы стараются изо всех сил, но одним им не справиться.", // [К]
-  task: "Слушай слова и пиши их по-английски: за каждое верное слово пчёлы получают ячейку мёда. Чем больше мёда соберёшь, тем дальше вырастет улей.", // [К]
-  rule: "С первой попытки — целая ячейка мёда, со второй — половина, с третьей — четверть.",        // [К]
+  task: "Слушай слова и пиши их по-английски: за каждое верное слово пчёлы получают соту мёда. Чем больше мёда соберёшь, тем дальше вырастет улей.", // [М] слово Марики («соту»)
+  rule: "С первой попытки — целая сота мёда, со второй — половина, с третьей — четверть.",          // [М] слово Марики
   novoice: "В этом браузере нет английского голоса — слова не прозвучат. Попроси взрослого открыть страницу в Chrome.", // [К]
   nostore: "Браузер не сохраняет рекорды и трудные слова — они пропадут, когда закроешь страницу.", // [К]
   modeWarm: "Разминка", modeWarmSub: "10 случайных слов", level: "Уровень {i}",                       // [Д]
@@ -522,6 +602,7 @@ const T = {
   csvHint: "Подсказка «Не знаю слово»", csvStep: "Где", resOk: "верно", resBad: "ошибка", resCap: "нужна заглавная",
   yesW: "да", noW: "нет", archiveTitle: "Архив рекордов прежних версий игры", retryLabel: "Тренировка слов из финала",
   fileSummary: "сводка", fileLog: "журнал",
+  ctaNext: "Играть: уровень {l}, шаг {k}",                                                              // [Д]
   archWarm: "Разминка (прежняя версия)", archRound: "Раунд {n} (прежняя версия)", archLevel: "Уровень {n} (прежняя версия)",
   prevWord: "Прошлое слово", reviewLabel: "Пройденное слово — смотрим и слушаем",
   older: "‹ Раньше", newer: "Позже ›", backToWord: "Вернуться к слову",
@@ -667,6 +748,7 @@ function hexes(cells, cols, r) {
 // значки ступеней: новые соты (свои соты игры) · пчелята · королева · новый дом роя
 const STEP_ICO = [hexes([HONEY, HONEY, HONEY], 2, 10), `<img src="${ICONS["honeybee"]}" alt="">`, `<img src="${ICONS["crown"]}" alt="">`, `<img src="${ICONS["house-with-garden"]}" alt="">`];
 const REST_ICO = `<img src="${ICONS["honey-pot"]}" alt="">`;
+const BULB = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M10.588 21.413Q10 20.825 10 20h4q0 .825-.587 1.413T12 22t-1.412-.587M9 19q-.425 0-.712-.288T8 18t.288-.712T9 17h6q.425 0 .713.288T16 18t-.288.713T15 19zm-.75-3q-1.725-1.025-2.738-2.75T4.5 9.5q0-3.125 2.188-5.312T12 2t5.313 2.188T19.5 9.5q0 2.025-1.012 3.75T15.75 16zm.6-2h6.3q1.125-.8 1.738-1.975T17.5 9.5q0-2.3-1.6-3.9T12 4T8.1 5.6T6.5 9.5q0 1.35.613 2.525T8.85 14M12 14"/></svg>`, CHEV = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.6 12L8.7 8.1q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l4.6 4.6q.15.15.213.325t.062.375t-.062.375t-.213.325l-4.6 4.6q-.275.275-.7.275t-.7-.275t-.275-.7t.275-.7z"/></svg>`;
 const narrow = window.matchMedia("(max-width:980px)");
 function renderHive(fresh) {
   const box = $("hive");
@@ -679,18 +761,40 @@ function renderHive(fresh) {
     <div class="hv-body"><div class="hv-svg${big ? " bigcells" : ""}">${hexes(order.map(cellOf), cols, 12)}</div>
     <div class="hsmall">${hiveArt(H, "tiny")}<div><b>${fill(T.popLine, { p: fmtPop(popOf(H)), bees: pl(popOf(H), T.bees) })}</b><p class="next">${hiveNext(H)}</p></div></div>
     ${mode !== "retry" && store.best[mode] ? `<p class="rec">${fill(T.recLine, { h: fmt(store.best[mode].h), t: store.best[mode].t })}</p>` : ""}</div>`;
+  renderStrip(h, idx, fresh);
   const polys = box.querySelectorAll(".hv-svg polygon");   // только соты шага (мини-легенда не в счёт)
   if (idx >= 0 && phase !== "shown" && polys[idx]) polys[idx].classList.add("cur");
   if (fresh) { const i = order.indexOf(fresh); if (i >= 0) polys[i].classList.add("fill"); }
 }
 // на старте, в финале и в «Словах» — общий улей
-function renderHome() {
+// телефон: тонкая строка прогресса шага над карточкой слова
+function renderStrip(h, idx, fresh) {
+  const ps = $("pstrip"), few = total <= 12;
+  ps.innerHTML = (few ? `<span class="pcells">${hexes(order.map(cellOf), total, 12)}</span>` : "") + `<span class="phoney">${hexes([HONEY], 1, 7)}<b>${fmt(h)}</b><small>${fill(T.panelOf, { n: total })}</small></span>`;
+  document.body.classList.toggle("fewcells", few);
+  const polys = ps.querySelectorAll(".pcells polygon");
+  if (idx >= 0 && phase !== "shown" && polys[idx]) polys[idx].classList.add("cur");
+  if (fresh) { const i = order.indexOf(fresh); if (i >= 0 && polys[i]) polys[i].classList.add("fill"); }
+}
+// плашка «Наш улей» (телефон): население одной строкой, по нажатию — экран с большим ульем
+function renderPlaques(H) {
+  for (const id of ["plaque", "plaque2"]) $(id).innerHTML = `<span class="pl-ico"><img src="${ICONS["honeybee"]}" alt=""></span><span class="pl-t"><small>${T.hiveTitle}</small><b>${fill(T.popLine, { p: fmtPop(popOf(H)), bees: pl(popOf(H), T.bees) })}</b></span>${CHEV}`;
+}
+function openHivePage() {
+  hiveFrom = !$("done").hidden ? "done" : "home";
+  showOnly("hivepage", true); renderHome($("hiveBig")); window.scrollTo(0, 0);
+}
+let hiveFrom = "home";
+function renderHome(target) {
   const H = hiveTotal(store.best);
-  $("hive").innerHTML = `<div class="hv-head"><h2>${T.hiveTitle}</h2></div><div class="hv-body">${hiveArt(H)}
+  renderPlaques(H);
+  (target || $("hive")).innerHTML = `<div class="hv-head"><h2>${T.hiveTitle}</h2></div><div class="hv-body">${hiveArt(H)}
     <div class="popn"><b>${fill(T.popLine, { p: fmtPop(popOf(H)), bees: pl(popOf(H), T.bees) })}</b><span>${fill(T.hiveHoney, { h: fmt(H) })}</span></div>
     ${hiveTrack(H)}<p class="next">${hiveNext(H)}</p></div>`;
 }
 if (narrow.addEventListener) narrow.addEventListener("change", () => renderHive());
+$("plaque").onclick = $("plaque2").onclick = openHivePage;
+$("hiveBack").onclick = () => { if (hiveFrom === "done") { showOnly("done"); renderHive(); } else home(); };
 
 /* ---------- чистые правила (их проверяет самотест) ---------- */
 // куда вернуть слово после списывания: через 3–5 слов после первой ошибки, через 5–7 после второй;
@@ -857,6 +961,8 @@ function home() {
     }
   }
   const nextIdx = STEPS.findIndex(s => !store.best[s.id]);
+  const ns = STEPS[nextIdx]; $("cta").hidden = !ns;
+  if (ns) { $("cta").textContent = fill(T.ctaNext, { l: ns.level + 1, k: ns.k + 1 }); $("cta").onclick = () => start(ns.list, ns.id); }
   const lv = $("levels"); lv.innerHTML = "";
   LEVELS.forEach((l, li) => {
     const sec = document.createElement("div"); sec.className = "lvl";
@@ -904,6 +1010,7 @@ function next() {
   renderHive();
   readyInput();
   speakWord(cur, false);
+  if (phoneMq.matches) { window.scrollTo(0, 0); fitPhone(); }
 }
 
 const tagHtml = x => `<span class="posl">${POS[x.p] || x.p}</span>` + (x.p === "number" ? ` <span>${T.tagNumber}</span>` : "");
@@ -933,7 +1040,7 @@ function speakRu(x) {
 function updIntro(hide) {
   const ok = !hide && !reviewing && phase === "type" && cur && !tries[cur.n] && !intro[cur.n];
   $("introBox").hidden = !ok;
-  $("introBtn").textContent = introArmed ? T.introConfirm : T.introBtn;
+  $("introBtn").innerHTML = BULB + "<span></span>"; $("introBtn").lastChild.textContent = introArmed ? T.introConfirm : T.introBtn;
   $("introBtn").classList.toggle("armed", introArmed);
   $("introWarn").hidden = !introArmed;
 }
@@ -1168,6 +1275,7 @@ function useVk(on) {
   vk = on; document.body.classList.toggle("vkmode", on);
   const inp = $("inp");
   if (on) { inp.setAttribute("inputmode", "none"); inp.readOnly = true; inp.blur(); buildKb(); mirror(); }
+  if (typeof placeParts === "function") placeParts();
 }
 // физическая клавиатура при включённой экранной (планшет с клавиатурой)
 document.addEventListener("keydown", e => {
@@ -1177,6 +1285,39 @@ document.addEventListener("keydown", e => {
   if (e.key === "Backspace") { e.preventDefault(); $("inp").value = $("inp").value.slice(0, -1); mirror(); }
   else if (e.key.length === 1 && /[A-Za-z' ’]/.test(e.key)) { e.preventDefault(); $("inp").value += e.key; mirror(); }
 });
+/* ---------- телефон: второстепенное в строку помощи, «Проверить» рядом с полем, всё в видимой области ---------- */
+const phoneMq = window.matchMedia("(max-width:600px)");
+function placeParts() {
+  const ph = phoneMq.matches;
+  if (ph) { $("helpRow").append($("prev"), $("introBox")); $("frow").append($("go")); }
+  else {
+    $("quit").after($("prev")); $("mainCard").prepend($("introBox"));
+    if (vk && $("kb").lastChild) $("kb").lastChild.append($("go")); else $("mainCard").querySelector(".row").append($("go"));
+  }
+  $("quit").setAttribute("aria-label", T.quit);
+  fitPhone();
+}
+// запас снизу под плавающие панели встроенных браузеров (не меньше 90 px + безопасная зона): клавиатура и поле
+// должны закончиться выше; если не помещается — уменьшаем картинку и клавиши
+const RESERVE = 90;
+function fitPhone() {
+  const vv = window.visualViewport, vh = vv ? vv.height : window.innerHeight;
+  document.documentElement.style.setProperty("--vvh", vh + "px");
+  const st = document.documentElement.style;
+  st.removeProperty("--pic"); st.removeProperty("--kh");
+  if (!phoneMq.matches || $("play").hidden) return;
+  const safe = parseFloat(getComputedStyle($("sab")).paddingBottom) || 0;
+  const limit = vh - RESERVE - safe;
+  const bottom = () => $("mainCard").getBoundingClientRect().bottom + window.scrollY;
+  let pic = 132, kh = 52;
+  while (bottom() > limit && (pic > 72 || kh > 36)) {
+    if (pic > 72) pic -= 8; if (kh > 36) kh -= 2;
+    st.setProperty("--pic", pic + "px"); st.setProperty("--kh", kh + "px");
+  }
+}
+if (phoneMq.addEventListener) phoneMq.addEventListener("change", placeParts);
+if (window.visualViewport) window.visualViewport.addEventListener("resize", fitPhone);
+window.addEventListener("orientationchange", () => setTimeout(fitPhone, 300));
 if (matchMedia("(pointer: coarse)").matches || /kbd/.test(location.hash)) useVk(true);
 else window.addEventListener("touchstart", function t() { window.removeEventListener("touchstart", t); useVk(true); }, { passive:true });
 
@@ -1234,7 +1375,7 @@ function download(name, text) {
 function showText(text) { $("csvText").hidden = false; $("csvArea").value = text.replace(/^﻿/, ""); }
 
 function showOnly(id, solo) {
-  for (const s of ["home", "play", "done", "words", "who", "stats"]) $(s).hidden = s !== id;
+  for (const s of ["home", "play", "done", "words", "who", "stats", "hivepage"]) $(s).hidden = s !== id;
   document.body.dataset.view = id;
   document.body.classList.toggle("solo", !!solo);
 }
@@ -1293,7 +1434,7 @@ $("copyText").onclick = () => { const a = $("csvArea"); a.select(); try { (navig
 let whoAsked = false;
 
 /* ---------- самопроверка: открыть с #selftest ---------- */
-if (location.hash === "#selftest") {
+if (/^#selftest(&kbd)?$/.test(location.hash)) {
   const cases = [["dinner","dinner","ok"],["dinner"," Dinner ","ok"],["dinner","diner","bad"],["Alice","alice","cap"],["Alice","Alice","ok"],
     ["colour","color","ok"],["grey","gray","ok"],["don't worry","don’t  worry","ok"],["Mr","Mr.","ok"],["Mr","mr","cap"],["English","english","cap"],["would like","wood like","bad"]];
   const fails = cases.filter(([w, t, exp]) => check(w, t) !== exp);
@@ -1434,8 +1575,29 @@ if (location.hash === "#selftest") {
   addProfile("Аня"); ok(root.profiles.length === 2 && root.current !== p0 && !store.best.s1 && store.log.length === 0, "профили: у нового свои рекорды и журнал");
   store.best.s2 = { h: 3, t: 8 }; setProfile(p0); ok(store.best.s1.h === 5 && !store.best.s2 && store.log.length > 0, "профили: данные не смешиваются");
   root = keepRoot; store = keepStore;
+  // поле имени: системная клавиатура, текст виден и в режиме экранной клавиатуры (планшет)
+  const hadVk = document.body.classList.contains("vkmode"); document.body.classList.add("vkmode");
+  openWho(); const an = $("addName"); an.value = "Ab";
+  ok(!an.readOnly && an.getAttribute("inputmode") !== "none" && getComputedStyle(an).color !== "rgba(0, 0, 0, 0)" && getComputedStyle(an).caretColor !== "rgba(0, 0, 0, 0)", "поле имени: системная клавиатура, текст и курсор видны");
+  $("inp").className = "";
+  ok(getComputedStyle($("inp")).color === "rgba(0, 0, 0, 0)", "поле слова в режиме экранной клавиатуры по-прежнему скрыто под зеркалом");
+  an.value = ""; document.body.classList.toggle("vkmode", hadVk); home();
+  // телефон (проверяется, когда страница открыта шириной до 600 px)
+  if (phoneMq.matches) {
+    start(STEPS[0].list, "s1");
+    const vh = window.visualViewport ? visualViewport.height : innerHeight, bot = $("mainCard").getBoundingClientRect().bottom + scrollY;
+    ok($("go").parentElement === $("frow") && !$("kb").contains($("go")), "телефон: «Проверить» рядом с полем, не в клавиатуре");
+    ok($("helpRow").contains($("prev")) && $("helpRow").contains($("introBox")), "телефон: «Прошлое слово» и «Не знаю слово» в строке помощи");
+    ok(getComputedStyle(document.querySelector("header")).display === "none", "телефон: шапка на экране слова скрыта");
+    ok(bot <= vh - RESERVE, "телефон: карточка заканчивается выше запаса " + RESERVE + " px (" + Math.round(bot) + " из " + Math.round(vh) + ")");
+    answer("zzz"); const fbR = $("fb").getBoundingClientRect(), inR = $("inp").getBoundingClientRect();
+    ok(phase === "copy" && fbR.bottom <= inR.top + 1 && $("mainCard").getBoundingClientRect().bottom + scrollY <= vh - RESERVE, "телефон: разбор ошибки над полем, вёрстка не уезжает");
+    home();
+  }
   document.title = "SELFTEST " + (fails.length ? "FAIL " + JSON.stringify(fails) : "PASS " + cases.length);
+  if (parent !== window) parent.postMessage(document.title, "*");
 }
+placeParts();
 home(); // выбор игрока временно выключен (17.11): добавление имени не работало на планшете
 
 /* ---------- витрина для скриншотов (ничего не сохраняет): #demo=<слово>[,bad|bad3|ok|okstreak|quit|review|hint1|hint2] · #demo-home[:H] · #demo-done-step · #demo-done-early · #demo-words=<i> · &kbd ---------- */
@@ -1447,6 +1609,7 @@ if (location.hash.startsWith("#demo")) {
   fillHive(26.5);
   if (h.startsWith("demo-home")) { if (h.includes(":")) fillHive(+h.split(":")[1]); home(); }
   else if (h.startsWith("demo-words=")) { home(); openWords(+h.split("=")[1]); }
+  else if (h.startsWith("demo-hivepage")) { fillHive(+(h.split(":")[1] || 40)); home(); openHivePage(); }
   else if (h === "demo-who") { root = { v: 2, profiles: [{ id: "a", name: "Миша" }, { id: "b", name: "Аня" }, { id: "c", name: "" }], current: "a", data: { a: store, b: emptyStore(), c: emptyStore() } }; root.data.b.best = { s1: { h: 6, t: 8 } }; updWhoChip(); openWho(); }
   else if (h === "demo-stats" || h === "demo-csv") {
     root.profiles[0].name = "Миша"; updWhoChip(); let ts = Date.now() - 86400000;
