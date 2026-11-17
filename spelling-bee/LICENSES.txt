@@ -1,0 +1,15 @@
+Spelling Bee · Kinderville — сторонние материалы
+
+1. Картинки слов и пчёл: Fluent Emoji (flat)
+   Copyright (c) Microsoft Corporation. Лицензия MIT.
+   https://github.com/microsoft/fluentui-emoji/blob/main/LICENSE
+
+2. Значки интерфейса: Material Symbols
+   Copyright Google LLC. Лицензия Apache License 2.0.
+   https://www.apache.org/licenses/LICENSE-2.0
+
+3. Шрифт: Geologica
+   Copyright The Geologica Project Authors. Лицензия SIL Open Font License 1.1.
+   https://openfontlicense.org
+
+Список слов: Cambridge English Pre A1 Starters wordlist (используется как перечень слов уровня).
