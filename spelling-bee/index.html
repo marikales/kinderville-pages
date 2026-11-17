@@ -996,7 +996,8 @@ const hiveStep = H => { let s = -1; HIVE_TH.forEach((x, i) => { if (H >= x) s = 
 const hiveTotal = best => STEPS.reduce((a, s) => a + (best[s.id] ? best[s.id].h : 0), 0);
 function applyBest(st, id, h, t) { const b = st.best[id]; if (!b || h / t > b.h / b.t) { st.best[id] = { h, t }; return true; } return false; }
 const liveHive = () => { const base = hiveTotal(store.best); if (!isStep(mode) || $("play").hidden) return base; const b = store.best[mode] ? store.best[mode].h : 0; return base - b + Math.max(b, honeySum()); };
-const popOf = H => Math.round(H * POP);
+const HIVE_FULL = 50000;                // пчёл в полном улье (как в настоящей сильной семье); население показывается с округлением до сотни
+const popOf = H => Math.round(H * HIVE_FULL / WORDS.length / 100) * 100;
 const fmtPop = n => n.toLocaleString("ru-RU");
 function hiveTrack(H) {
   const s = hiveStep(H);
@@ -1515,7 +1516,7 @@ function finish(early) {
   const sc = $("score"); sc.innerHTML = ""; sc.append(fmt(h)); const sm = document.createElement("small"); sm.textContent = " " + fill(T.panelOf, { n: total }); sc.append(sm);
   $("stepCellsDone").innerHTML = hexes(order.map(cellOf), total > 12 ? Math.ceil(total / 2) : total, 14);
   $("grow").hidden = !isStep(mode);
-  $("grow").textContent = gain > 0 ? fill(T.popGrow, { d: fmtPop(popOf(gain)), p: fmtPop(popOf(after)) }) : T.noGrow;
+  $("grow").textContent = gain > 0 ? fill(T.popGrow, { d: fmtPop(popOf(after) - popOf(after - gain)), p: fmtPop(popOf(after)) }) : T.noGrow;
   $("news").textContent = isStep(mode) ? tierNews(mode, hadBest, improved, early) : "";
   $("news").hidden = !$("news").textContent;
   $("rec").innerHTML = rec; $("rec").hidden = !rec;
