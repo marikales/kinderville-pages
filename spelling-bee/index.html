@@ -147,12 +147,21 @@ body.solo main { grid-template-columns:minmax(0,1fr); } body.solo .hive { displa
 #csvArea { width:100%; height:180px; font:13px/1.4 ui-monospace, Menlo, monospace; border-radius:12px; border:1px solid var(--line); padding:10px; margin-bottom:8px; }
 .levels { margin-top:22px; display:flex; flex-direction:column; gap:16px; }
 .lvl h3 { font-size:14px; letter-spacing:.1em; text-transform:uppercase; color:var(--mute); margin:0 0 8px; font-weight:600; }
-.steps { display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; }
+.steps { display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; max-width:560px; }
 .tile { background:var(--paper); border-radius:18px; box-shadow:0 0 0 1px var(--line) inset; display:flex; flex-direction:column; overflow:hidden; }
 .tile.next { box-shadow:0 0 0 2px var(--petrol) inset; }
 .tile .tplay { text-align:left; padding:12px 14px 8px; display:flex; flex-direction:column; gap:2px; flex:1; }
 .tile .tplay b { font-size:17px; font-weight:600; } .tile .tplay span { font-size:13px; color:var(--mute); }
 .tile .tcells svg { width:100%; max-width:150px !important; height:auto; margin-top:6px; display:block; }
+.tile .tfoot { display:flex; border-top:1px solid var(--line); } .tile .tfoot .twords { flex:1; border-top:0; }
+.tile .trestart { font-size:12px; color:var(--mute); padding:7px 12px 9px 6px; white-space:nowrap; text-decoration:underline; text-underline-offset:3px; }
+.tile .tpause { font-style:normal; font-size:13px; color:#8A6A00; margin-top:2px; }
+.tile .tres { align-self:flex-start; margin-top:6px; background:var(--petrol); color:#fff !important; font-weight:600; font-size:14px !important; border-radius:999px; padding:5px 14px; }
+.tile.paused { box-shadow:0 0 0 2px var(--sun) inset; }
+.doneart { display:none; }
+body[data-view="done"] main { grid-template-columns:minmax(0,1fr); } body[data-view="done"] .hive:not(.hivebig) { display:none; }   /* в финале улей уже есть крупно */
+.hart .comb { bottom:4%; }
+.hlhalf { animation:hlp 1.6s ease-in-out 3; } @keyframes hlp { 50% { stroke-opacity:.25 } }
 .tile .twords { font-size:13px; color:var(--petrol); padding:7px 14px 9px; text-align:left; border-top:1px solid var(--line); font-weight:500; }
 .tile .twords:hover, .tile .tplay:hover { background:#FFFCF3; }
 .hart { position:relative; width:100%; aspect-ratio:5/4; }
@@ -361,6 +370,7 @@ body.vkmode footer { margin-top:20px; }
   #quit { width:40px; height:40px; padding:0; justify-content:center; flex:none; } #quit span { display:none; } #quit svg { width:22px; height:22px; }
   .pstrip { display:flex; align-items:center; gap:10px; flex:1; min-width:0; }
   .pstrip .pcells { flex:1; min-width:0; } .pstrip .pcells svg { width:100%; max-width:260px; height:auto; max-height:26px; display:block; margin:0; }
+  .pstrip .pcells.two svg { max-height:40px; max-width:190px; }
   .pstrip polygon.cur { stroke:var(--petrol); stroke-width:2.2; }
   .pstrip polygon.fill { transform-box:fill-box; transform-origin:center; animation:pop .5s ease-out both; }
   .pstrip .phoney { display:flex; align-items:baseline; gap:3px; white-space:nowrap; font-size:13px; color:var(--mute); } .pstrip .phoney svg { width:12px; height:auto; align-self:center; margin:0 2px 0 0; } .pstrip .phoney b { font-size:16px; color:var(--ink); font-weight:600; }
@@ -406,9 +416,11 @@ body.vkmode footer { margin-top:20px; }
   .mode { min-height:0; padding:14px 16px; }
   /* финал шага: результат и следующий шаг; остальное ниже */
   .done .round { display:none; }
+  .doneart { display:block; order:3; margin:6px 0 0; } .doneart .hart { max-width:340px; }
+  .done .news { order:4 !important; font-weight:600; color:var(--petrol); }
   .done > div { display:flex; flex-direction:column; }
-  .done .dtitle { order:0; } .done .big { order:1; } #stepCellsDone { order:2; } .done .row { order:3; flex-wrap:wrap; gap:8px; margin-top:18px !important; }
-  #plaque2 { order:4; margin-top:16px; } .done .grow { order:5; margin-top:16px; } .done .news { order:6; } .done .rec { order:7; } .done .marks { order:8; } #trickyBox { order:9; }
+  .done .dtitle { order:0; } .done .big { order:1; } #stepCellsDone { order:2; } .done .row { order:5; flex-wrap:wrap; gap:8px; margin-top:18px !important; }
+  #plaque2 { order:6; margin-top:16px; } .done .grow { order:7; margin-top:16px; } .done .rec { order:7; } .done .marks { order:8; } #trickyBox { order:9; }
   /* экран «Наш улей» */
   #hivepage .hivebig { display:block; padding:16px; border-radius:22px; }
   #hivepage .hivebig .hv-body { display:block; } #hivepage .hivebig svg { max-height:none; margin:10px auto 0; }
@@ -483,6 +495,7 @@ body.vkmode footer { margin-top:20px; }
       <div class="dtitle"><div class="dico" id="doneIco"></div><div><h1 id="doneTitle"></h1><div class="dsub" id="doneSub"></div></div></div>
       <div class="big" id="score"></div>
       <div class="stepcells" id="stepCellsDone"></div>
+      <div class="doneart" id="doneArt"></div>
       <div class="grow" id="grow"></div>
       <div class="news" id="news"></div>
       <div class="rec" id="rec"></div>
@@ -602,7 +615,12 @@ const T = {
   csvHint: "Подсказка «Не знаю слово»", csvStep: "Где", resOk: "верно", resBad: "ошибка", resCap: "нужна заглавная",
   yesW: "да", noW: "нет", archiveTitle: "Архив рекордов прежних версий игры", retryLabel: "Тренировка слов из финала",
   fileSummary: "сводка", fileLog: "журнал",
-  ctaNext: "Играть: уровень {l}, шаг {k}",                                                              // [Д]
+  ctaNext: "Играть: уровень {l}, шаг {k}",
+  // ярусы улья и продолжение недописанного шага                                                       // [Д]
+  tierGen: ["первого", "второго", "третьего", "четвёртого"], tierNom: ["Первый", "Второй", "Третий", "Четвёртый"], tierPrep: ["первом", "втором", "третьем", "четвёртом"],
+  tierHalf: "Достроена половина {gen} яруса улья.", tierFull: "{nom} ярус улья достроен целиком!",
+  tierMore: "В {prep} ярусе прибавилось мёда.", tierStarted: "Начата половина {gen} яруса. Шаг можно продолжить с того же места.",
+  ctaResume: "Продолжить: уровень {l}, шаг {k}", resumeBtn: "Продолжить", restartBtn: "Начать заново", pausedLine: "не дописан: {d} из {t}", resumeStep: "Продолжить этот шаг",                                                              // [Д]
   archWarm: "Разминка (прежняя версия)", archRound: "Раунд {n} (прежняя версия)", archLevel: "Уровень {n} (прежняя версия)",
   prevWord: "Прошлое слово", reviewLabel: "Пройденное слово — смотрим и слушаем",
   older: "‹ Раньше", newer: "Позже ›", backToWord: "Вернуться к слову",
@@ -635,15 +653,29 @@ $("inp").setAttribute("aria-label", T.inputLabel);
    копия в window.name (переживает перезагрузку в той же вкладке) и честная плашка на старте */
 let canStore = false;
 try { localStorage.setItem(KEY + "-probe", "1"); canStore = localStorage.getItem(KEY + "-probe") === "1"; localStorage.removeItem(KEY + "-probe"); } catch (e) {}
-const emptyStore = () => ({ tricky: [], best: {}, okDays: {}, lastOk: {}, lastMiss: {}, archive: {}, log: [] });
+const CUTS = [0, 32, 64, 95, 126];
+const LEVELS = [0, 1, 2, 3].map(i => WORDS.filter(x => x.n > CUTS[i] && x.n <= CUTS[i + 1]));
+const STEP_LEN = LEVELS.flatMap(l => [Math.min(16, l.length), l.length - 16]);   // длины шагов s1–s8
+const emptyStore = () => ({ tricky: [], best: {}, okDays: {}, lastOk: {}, lastMiss: {}, archive: {}, log: [], paused: {}, stepsV: 2 });
 let store = emptyStore();
 // перенос старых форматов: трудные слова и даты успехов сохраняются; рекорды заходов (r1/r2, v1) и уровней (l1–l4) —
 // в архив (на экран не выводятся); рекорды шагов s1–s16 и разминки остаются
 function migrate(s) {
   if (!s || !Array.isArray(s.tricky)) return null;
   const obj = v => v && typeof v === "object" ? v : {};
-  const st = { tricky: s.tricky.filter(n => Number.isInteger(n)), best: { ...obj(s.best) }, okDays: obj(s.okDays), lastOk: obj(s.lastOk), lastMiss: obj(s.lastMiss), archive: { ...obj(s.archive) }, log: Array.isArray(s.log) ? s.log : [] };
+  const st = { tricky: s.tricky.filter(n => Number.isInteger(n)), best: { ...obj(s.best) }, okDays: obj(s.okDays), lastOk: obj(s.lastOk), lastMiss: obj(s.lastMiss), archive: { ...obj(s.archive) }, log: Array.isArray(s.log) ? s.log : [], paused: { ...obj(s.paused) }, stepsV: s.stepsV };
   for (const k of Object.keys(st.best)) if (/^(r\d|l\d)$/.test(k)) { st.archive[k] = st.best[k]; delete st.best[k]; }
+  // шаги по 8 слов (s1–s16) → шаги по 15–16 (s1–s8): новый шаг = два прежних подряд; мёд складывается, улей не уменьшается
+  if (st.stepsV !== 2) {
+    const nb = {};
+    for (const k of Object.keys(st.best)) {
+      const m = /^s(\d+)$/.exec(k); if (!m) { nb[k] = st.best[k]; continue; }
+      const id = "s" + Math.ceil(+m[1] / 2), b = st.best[k] || {};
+      nb[id] = { h: (nb[id] ? nb[id].h : 0) + (+b.h || 0), t: 0 };
+    }
+    for (const k of Object.keys(nb)) if (/^s\d+$/.test(k)) { const len = STEP_LEN[+k.slice(1) - 1]; if (len) nb[k].t = len; else delete nb[k]; }
+    st.best = nb; st.paused = {}; st.stepsV = 2;
+  }
   return st;
 }
 // корень хранилища (ключ прежний): { v:2, profiles:[{id,name}], current, data:{ id: данные профиля } }.
@@ -754,12 +786,12 @@ function renderHive(fresh) {
   const box = $("hive");
   if ($("play").hidden) return renderHome();
   const h = honeySum(), idx = cur ? order.indexOf(cur.n) : -1, H = liveHive();
-  const cols = narrow.matches ? Math.min(total, 32) : Math.min(total, total <= 8 ? 4 : total <= 12 ? 5 : total <= 30 ? 6 : 9);
+  const cols = narrow.matches ? Math.min(total, 32) : Math.min(total, total <= 8 ? 4 : total <= 12 ? 5 : total <= 16 ? 8 : total <= 30 ? 6 : 9);
   const big = total <= 12 && !narrow.matches;
   box.innerHTML = `<div class="hv-head"><h2>${isStep(mode) ? T.stepPanel : T.panelTitle}</h2><div class="count">${fmt(h)}<small> ${fill(T.panelOf, { n: total })}</small></div>
     <div class="mini">${hexes([HONEY], 1, 7)}<span>1</span>${hexes([0.5], 1, 7)}<span>½</span>${hexes([0.25], 1, 7)}<span>¼</span></div></div>
     <div class="hv-body"><div class="hv-svg${big ? " bigcells" : ""}">${hexes(order.map(cellOf), cols, 12)}</div>
-    <div class="hsmall">${hiveArt(H, "tiny")}<div><b>${fill(T.popLine, { p: fmtPop(popOf(H)), bees: pl(popOf(H), T.bees) })}</b><p class="next">${hiveNext(H)}</p></div></div>
+    <div class="hsmall">${hiveArt(H, "tiny", liveBest())}<div><b>${fill(T.popLine, { p: fmtPop(popOf(H)), bees: pl(popOf(H), T.bees) })}</b><p class="next">${hiveNext(H)}</p></div></div>
     ${mode !== "retry" && store.best[mode] ? `<p class="rec">${fill(T.recLine, { h: fmt(store.best[mode].h), t: store.best[mode].t })}</p>` : ""}</div>`;
   renderStrip(h, idx, fresh);
   const polys = box.querySelectorAll(".hv-svg polygon");   // только соты шага (мини-легенда не в счёт)
@@ -769,8 +801,8 @@ function renderHive(fresh) {
 // на старте, в финале и в «Словах» — общий улей
 // телефон: тонкая строка прогресса шага над карточкой слова
 function renderStrip(h, idx, fresh) {
-  const ps = $("pstrip"), few = total <= 12;
-  ps.innerHTML = (few ? `<span class="pcells">${hexes(order.map(cellOf), total, 12)}</span>` : "") + `<span class="phoney">${hexes([HONEY], 1, 7)}<b>${fmt(h)}</b><small>${fill(T.panelOf, { n: total })}</small></span>`;
+  const ps = $("pstrip"), few = total <= 24, two = total > 12;
+  ps.innerHTML = (few ? `<span class="pcells${two ? " two" : ""}">${hexes(order.map(cellOf), two ? Math.ceil(total / 2) : total, 12)}</span>` : "") + `<span class="phoney">${hexes([HONEY], 1, 7)}<b>${fmt(h)}</b><small>${fill(T.panelOf, { n: total })}</small></span>`;
   document.body.classList.toggle("fewcells", few);
   const polys = ps.querySelectorAll(".pcells polygon");
   if (idx >= 0 && phase !== "shown" && polys[idx]) polys[idx].classList.add("cur");
@@ -830,11 +862,9 @@ function diffMarks(target, typed) {
 }
 const today = () => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
 
-/* ---------- уровни и шаги: 126 слов подряд по номерам; уровни 32/32/31/31, в уровне 4 шага по 8 (последний — 7–8) ---------- */
-const CUTS = [0, 32, 64, 95, 126];
-const LEVELS = [0, 1, 2, 3].map(i => WORDS.filter(x => x.n > CUTS[i] && x.n <= CUTS[i + 1]));
+/* ---------- уровни и шаги: 126 слов подряд по номерам; уровни 32/32/31/31, в уровне 2 шага (16/16, 16/16, 16/15, 16/15) ---------- */
 const STEPS = [];
-LEVELS.forEach((l, li) => { for (let k = 0; k < 4; k++) STEPS.push({ id: "s" + (STEPS.length + 1), level: li, k, list: l.slice(k * 8, k === 3 ? l.length : k * 8 + 8) }); });
+LEVELS.forEach((l, li) => { for (let k = 0; k < 2; k++) STEPS.push({ id: "s" + (STEPS.length + 1), level: li, k, list: l.slice(k * 16, k ? l.length : 16) }); });
 const stepById = id => STEPS.find(s => s.id === id);
 const isStep = m => /^s\d+$/.test(m);
 const POS = { "noun":"noun", "verb":"verb", "adjective":"adjective", "adverb":"adverb", "question word":"question word", "number":"number", "name":"name", "title":"title", "possessive":"possessive", "exclamation":"exclamation" };
@@ -857,33 +887,47 @@ function hiveNext(H) {
   if (s < STEP_T.length - 1) { const n = Math.ceil(HIVE_TH[s + 1] - H); return fill(T.nextLine, { n, cells: pl(n, T.cells), line: STEP_T[s + 1].line }); }
   return STEP_T[s].done;
 }
-// картинка улья: соты достраиваются снизу вверх (ряды с мёдом + один строящийся), вокруг больше пчёл,
-// на ступенях — пчелята, корона новой матки, улетающий рой
-const COMB_ROWS = [2, 4, 6, 8, 10, 12, 12, 12, 12, 12, 12, 10, 8, 6];   // сверху вниз; сумма 126
-const ROWS_BU = [...COMB_ROWS].reverse();
-const rowsShown = H => { let acc = 0, need = Math.ceil(H - 1e-9); for (let i = 0; i < ROWS_BU.length; i++) { acc += ROWS_BU[i]; if (acc >= need) return Math.min(ROWS_BU.length, i + (need > 0 ? 2 : 1)); } return ROWS_BU.length; };
+// картинка улья: четыре яруса снизу вверх — по ярусу на уровень. Ярус = две половины (по шагу), в половине 16 сот
+// (2 ряда × 8). Непройденная половина — пунктирное место; пройденная — соты, в них виден собранный мёд;
+// ярус с обеими половинами — завершённый, в плотной рамке.
+const liveBest = () => { if (!isStep(mode) || $("play").hidden) return store.best; const b = store.best[mode]; return { ...store.best, [mode]: { h: Math.max(b ? b.h : 0, honeySum()), t: total } }; };
 let hgid = 0;
-function combSvg(H) {
-  const r = 10, w = Math.sqrt(3) * r, N = ROWS_BU.length, vr = rowsShown(H), id = "hv" + (++hgid);
-  const W = 12 * w + w + 4, Ht = N * r * 1.5 + r / 2 + 4, full = Math.floor(H + 1e-9), frac = H - full;
-  let s = `<svg class="comb" viewBox="0 0 ${W.toFixed(1)} ${Ht.toFixed(1)}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="${(1 - frac).toFixed(2)}" stop-color="${EMPTY}"/><stop offset="${(1 - frac).toFixed(2)}" stop-color="${HONEY}"/></linearGradient></defs>`;
-  let idx = 0;
-  for (let row = 0; row < vr; row++) {
-    const len = ROWS_BU[row], cy = Ht - 2 - r - row * r * 1.5, x0 = 2 + (W - 4 - len * w) / 2 + (row % 2 ? w / 4 : -w / 4) + w / 2;
-    for (let c = 0; c < len; c++, idx++) {
-      const cx = x0 + c * w, rr = r * 0.9;
-      const pts = [0,1,2,3,4,5].map(k => { const a = Math.PI / 180 * (60 * k - 90); return (cx + rr * Math.cos(a)).toFixed(1) + "," + (cy + rr * Math.sin(a)).toFixed(1); }).join(" ");
-      const f = idx < full ? HONEY : idx === full && frac > 0.01 ? `url(#${id})` : "#FBF7F0";
-      s += `<polygon points="${pts}" fill="${f}" stroke="${idx < full || (idx === full && frac > 0.01) ? "#E9A800" : "#E3D7BF"}" stroke-width="1.4" stroke-linejoin="round"/>`;
-    }
+function combSvg(best, hl) {
+  const r = 9, w = Math.sqrt(3) * r, cols = 8, pad = 6, mid = 10, gapT = 7;
+  const halfW = cols * w + w / 2, innerH = 2 * r * 1.5 + r / 2, tierH = innerH + pad * 2;
+  const W = 2 + pad + halfW + mid + halfW + pad + 2, Ht = 4 * tierH + 3 * gapT + 4, id = "hv" + (++hgid);
+  let s = `<svg class="comb" viewBox="0 0 ${W.toFixed(1)} ${Ht.toFixed(1)}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>`;
+  let defs = "", body = "";
+  for (let lv = 0; lv < 4; lv++) {
+    const y0 = Ht - 2 - (lv + 1) * tierH - lv * gapT, hs = STEPS.filter(x => x.level === lv), built = hs.map(x => !!best[x.id]);
+    const full = built.every(Boolean), any = built.some(Boolean);
+    body += `<rect x="2" y="${y0.toFixed(1)}" width="${(W - 4).toFixed(1)}" height="${tierH.toFixed(1)}" rx="7" fill="${full ? "#FFF4D6" : any ? "#FFFBF1" : "none"}" stroke="${full ? "#C99A45" : any ? "#E2C68E" : "#D6C7A8"}" stroke-width="${full ? 2.4 : 1.4}"${any ? "" : ' stroke-dasharray="5 4"'}/>`;
+    hs.forEach((st, k) => {
+      const x0 = 2 + pad + k * (halfW + mid), b = best[st.id];
+      if (k) body += `<line x1="${(x0 - mid / 2).toFixed(1)}" y1="${(y0 + 5).toFixed(1)}" x2="${(x0 - mid / 2).toFixed(1)}" y2="${(y0 + tierH - 5).toFixed(1)}" stroke="${any ? "#E2C68E" : "#ECE3D2"}" stroke-width="1.2"/>`;
+      if (!b) { body += `<rect x="${x0.toFixed(1)}" y="${(y0 + pad).toFixed(1)}" width="${halfW.toFixed(1)}" height="${innerH.toFixed(1)}" rx="5" fill="#F7F1E4" stroke="#D6C7A8" stroke-dasharray="3 3"/>`; }
+      else {
+        const hFull = Math.floor(b.h + 1e-9), frac = b.h - hFull, gid = id + "g" + st.id;
+        if (frac > 0.01) defs += `<linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="${(1 - frac).toFixed(2)}" stop-color="#FBF7F0"/><stop offset="${(1 - frac).toFixed(2)}" stop-color="${HONEY}"/></linearGradient>`;
+        for (let i = 0; i < 16; i++) {
+          const col = Math.floor(i / 2), row = i % 2;   // мёд растёт слева направо, снизу вверх в столбике
+          const cx = x0 + w / 2 + col * w + (row ? w / 2 : 0), cy = y0 + pad + innerH - r - row * r * 1.5, rr = r * 0.9;
+          const pts = [0,1,2,3,4,5].map(q => { const a = Math.PI / 180 * (60 * q - 90); return (cx + rr * Math.cos(a)).toFixed(1) + "," + (cy + rr * Math.sin(a)).toFixed(1); }).join(" ");
+          const cap = i >= st.list.length, honey = i < hFull, part = i === hFull && frac > 0.01;
+          const f = cap ? "#F1E3BF" : honey ? HONEY : part ? `url(#${gid})` : "#FBF7F0";
+          body += `<polygon points="${pts}" fill="${f}" stroke="${honey || part ? "#E9A800" : "#E3D2AE"}" stroke-width="1.3" stroke-linejoin="round"/>`;
+        }
+      }
+      if (hl === st.id) body += `<rect class="hlhalf" x="${(x0 - 3).toFixed(1)}" y="${(y0 + pad - 3).toFixed(1)}" width="${(halfW + 6).toFixed(1)}" height="${(innerH + 6).toFixed(1)}" rx="6" fill="none" stroke="#1C7066" stroke-width="2.2"/>`;
+    });
   }
-  return s + "</svg>";
+  return s + defs + "</defs>" + body + "</svg>";
 }
 const BEE_SPOTS = [[6,8,15,-10,0],[80,4,13,12,1],[2,48,11,8,1],[86,40,12,-14,0],[30,-2,10,6,0],[62,0,10,-6,1],[90,70,9,10,0]];
-function hiveArt(H, cls) {
+function hiveArt(H, cls, best, hl) {
   const s = hiveStep(H), nb = Math.min(BEE_SPOTS.length, 1 + Math.floor(H / 12));
   const img = (n, l, t, wd, rot, flip, z) => `<img src="${ICONS[n]}" alt="" style="left:${l}%;top:${t}%;width:${wd}%;transform:rotate(${rot}deg)${flip ? " scaleX(-1)" : ""};z-index:${z || 3}">`;
-  let h = `<div class="hart ${cls || ""}" aria-hidden="true">` + combSvg(H);
+  let h = `<div class="hart ${cls || ""}" aria-hidden="true">` + combSvg(best || store.best, hl);
   for (let i = 0; i < nb; i++) { const [l, t, wd, rot, fl] = BEE_SPOTS[i]; h += img("honeybee", l, t, wd, rot, fl); }
   if (s >= 0) h += img("sunflower", 0, 74, 16, -6, 0, 2) + img("tulip", 86, 78, 11, 6, 0, 2);
   if (s >= 1) h += img("honeybee", 22, 84, 7, 14, 1) + img("honeybee", 64, 86, 6, -10, 0) + img("honeybee", 46, 88, 6, 20, 1);
@@ -908,13 +952,13 @@ const finalMarks = () => [["streak", maxStreak >= 3 ? maxStreak : 0], ["fixed", 
 function clearToasts() { toastQ = []; toastBusy = false; const b = $("toasts"); if (b) b.innerHTML = ""; }
 function mark(k, n) { tally[k] = (tally[k] || 0) + 1; toast(`<img src="${ICONS[MARK_ICO[k]]}" alt=""><span>${fill(T["mark_" + k], { n })}</span>`); }
 // слово решено в этом шаге: верно по памяти (first — с первой попытки, fixed — после ошибки) или ушло в трудные.
-// На шаге из 8 слов: ступень улья (в момент достижения), серия из 3, исправленное слово; «половина пути» и «пройдено слов» — только в длинных списках (от 16)
+// На каждом шаге: ступень улья (в момент достижения), серия из 3, исправленное слово; «половина пути» и «пройдено слов» (каждые 8) — в списках от 15 слов
 function onResolved(first, fixed) {
   const s = hiveStep(liveHive());
   if (s > lastStep) { for (let i = lastStep + 1; i <= s; i++) toast(`<i class="ico">${STEP_ICO[i]}</i><span>${STEP_T[i].done}</span>`, true); lastStep = s; }
   if (first) { streak++; maxStreak = Math.max(maxStreak, streak); if (streak % 3 === 0) mark("streak", streak); }
   if (fixed) { fixedN++; if (fixedN === 1 || fixedN % 3 === 0) mark("fixed", fixedN); }
-  if (total < 16) return;
+  if (total < 15) return;
   const done = Object.keys(got).length + hard.length;
   if (done === Math.ceil(total / 2)) mark("half", done);
   else if (done % 8 === 0 && done < total) mark("count", done);
@@ -931,7 +975,7 @@ const INTRO_C = "#CFE7E1";
 const cellOf = n => n in got ? (got[n] === 1 ? HONEY : got[n]) : intro[n] ? INTRO_C : tries[n] ? PASSED : null;
 const byN = n => WORDS.find(x => x.n === n);
 const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
-const stepCells = (b, t, r) => { const c = []; const h = b ? b.h : 0; for (let i = 0; i < t; i++) c.push(i < Math.floor(h) ? HONEY : i === Math.floor(h) && h % 1 ? Math.round((h % 1) * 4) / 4 >= .5 ? 0.5 : 0.25 : null); return hexes(c, t, r || 6); };
+const stepCells = (b, t, r) => { const c = []; const h = b ? b.h : 0; for (let i = 0; i < t; i++) c.push(i < Math.floor(h) ? HONEY : i === Math.floor(h) && h % 1 ? Math.round((h % 1) * 4) / 4 >= .5 ? 0.5 : 0.25 : null); return hexes(c, t > 8 ? Math.ceil(t / 2) : t, r || 6); };
 
 function home() {
   if (window.speechSynthesis) speechSynthesis.cancel();
@@ -961,18 +1005,22 @@ function home() {
     }
   }
   const nextIdx = STEPS.findIndex(s => !store.best[s.id]);
-  const ns = STEPS[nextIdx]; $("cta").hidden = !ns;
-  if (ns) { $("cta").textContent = fill(T.ctaNext, { l: ns.level + 1, k: ns.k + 1 }); $("cta").onclick = () => start(ns.list, ns.id); }
+  const ps = STEPS.find(x => pausedOf(x.id)), ns = ps || STEPS[nextIdx]; $("cta").hidden = !ns;
+  if (ns) { $("cta").textContent = fill(ps ? T.ctaResume : T.ctaNext, { l: ns.level + 1, k: ns.k + 1 }); $("cta").onclick = () => playStep(ns); }
   const lv = $("levels"); lv.innerHTML = "";
   LEVELS.forEach((l, li) => {
     const sec = document.createElement("div"); sec.className = "lvl";
     sec.innerHTML = `<h3>${fill(T.level, { i: li + 1 })}</h3><div class="steps"></div>`;
     STEPS.filter(s => s.level === li).forEach(s => {
       const i = STEPS.indexOf(s), b = store.best[s.id];
-      const tile = document.createElement("div"); tile.className = "tile" + (i === nextIdx ? " next" : "") + (b ? " played" : "");
-      tile.innerHTML = `<button class="tplay"><b>${fill(T.step, { k: s.k + 1 })}</b><span>${b ? fill(T.bestShort, { h: fmt(b.h), t: b.t }) : s.list.length + " " + pl(s.list.length, T.words)}</span><div class="tcells">${stepCells(b, s.list.length)}</div></button><button class="twords">${T.wordsBtn}</button>`;
-      tile.querySelector(".tplay").onclick = () => start(s.list, s.id);
+      const pz = pausedOf(s.id);
+      const tile = document.createElement("div"); tile.className = "tile" + ((pz ? s === ns : i === nextIdx) ? " next" : "") + (b ? " played" : "") + (pz ? " paused" : "");
+      tile.innerHTML = `<button class="tplay"><b>${fill(T.step, { k: s.k + 1 })}</b><span>${b ? fill(T.bestShort, { h: fmt(b.h), t: b.t }) : s.list.length + " " + pl(s.list.length, T.words)}</span>`
+        + (pz ? `<em class="tpause">${fill(T.pausedLine, { d: pausedDone(pz), t: s.list.length })}</em><span class="tres">${T.resumeBtn}</span>` : "")
+        + `<div class="tcells">${stepCells(b, s.list.length)}</div></button><div class="tfoot"><button class="twords">${T.wordsBtn}</button>${pz ? `<button class="trestart">${T.restartBtn}</button>` : ""}</div>`;
+      tile.querySelector(".tplay").onclick = () => playStep(s);
       tile.querySelector(".twords").onclick = () => openWords(i);
+      if (pz) tile.querySelector(".trestart").onclick = () => { delete store.paused[s.id]; save(); start(s.list, s.id); };
       sec.lastChild.append(tile);
     });
     lv.append(sec);
@@ -981,15 +1029,32 @@ function home() {
   renderHive();
 }
 
-function start(list, m) {
+function start(list, m, p) {
   streak = 0; maxStreak = 0; fixedN = 0; tally = {}; clearToasts(); seen = []; closeReview(true); stopAll();
   lastSet = list; queue = shuffle([...list]); total = list.length; firstOk = 0; missed = []; hard = [];
   order = queue.map(x => x.n); got = {}; tries = {}; intro = {}; introWrite = {}; mode = m || "retry";
+  if (p) {   // продолжение недописанного шага: слова, мёд, очередь возвратов и попытки — как были при выходе
+    p = JSON.parse(JSON.stringify(p));
+    queue = p.q.map(byN).filter(Boolean); order = p.order; got = p.got; tries = p.tries; hard = p.hard; missed = p.missed; firstOk = p.firstOk;
+    intro = p.intro; introWrite = p.introWrite; streak = p.streak; maxStreak = p.maxStreak; fixedN = p.fixedN; tally = p.tally; seen = p.seen;
+  }
   showOnly("play");
   startHive = hiveTotal(store.best); lastStep = hiveStep(startHive);
   next();
 }
 let startHive = 0;
+// недописанный шаг (по одному на шаг, у каждого профиля свой): сохраняется при досрочном выходе, стирается по завершении
+function pauseState() {
+  const q = queue.map(x => x.n);
+  if (cur && phase !== "shown") {
+    if (phase === "copy") { if (!hard.includes(cur.n)) { delete introWrite[cur.n]; q.splice(returnPos(q.length, tries[cur.n] || 1, Math.random()), 0, cur.n); } }
+    else q.unshift(cur.n);
+  }
+  return { q, order, got, tries, hard, missed, firstOk, intro, introWrite, streak, maxStreak, fixedN, tally, seen, ts: Date.now() };
+}
+const pausedOf = id => store.paused && store.paused[id];
+const pausedDone = p => Object.keys(p.got).length + p.hard.length;
+function playStep(st) { const p = pausedOf(st.id); start(st.list, st.id, p || null); }
 
 function readyInput(cls) {
   const inp = $("inp"); inp.value = ""; inp.className = cls || "";
@@ -1147,6 +1212,13 @@ $("ragain").onclick = () => speakWord(byN(reviewable()[rIdx]), false);
 
 function finish(early) {
   closeReview(true);
+  const hadBest = !!store.best[mode];
+  if (isStep(mode)) {
+    store.paused = store.paused || {};
+    const ps = early ? pauseState() : null;
+    if (ps && ps.q.length) store.paused[mode] = JSON.parse(JSON.stringify(ps)); else delete store.paused[mode];
+    save();
+  }
   $("play").hidden = true; $("done").hidden = false; $("words").hidden = true; document.body.dataset.view = "done"; clearToasts();
   const h = honeySum(), before = startHive;
   let rec = "", improved = false;
@@ -1162,10 +1234,10 @@ function finish(early) {
   $("doneIco").innerHTML = sAfter > sBefore ? STEP_ICO[sAfter] : REST_ICO;
   $("doneSub").textContent = fill(T.stepHoney, { h: fmt(h), t: total }) + (early ? " " + T.earlySub : "");
   const sc = $("score"); sc.innerHTML = ""; sc.append(fmt(h)); const sm = document.createElement("small"); sm.textContent = " " + fill(T.panelOf, { n: total }); sc.append(sm);
-  $("stepCellsDone").innerHTML = hexes(order.map(cellOf), Math.min(total, total > 12 ? 9 : total), 14);
+  $("stepCellsDone").innerHTML = hexes(order.map(cellOf), total > 12 ? Math.ceil(total / 2) : total, 14);
   $("grow").hidden = !isStep(mode);
   $("grow").textContent = gain > 0 ? fill(T.popGrow, { d: fmtPop(popOf(gain)), p: fmtPop(popOf(after)) }) : T.noGrow;
-  $("news").textContent = sAfter > sBefore ? "" : rowsShown(after) > rowsShown(before) ? T.newRow : "";
+  $("news").textContent = isStep(mode) ? tierNews(mode, hadBest, improved, early) : "";
   $("news").hidden = !$("news").textContent;
   $("rec").innerHTML = rec; $("rec").hidden = !rec;
   const list = missed.map(byN);
@@ -1178,11 +1250,22 @@ function finish(early) {
   $("retry").onclick = () => start(list, "retry");
   const si = STEPS.findIndex(s => s.id === mode);
   $("nextStep").hidden = !(si >= 0 && si < STEPS.length - 1);
-  $("nextStep").onclick = () => start(STEPS[si + 1].list, STEPS[si + 1].id);
+  $("nextStep").onclick = () => playStep(STEPS[si + 1]);
+  $("nextStep").textContent = T.nextStep;
+  if (early && si >= 0 && pausedOf(mode)) { $("nextStep").hidden = false; $("nextStep").textContent = T.resumeStep; $("nextStep").onclick = () => playStep(STEPS[si]); }
   $("stepWords").hidden = si < 0;
   $("stepWords").onclick = () => openWords(si);
-  $("roundSvg").innerHTML = hiveArt(after, "big") + `<div class="popn"><b>${fill(T.popLine, { p: fmtPop(popOf(after)), bees: pl(popOf(after), T.bees) })}</b><span>${fill(T.hiveHoney, { h: fmt(after) })}</span></div>` + hiveTrack(after) + `<p class="next">${hiveNext(after)}</p>`;
+  $("doneArt").innerHTML = isStep(mode) ? hiveArt(after, "big", store.best, mode) : "";
+  $("roundSvg").innerHTML = hiveArt(after, "big", store.best, isStep(mode) ? mode : null) + `<div class="popn"><b>${fill(T.popLine, { p: fmtPop(popOf(after)), bees: pl(popOf(after), T.bees) })}</b><span>${fill(T.hiveHoney, { h: fmt(after) })}</span></div>` + hiveTrack(after) + `<p class="next">${hiveNext(after)}</p>`;
   renderHive();
+}
+
+// финал шага: что стало с ярусом этого уровня
+function tierNews(id, hadBest, improved, early) {
+  const st = stepById(id), lv = st.level, sib = STEPS.find(x => x.level === lv && x !== st);
+  const q = { gen: T.tierGen[lv], nom: T.tierNom[lv], prep: T.tierPrep[lv] };
+  if (!hadBest) return fill(early ? T.tierStarted : sib && store.best[sib.id] ? T.tierFull : T.tierHalf, q);
+  return improved ? fill(T.tierMore, q) : "";
 }
 
 /* ---------- «Слова»: теория к шагу — без мёда и счёта; ничего не меняет в игре ---------- */
@@ -1487,10 +1570,10 @@ if (/^#selftest(&kbd)?$/.test(location.hash)) {
   ok(WORDS.every(x => POS[x.p]), "у каждого слова есть часть речи");
   // шаги
   const allS = STEPS.flatMap(s => s.list.map(x => x.n));
-  ok(STEPS.length === 16 && allS.length === 126 && new Set(allS).size === 126 && STEPS.map(s => s.list.length).join() === "8,8,8,8,8,8,8,8,8,8,8,7,8,8,8,7", "16 шагов покрывают 126 слов без повторов");
+  ok(STEPS.length === 8 && allS.length === 126 && new Set(allS).size === 126 && STEPS.map(s => s.list.length).join() === "16,16,16,16,16,15,16,15", "8 шагов покрывают 126 слов без повторов");
   // досрочный выход пишет рекорд шага
   delete store.best.s2; start(STEPS[1].list, "s2"); answer(cur.w); $("quit").click();
-  ok(!$("done").hidden && store.best.s2 && store.best.s2.h === 1 && store.best.s2.t === 8, "«Закончить» → финал и рекорд шага");
+  ok(!$("done").hidden && store.best.s2 && store.best.s2.h === 1 && store.best.s2.t === 16, "«Закончить» → финал и рекорд шага");
   // улей не убывает
   const sb = { best: { s1: { h: 7, t: 8 } } }, H1 = hiveTotal(sb.best);
   applyBest(sb, "s1", 3, 8); ok(hiveTotal(sb.best) === H1, "улей: худшая переигровка не уменьшает");
@@ -1574,6 +1657,27 @@ if (/^#selftest(&kbd)?$/.test(location.hash)) {
   const p0 = root.current; store.best.s1 = { h: 5, t: 8 };
   addProfile("Аня"); ok(root.profiles.length === 2 && root.current !== p0 && !store.best.s1 && store.log.length === 0, "профили: у нового свои рекорды и журнал");
   store.best.s2 = { h: 3, t: 8 }; setProfile(p0); ok(store.best.s1.h === 5 && !store.best.s2 && store.log.length > 0, "профили: данные не смешиваются");
+  // шаги по 15–16: перенос рекордов 8-словных шагов не уменьшает улей
+  ok(STEPS.length === 8 && STEPS.map(x => x.list.length).join() === "16,16,16,16,16,15,16,15" && STEPS.every((x, i) => !i || x.list[0].n === STEPS[i - 1].list[STEPS[i - 1].list.length - 1].n + 1), "шаги: 8 шагов по 15–16 слов подряд по номерам");
+  const old8 = { v: 2, profiles: [{ id: "a", name: "" }], current: "a", data: { a: { tricky: [5, 9], best: { warm: { h: 7, t: 10 }, s1: { h: 8, t: 8 }, s2: { h: 6.5, t: 8 }, s3: { h: 7.75, t: 8 }, s7: { h: 4, t: 8 }, s16: { h: 5.25, t: 7 } }, okDays: {}, lastOk: {}, lastMiss: {}, archive: { r1: { h: 30, t: 63 } }, log: [[1, 5, "x", "bad", 1, 0, "s3"]] } } };
+  const sumOld = 8 + 6.5 + 7.75 + 4 + 5.25, r8 = rootFrom(JSON.stringify(old8)), d8 = r8.data.a;
+  ok(hiveTotal(d8.best) === sumOld && popOf(hiveTotal(d8.best)) === popOf(sumOld), "перенос 8-словных шагов: тот же мёд и то же население улья");
+  ok(d8.best.s1.h === 14.5 && d8.best.s1.t === 16 && d8.best.s2.h === 7.75 && d8.best.s4.h === 4 && d8.best.s8.h === 5.25 && d8.best.s8.t === 15 && d8.best.warm.h === 7 && !d8.best.s16, "перенос: новый шаг = сумма двух прежних, разминка как была");
+  ok(d8.tricky.join() === "5,9" && d8.log.length === 1 && d8.archive.r1.h === 30 && d8.stepsV === 2, "перенос: трудные, журнал, архив без изменений");
+  ok(JSON.stringify(rootFrom(JSON.stringify(r8)).data.a.best) === JSON.stringify(d8.best), "перенос шагов выполняется один раз");
+  // недописанный шаг: выход на середине → продолжение с того же места → результат пишется один раз
+  root = rootFrom(null); store = root.data[root.current];
+  start(STEPS[0].list, "s1"); answer(cur.w); submit(); answer(cur.w); submit(); answer("zzz");
+  const hMid = honeySum(), qMid = [...queue.map(x => x.n)], curMid = cur.n, triesMid = JSON.stringify(tries);
+  $("quit").click();
+  const pz = store.paused.s1;
+  ok(pz && pz.q.length === qMid.length + 1 && pz.q.includes(curMid) && store.best.s1 && store.best.s1.h === hMid, "выход на середине: мёд в улье, недописанное состояние сохранено");
+  playStep(STEPS[0]);
+  ok(honeySum() === hMid && [cur.n, ...queue.map(x => x.n)].join() === pz.q.join() && JSON.stringify(tries) === triesMid, "продолжение: тот же мёд, та же очередь и попытки");
+  const logBefore = store.log.length; let guard = 0, checks = 0;
+  while (!$("play").hidden && guard++ < 300) { if (phase === "shown") submit(); else { if (phase !== "copy") checks++; answer(cur.w); } }
+  ok(!$("done").hidden && !store.paused.s1 && store.best.s1.h === honeySum() && hiveTotal(store.best) === store.best.s1.h, "завершение после продолжения: результат записан один раз, недописанное стёрто");
+  ok(store.log.length === logBefore + checks, "журнал: при продолжении записи не задваиваются");
   root = keepRoot; store = keepStore;
   // поле имени: системная клавиатура, текст виден и в режиме экранной клавиатуры (планшет)
   const hadVk = document.body.classList.contains("vkmode"); document.body.classList.add("vkmode");
@@ -1607,7 +1711,11 @@ if (location.hash.startsWith("#demo")) {
   const apply = (n, p) => { if (p === 0) firstOk++; else missed.push(n); if (p === "P") { tries[n] = 1; return; } if (p === "H") { tries[n] = 3; hard.push(n); return; } if (p) tries[n] = p; got[n] = VAL(p); };
   const fillHive = H => { store.best = { warm: { h: 6, t: 10 } }; for (const s of STEPS) { if (H <= 0) break; const v = Math.min(s.list.length, H); store.best[s.id] = { h: v, t: s.list.length }; H -= v; } };
   fillHive(26.5);
-  if (h.startsWith("demo-home")) { if (h.includes(":")) fillHive(+h.split(":")[1]); home(); }
+  if (h.startsWith("demo-home")) {
+    if (h.includes(":")) fillHive(parseFloat(h.split(":")[1]));
+    if (h.includes("paused")) { const st = STEPS.find(x => !store.best[x.id]); start(st.list, st.id); for (let i = 0; i < 6; i++) { const y = queue.shift(); apply(y.n, [0,0,1,0,0,0.5][i] === 0.5 ? 2 : [0,0,1,0,0][i]); } next(); $("quit").click(); }
+    home();
+  }
   else if (h.startsWith("demo-words=")) { home(); openWords(+h.split("=")[1]); }
   else if (h.startsWith("demo-hivepage")) { fillHive(+(h.split(":")[1] || 40)); home(); openHivePage(); }
   else if (h === "demo-who") { root = { v: 2, profiles: [{ id: "a", name: "Миша" }, { id: "b", name: "Аня" }, { id: "c", name: "" }], current: "a", data: { a: store, b: emptyStore(), c: emptyStore() } }; root.data.b.best = { s1: { h: 6, t: 8 } }; updWhoChip(); openWho(); }
@@ -1621,9 +1729,10 @@ if (location.hash.startsWith("#demo")) {
     if (h === "demo-csv") { const pre = document.createElement("pre"); pre.id = "csvdump"; pre.textContent = summaryCsv(store) + "\n---\n" + logCsv(store); document.body.append(pre); }
   }
   else if (h.startsWith("demo-tricky")) { store.tricky = WORDS.filter((x, i) => i % 4 === 1).slice(0, 34).map(x => x.n); home(); if (h.endsWith("list")) document.querySelector(".mlist").click(); }
-  else if (h === "demo-done-step") {
-    store.best = { warm: { h: 6, t: 10 }, s1: { h: 8, t: 8 }, s2: { h: 7.5, t: 8 }, s4: { h: 6, t: 8 }, s5: { h: 5, t: 8 } };
-    start(STEPS[2].list, "s3"); queue = []; order.forEach((n, i) => apply(n, [0,0,1,0,0,"H",0,2][i])); finish();
+  else if (h.startsWith("demo-done-step")) {
+    const half = h.endsWith(":half"), si = half ? 2 : 3;
+    store.best = { warm: { h: 6, t: 10 }, s1: { h: 14.5, t: 16 }, s2: { h: 15, t: 16 } }; if (!half) store.best.s3 = { h: 13.75, t: 16 };
+    start(STEPS[si].list, STEPS[si].id); queue = []; order.forEach((n, i) => apply(n, [0,0,1,0,0,"H",0,2,0,0,0,1,0,0,0,0][i])); finish();
   } else if (h === "demo-done-early") {
     start(STEPS[5].list, "s6"); queue = []; order.slice(0, 3).forEach((n, i) => apply(n, [0,1,0][i])); finish(true);
   } else {
