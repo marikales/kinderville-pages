@@ -1449,7 +1449,7 @@ if (location.hash.startsWith("#demo")) {
   else if (h.startsWith("demo-words=")) { home(); openWords(+h.split("=")[1]); }
   else if (h === "demo-who") { root = { v: 2, profiles: [{ id: "a", name: "Миша" }, { id: "b", name: "Аня" }, { id: "c", name: "" }], current: "a", data: { a: store, b: emptyStore(), c: emptyStore() } }; root.data.b.best = { s1: { h: 6, t: 8 } }; updWhoChip(); openWho(); }
   else if (h === "demo-stats" || h === "demo-csv") {
-    root.profiles[0].name = "Лёва"; updWhoChip(); let ts = Date.now() - 86400000;
+    root.profiles[0].name = "Миша"; updWhoChip(); let ts = Date.now() - 86400000;
     const L = [["friend","frend","bad",1],["friend","friend","ok",2],["beautiful","beatiful","bad",1],["beautiful","beautifull","bad",2],["beautiful","beautiful","ok",3],["Miss","ms","bad",1],["Miss","miss","cap",2],["dinner","dinner","ok",1],["kitchen","kichen","bad",1],["guitar","guitar","ok",1]];
     store.log = L.map(([w, t, r, a]) => [ts += 60000, WORDS.find(x => x.w === w).n, t, r, a, w === "kitchen" ? 1 : 0, "s3"]);
     store.tricky = ["friend", "beautiful", "Miss", "kitchen"].map(w => WORDS.find(x => x.w === w).n);
