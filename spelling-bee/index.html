@@ -668,7 +668,7 @@ const T = {
   step: "Шаг {k}", bestShort: "лучший: {h} из {t}", stepPanel: "Мёд шага",
   hiveTitle: "Наш улей", popLine: "{p} {bees}", bees: ["пчела", "пчелы", "пчёл"], hiveHoney: "мёда в улье: {h} из 126",
   doneStep: "Шаг пройден!", earlyTitle: "Мёд сохранён", doneGeneric: "Готово!", stepHoney: "Собрано мёда: {h} из {t}.",
-  popGrow: "Население улья: +{d} пчёл, теперь {p}.", noGrow: "Улей не уменьшается: в зачёт идёт лучший результат шага.",
+  popGrow: "В улье прибавилось пчёл: +{d}. Теперь их {p}.", noGrow: "Улей не уменьшается: в зачёт идёт лучший результат шага.",
   newRow: "Пчёлы достроили новый ряд сот.", nextStep: "Следующий шаг", stepWordsBtn: "Слова шага", wordsBtn: "Слова",
   wordsTitle: "Слова · уровень {l}, шаг {k}", wordsBack: "Назад", wordsHint: "Нажми на слово или пример — они прозвучат. Не понимаешь — открой перевод.", // [Д]
   listBtn: "Посмотреть списком", listTitle: "{t} · {n}",
@@ -991,7 +991,7 @@ const POS = { "noun":"noun", "verb":"verb", "adjective":"adjective", "adverb":"a
 
 /* ---------- улей: сквозной прогресс = сумма лучших результатов мёда по шагам; никогда не убывает ---------- */
 const HIVE_TH = [6, 30, 70, 115];      // ступени от общего мёда из 126: соты · пчелята · новая матка · новый рой
-const POP = 40;                         // пчёл за ячейку мёда (¼ ячейки = 10 пчёл)
+const POP = 4;                          // пчёл за ячейку мёда (¼ ячейки = 1 пчела); максимум 504
 const hiveStep = H => { let s = -1; HIVE_TH.forEach((x, i) => { if (H >= x) s = i; }); return s; };
 const hiveTotal = best => STEPS.reduce((a, s) => a + (best[s.id] ? best[s.id].h : 0), 0);
 function applyBest(st, id, h, t) { const b = st.best[id]; if (!b || h / t > b.h / b.t) { st.best[id] = { h, t }; return true; } return false; }
