@@ -612,7 +612,7 @@ const T = {
   rule: "С первой попытки — целая сота мёда, со второй — половина, с третьей — четверть.",          // [М] слово Марики
   novoice: "В этом браузере нет английского голоса — слова не прозвучат. Попроси взрослого открыть страницу в Chrome.", // [К]
   nostore: "Браузер не сохраняет рекорды и трудные слова — они пропадут, когда закроешь страницу.", // [К]
-  modeWarm: "10 случайных слов (прежний режим)", modeRepeat: "Проверь себя быстро", modeRepeatSub: "10 слов", // [М] название и подпись — слова Марики
+  modeWarm: "10 случайных слов (прежний режим)", modeRepeat: "Проверь себя быстро", modeRepeatSub: "10 слов, 3 минуты. Когда хочешь быстро повторить.", // [М] название и подпись — слова Марики
   repeatTitle: "Проверь себя быстро",                                                                     // [М] то же название в финале
   repeatSum: "С первой попытки — {m} из {n}.",
   // ступени опоры, контрольные проверки, типы трудностей                                                  // [Д]
@@ -623,14 +623,14 @@ const T = {
   showSent: "Показать предложение", homoLine: "Это тоже слово, но другое. Послушай предложение ещё раз.", resHomo: "другое слово (омофон)", resCapX: "лишняя заглавная",
   csvSawSent: "Смотрел предложение",
   // диктовка и «Мой список»                                                                               // [Д]
-  modeDict: "Диктовка: узнай, что учить", modeDictSub: "40 слов · проверка письма", dictResumeSub: "не дописана: {d} из {n}", modeDictLog: "Диктовка",
-  dictIntro: "40 слов. Пиши как знаешь — ошибки здесь нужны, чтобы понять, что учить. Мёд за диктовку не даётся.",
-  dictNote: "Это проверка письма по-английски, а не уровня английского.", dictStart: "Начать", dictContinue: "Продолжить: {d} из {n}",
-  dictUnknown: "Не знаю", dictSaved: "Записано", dictPanel: "Диктовка", dictDoneTitle: "Диктовка готова",
+  modeDict: "Большой тест: что учить?", modeDictSub: "40 слов. Пройди один раз — и получишь свой список слов.", dictResumeSub: "не дописана: {d} из {n}", modeDictLog: "Большой тест",
+  dictIntro: "40 слов. Пиши как знаешь — ошибки здесь нужны, чтобы понять, что учить. Мёд за тест не даётся.",
+  dictNote: "Это проверка письма по-английски, а не уровня английского. Повторить тест стоит через месяц.", dictStart: "Начать", dictContinue: "Продолжить: {d} из {n}",
+  dictUnknown: "Не знаю", dictSaved: "Записано", dictPanel: "Большой тест", dictDoneTitle: "Тест готов",
   dictScore: "Верно написано: {k} из {n}.", dictTypeLine: "{k} из {n}", dictListLine: "Вот твой список: {n} {words}.", dictToList: "Открыть мой список",
   typeName: { "немые буквы": "Буквы, которых не слышно", "гласные не по звуку": "Гласные не как слышатся", "двойные согласные": "Двойные буквы", "ck / tch / ph": "ck, tch, ph", "ir / ur / or": "ir, ur, or", "длинные слова": "Длинные слова", "числа": "Числа", "заглавная буква": "Большая буква" },
-  modeMine: "Мой список", grpErr: "Ошибки", grpDict: "Из диктовки", grpType: "Этот тип ещё учим", resUnknown: "не знаю",
-  dictsTitle: "Диктовки", dictColOk: "Верно", dictColBad: "Неверно (набрано)", dictCmp: "{d} к прошлой",
+  modeMine: "Мой список", mineSub: ": тренируй их каждый день", mineEmpty: "пока пусто — сюда попадут слова с ошибками", grpErr: "Ошибки", grpDict: "Из теста", grpType: "Этот тип ещё учим", resUnknown: "не знаю",
+  dictsTitle: "Большие тесты", dictColOk: "Верно", dictColBad: "Неверно (набрано)", dictCmp: "{d} к прошлой",
   typesTitle: "По типам трудностей", wordsTableTitle: "По словам", csvType: "Тип трудности", csvTypeWords: "Слов встречалось", csvTypeShare: "Верно с первой попытки",                                                           // [Д]
   level: "Уровень {i}",                       // [Д]
   modeTricky: "Мои трудные слова", modeMarked: "Отмеченные слова", empty: "пока пусто",              // [Д]
@@ -1233,7 +1233,7 @@ function home() {
     const n = m.list ? m.list.length : 10;
     b.innerHTML = "<b></b><span></span>"; b.firstChild.textContent = m.title;
     const dr = m.id === "dict" && curDict();
-    b.lastChild.textContent = m.list ? (n ? n + " " + pl(n, T.words) : T.empty) : m.id === "dict" ? (dr ? fill(T.dictResumeSub, { d: Object.keys(dr.ans).length, n: dr.list.length }) : T.modeDictSub) : T.modeRepeatSub;
+    b.lastChild.textContent = m.list ? (n ? n + " " + pl(n, T.words) + (m.id === "tricky" ? T.mineSub : "") : (m.id === "tricky" ? T.mineEmpty : T.empty)) : m.id === "dict" ? (dr ? fill(T.dictResumeSub, { d: Object.keys(dr.ans).length, n: dr.list.length }) : T.modeDictSub) : T.modeRepeatSub;
     b.disabled = !n;
     b.onclick = () => m.id === "repeat" ? startRepeat() : m.id === "dict" ? openDictIntro() : m.id === "tricky" ? start(listPick(12), "tricky") : start(m.list, m.id);
     box.append(b);
