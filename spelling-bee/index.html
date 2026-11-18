@@ -44,6 +44,8 @@ button:disabled { cursor:default; }
 h1 { font-weight:700; font-size:48px; line-height:1; letter-spacing:-.02em; margin:0; }
 .lead { font-size:19px; color:var(--mute); margin:0 0 26px; max-width:30em; }
 .lead b { color:var(--ink); font-weight:600; }
+.vbox { margin-top:22px; } .vbox .vline { margin:4px 0; font-size:15px; color:var(--mute); } .vbox .vline b { color:var(--ink); font-weight:600; }
+.vbox select { font:inherit; font-size:15px; padding:10px 12px; border-radius:12px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); max-width:100%; min-width:0; flex:1 1 260px; }
 .warn.soft { background:#F1EBDF; color:var(--mute); }
 .warn { background:var(--tangbg); color:#9A4A1C; border-radius:14px; padding:12px 16px; margin:0 0 20px; font-size:15px; }
 .modes { display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:start; }
@@ -578,6 +580,11 @@ body.vkmode footer { margin-top:20px; }
   <div id="csvText" hidden><p class="whint" data-t="copyHint"></p><textarea id="csvArea" readonly></textarea><button class="btn" id="copyText" data-t="copyBtn"></button></div>
   <div class="stable" id="statsTable"></div>
   <p class="whint" data-t="statsNote"></p>
+  <div class="vbox" id="voiceBox"><h3 class="sth" data-t="voiceTitle"></h3>
+    <p class="vline"><span data-t="voiceEnLabel"></span> <b id="voiceName"></b></p>
+    <p class="vline"><span data-t="voiceRuLabel"></span> <b id="voiceRuName"></b></p>
+    <div class="row"><select id="voiceSel" aria-label="voice"></select><button class="btn" id="voiceTest" data-t="voiceTest"></button></div>
+  </div>
 </section>
 
 <section id="words" hidden>
@@ -612,7 +619,9 @@ const T = {
   story: "Маленький рой поселился в пустом улье, где нет ни капли мёда. Пчёлы стараются изо всех сил, но одним им не справиться.", // [К]
   task: "Слушай слова и пиши их по-английски: за каждое верное слово пчёлы получают соту мёда. Чем больше мёда соберёшь, тем больше вырастет улей.", // [М] слово Марики («соту»)
   rule: "С первой попытки — целая сота мёда, со второй — половина, с третьей — четверть.",          // [М] слово Марики
-  novoice: "В этом браузере нет английского голоса — слова не прозвучат. Попроси взрослого открыть страницу в Chrome.", // [К]
+  novoice: "На этом устройстве нет английского голоса — слова не прозвучат. Взрослым: откройте игру в Chrome, Edge или Safari или добавьте английский голос в настройках системы (раздел «Речь» или «Устный контент»).", // [Д] (было [К]: обещало «не прозвучат», а слова звучали чужим голосом)
+  voiceTitle: "Голос игры", voiceEnLabel: "Английский голос:", voiceRuLabel: "Русский голос (перевод):", voiceNone: "нет — слова не звучат", voiceRuNone: "нет — перевод только текстом",
+  voiceAuto: "Выбрать автоматически", voiceTest: "Проверить голос", voiceSample: "This is the voice of the game.", // [Д]
   nostore: "Браузер не сохраняет рекорды и трудные слова — они пропадут, когда закроешь страницу.", // [К]
   modeWarm: "10 случайных слов (прежний режим)", modeRepeat: "Проверь себя быстро", modeRepeatSub: "10 слов с разбором ошибок. Когда хочешь быстро повторить.", // [М] название и подпись — слова Марики
   repeatTitle: "Проверь себя быстро",                                                                     // [М] то же название в финале
@@ -799,27 +808,55 @@ function capKind(word, typed) {
   return "need";
 }
 
-/* ---------- голос (без изменений) ---------- */
-const PREF = ["Daniel", "Google UK English Female", "Google UK English Male", "Kate", "Serena", "Samantha", "Karen", "Google US English"];
-let voice = null;
-function pickVoice() {
-  const vs = (window.speechSynthesis ? speechSynthesis.getVoices() : []).filter(v => /^en[-_]/i.test(v.lang));
-  voice = null;
-  for (const name of PREF) { const v = vs.find(x => x.name === name || x.name.startsWith(name + " ")); if (v) { voice = v; break; } }
-  return vs.length;
-}
-if ("speechSynthesis" in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; setTimeout(() => { if (!pickVoice()) $("novoice").hidden = false; }, 1500); }
-else $("novoice").hidden = false;
-
-function say(parts, rate) {
-  if (!("speechSynthesis" in window)) return;
-  speechSynthesis.cancel();
-  for (const p of parts) {
-    const u = new SpeechSynthesisUtterance(p);
-    if (voice) { u.voice = voice; u.lang = voice.lang; } else u.lang = "en-GB";
-    u.rate = rate;
-    speechSynthesis.speak(u);
+/* ---------- голос ----------
+   английское слово — только английским голосом (lang en-*), русский перевод — только русским (ru-*).
+   Голоса подходящего языка нет — speak не вызываем вовсе: иначе браузер читает текст голосом системы по умолчанию (на русской Windows — Irina). */
+const EN_PREF = ["Daniel", "Kate", "Serena", "Google UK English Female", "Google UK English Male",
+  "Microsoft Sonia", "Microsoft Libby", "Microsoft Ryan", "Microsoft Hazel", "Microsoft George", "Microsoft Susan",
+  "Samantha", "Karen", "Google US English", "Microsoft Aria", "Microsoft Jenny", "Microsoft Guy", "Microsoft Zira", "Microsoft David", "Microsoft Mark"];
+const RU_PREF = ["Milena", "Yuri", "Katya", "Google русский", "Microsoft Svetlana", "Microsoft Dmitry", "Microsoft Irina", "Microsoft Pavel"];
+// шуточные голоса macOS, голоса Eloquence и eSpeak, «компактные» — низкое качество, не берём
+const NOVELTY = /Bells|Bad News|Good News|Bubbles|Boing|Cellos|Jester|Organ|Superstar|Trinoids|Whisper|Wobble|Zarvox|Albert|Bahh|Fred|Junior|Ralph|Kathy|Princess|Hysterical|Deranged|\b(Eddy|Flo|Grandma|Grandpa|Reed|Rocko|Sandy|Shelley)\b|e-?speak|compact/i;
+const hasSynth = "speechSynthesis" in window, VOICE_KEY = KEY + "-voice";
+const reEsc = t => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const langOf = v => String(v.lang || "").replace("_", "-").toLowerCase();
+const voicesFor = (all, lang) => (all || []).filter(v => v && v.name && new RegExp("^" + lang + "(-|$)").test(langOf(v)) && !NOVELTY.test(v.name));
+// выбор: сохранённый на устройстве → по списку предпочтений (Enhanced/Premium выше обычного того же имени) → любой голос языка: en-GB, en-US, прочие; по умолчанию и локальный — раньше
+function chooseVoice(all, lang, pref, saved) {
+  const vs = voicesFor(all, lang); if (!vs.length) return null;
+  if (saved) { const v = vs.find(x => x.name === saved); if (v) return v; }
+  let best = null, bs = Infinity;
+  for (const v of vs) {
+    const i = pref.findIndex(n => new RegExp("(^|[^a-zа-яё])" + reEsc(n) + "($|[^a-zа-яё])", "i").test(v.name)); if (i < 0) continue;
+    const sc = i * 2 + (/enhanced|premium|улучш/i.test(v.name) ? 0 : 1); if (sc < bs) { bs = sc; best = v; }
   }
+  if (best) return best;
+  const rank = v => { const l = langOf(v); return (lang === "en" ? (l === "en-gb" ? 0 : l === "en-us" ? 1 : 2) : 0) * 4 + (v.default ? 0 : 2) + (v.localService ? 0 : 1); };
+  return vs.slice().sort((a, b) => rank(a) - rank(b))[0];
+}
+const savedVoice = () => { try { return canStore ? localStorage.getItem(VOICE_KEY) || "" : ""; } catch (e) { return ""; } };
+let voice = null, ruVoice = null, voicesWaited = false;
+function pickVoice() {
+  const all = hasSynth ? speechSynthesis.getVoices() : [];
+  voice = chooseVoice(all, "en", EN_PREF, savedVoice()); ruVoice = chooseVoice(all, "ru", RU_PREF, "");
+  if (all.length || voicesWaited || !hasSynth) $("novoice").hidden = !!voice;   // плашку — только когда список голосов уже пришёл
+  if (typeof renderVoiceBox === "function" && !$("stats").hidden) renderVoiceBox();
+  return voice;
+}
+if (hasSynth) { pickVoice(); speechSynthesis.addEventListener ? speechSynthesis.addEventListener("voiceschanged", pickVoice) : (speechSynthesis.onvoiceschanged = pickVoice); setTimeout(() => { voicesWaited = true; pickVoice(); }, 1500); }
+else $("novoice").hidden = false;
+// английская реплика: без английского голоса — null (не звучит), плашка видна
+function enUtt(text, rate) {
+  if (!hasSynth) return null;
+  if (!voice) pickVoice();
+  if (!voice) { $("novoice").hidden = false; return null; }
+  return mkUtt(text, voice, rate);
+}
+function mkUtt(text, v, rate) { const u = new SpeechSynthesisUtterance(text); try { u.voice = v; } catch (e) {} u.vName = v.name; u.lang = v.lang; u.rate = rate; return u; }
+function say(parts, rate) {
+  if (!hasSynth) return;
+  speechSynthesis.cancel();
+  for (const p of parts) { const u = enUtt(p, rate); if (!u) return; speechSynthesis.speak(u); }
 }
 function speakWord(x, slow) {
   const parts = x.s ? [x.w, x.s, x.w] : [x.w];   // слово → предложение → слово
@@ -1349,21 +1386,12 @@ function renderSent(x, reveal, el) {
   (el || $("sent")).innerHTML = esc(x.b[0]) + (reveal ? `<b>${esc(x.m)}</b>` : `<span class="gap" aria-label="пропуск"></span>`) + esc(x.b[1]);
 }
 /* ---------- подсказка «Не знаю слово»: перевод текстом и русским голосом, затем английское слово ---------- */
-const RU_PREF = ["Milena", "Yuri", "Katya", "Google русский"];
-const NOVELTY = /Bells|Bad News|Good News|Bubbles|Boing|Cellos|Jester|Organ|Superstar|Trinoids|Whisper|Wobble|Zarvox|Albert|Bahh|Fred|Junior|Ralph|Kathy|Princess|Hysterical|Deranged|Pipe Organ/i;
-let ruVoice = null;
-function pickRuVoice() {
-  const vs = (window.speechSynthesis ? speechSynthesis.getVoices() : []).filter(v => /^ru[-_]/i.test(v.lang) && !NOVELTY.test(v.name));
-  ruVoice = null;
-  for (const name of RU_PREF) { const v = vs.find(x => x.name === name || x.name.startsWith(name + " ")); if (v) { ruVoice = v; break; } }
-  if (!ruVoice && vs.length) ruVoice = vs[0];
-}
-if ("speechSynthesis" in window) { pickRuVoice(); speechSynthesis.addEventListener && speechSynthesis.addEventListener("voiceschanged", pickRuVoice); }
 function speakRu(x) {
   if (!("speechSynthesis" in window)) return;
   speechSynthesis.cancel();
-  if (ruVoice) { const u = new SpeechSynthesisUtterance(x.ru); u.voice = ruVoice; u.lang = ruVoice.lang; u.rate = 0.9; speechSynthesis.speak(u); }
-  const e = new SpeechSynthesisUtterance(x.w); if (voice) { e.voice = voice; e.lang = voice.lang; } else e.lang = "en-GB"; e.rate = 0.85; speechSynthesis.speak(e);
+  if (!ruVoice) pickVoice();
+  if (ruVoice) speechSynthesis.speak(mkUtt(x.ru, ruVoice, 0.9));
+  const e = enUtt(x.w, 0.85); if (e) speechSynthesis.speak(e);
 }
 // подсказка доступна только до первой проверки слова; первое касание — предупреждение, второе — перевод
 function updIntro(hide) {
@@ -1614,7 +1642,7 @@ function playAll() {
     document.querySelectorAll(".wr.on").forEach(e => e.classList.remove("on"));
     if (!playAllOn || i >= wordsList.length) return stopAll();
     const x = wordsList[i]; $("wr" + i).classList.add("on"); i++;
-    const u = new SpeechSynthesisUtterance(x.w); if (voice) { u.voice = voice; u.lang = voice.lang; } else u.lang = "en-GB"; u.rate = 0.8;
+    const u = enUtt(x.w, 0.8); if (!u) return stopAll();
     u.onend = u.onerror = () => setTimeout(step, 900);
     speechSynthesis.cancel(); speechSynthesis.speak(u);
   };
@@ -1810,7 +1838,7 @@ $("whoBack").onclick = () => home();
 
 function openStats() {
   if (window.speechSynthesis) speechSynthesis.cancel();
-  showOnly("stats", true);
+  showOnly("stats", true); renderVoiceBox();
   $("statsTitle").textContent = fill(T.statsTitle, { name: profName(curProfile()) });
   $("csvText").hidden = true;
   const rows = summary(store), box = $("statsTable");
@@ -1831,6 +1859,16 @@ function openStats() {
   for (const r of rows.slice(0, 60)) { const x = byN(r.n); h += `<tr><td><b>${esc(x.w)}</b></td><td>${r.times}</td><td>${r.first}</td><td class="bad">${r.bad.slice().reverse().map(esc).join(", ")}</td><td>${store.tricky.includes(r.n) ? T.yesW : ""}</td></tr>`; }
   box.innerHTML = h + (rows.length ? "</tbody></table>" : "");
 }
+const vDesc = v => v.name + " (" + v.lang + ")";
+function renderVoiceBox() {
+  $("voiceName").textContent = voice ? vDesc(voice) : T.voiceNone; $("voiceRuName").textContent = ruVoice ? vDesc(ruVoice) : T.voiceRuNone;
+  const sel = $("voiceSel"), vs = voicesFor(hasSynth ? speechSynthesis.getVoices() : [], "en"), sv = savedVoice();
+  sel.innerHTML = ""; sel.hidden = !vs.length; $("voiceTest").disabled = !voice;
+  [["", T.voiceAuto], ...vs.map(v => [v.name, vDesc(v)])].forEach(([val, txt]) => { const o = document.createElement("option"); o.value = val; o.textContent = txt; sel.appendChild(o); });
+  sel.value = vs.some(v => v.name === sv) ? sv : "";
+}
+$("voiceSel").onchange = () => { try { if (canStore) { if ($("voiceSel").value) localStorage.setItem(VOICE_KEY, $("voiceSel").value); else localStorage.removeItem(VOICE_KEY); } } catch (e) {} pickVoice(); renderVoiceBox(); };
+$("voiceTest").onclick = () => say([T.voiceSample], 0.9);
 $("adults").onclick = openStats;
 $("statsBack").onclick = () => home();
 $("dlSummary").onclick = () => download(fileName(T.fileSummary), summaryCsv(store));
@@ -2194,6 +2232,35 @@ if (/^#selftest(&kbd)?$/.test(location.hash)) {
     ok(phase === "copy" && fbR.bottom <= inR.top + 1 && $("mainCard").getBoundingClientRect().bottom + scrollY <= vh - RESERVE, "телефон: разбор ошибки над полем, вёрстка не уезжает");
     home();
   }
+  // голос: английское — только en-голосом, русское — только ru; без подходящего голоса speak не вызывается
+  {
+    const V = (name, lang, o) => Object.assign({ name, lang, default: false, localService: true }, o || {});
+    const irina = V("Microsoft Irina Desktop - Russian", "ru-RU"), zira = V("Microsoft Zira Desktop - English (United States)", "en-US");
+    const nm = v => v ? v.name : null;
+    ok(nm(chooseVoice([irina, zira], "en", EN_PREF, "")) === zira.name, "голос: из Irina (ru-RU) и Zira (en-US) для английского выбрана Zira");
+    ok(nm(chooseVoice([irina, zira], "ru", RU_PREF, "")) === irina.name, "голос: для перевода — только русский (Irina)");
+    ok(chooseVoice([irina, V("Milena", "ru-RU")], "en", EN_PREF, "") === null, "голос: без английских голосов английского нет");
+    ok(chooseVoice([V("Albert", "en-US"), V("Bad News", "en-US"), V("Zarvox", "en-US"), V("eSpeak English", "en"), V("Grandma (English (US))", "en-US"), V("Kate Compact", "en-GB")], "en", EN_PREF, "") === null, "голос: шуточные, eSpeak и «компактные» исключены");
+    ok(nm(chooseVoice([V("Zarvox", "en-US"), V("Samantha", "en-US")], "en", EN_PREF, "")) === "Samantha", "голос: шуточный не выбирается, если есть нормальный");
+    ok(nm(chooseVoice([V("Microsoft Aria Online (Natural) - English (United States)", "en-US"), V("Microsoft Sonia Online (Natural) - English (United Kingdom)", "en-GB")], "en", EN_PREF, "")) === "Microsoft Sonia Online (Natural) - English (United Kingdom)", "голос: Edge — Sonia (британский) раньше Aria, имя по вхождению");
+    ok(nm(chooseVoice([V("google uk english female", "en-GB"), V("Samantha", "en-US")], "en", EN_PREF, "")) === "google uk english female", "голос: имя без учёта регистра, британский раньше американского");
+    ok(nm(chooseVoice([V("Daniel", "en-GB"), V("Daniel (Enhanced)", "en-GB")], "en", EN_PREF, "")) === "Daniel (Enhanced)", "голос: Enhanced выше обычного");
+    ok(nm(chooseVoice([V("English United States", "en_US"), V("English United Kingdom", "en_GB"), V("Русский", "ru_RU")], "en", EN_PREF, "")) === "English United Kingdom", "голос: Android — безымянный en-GB раньше en-US");
+    ok(nm(chooseVoice([V("Samantha", "en-US"), V("Daniel", "en-GB")], "en", EN_PREF, "Samantha")) === "Samantha", "голос: выбор взрослого на устройстве важнее списка");
+    ok(chooseVoice([V("Microsoft Irina Desktop - English", "ru-RU")], "en", EN_PREF, "") === null, "голос: lang не en — не берём, даже если в имени English");
+    if (hasSynth) {
+      const S = speechSynthesis, ownGV = Object.prototype.hasOwnProperty.call(S, "getVoices"), ownSp = Object.prototype.hasOwnProperty.call(S, "speak");
+      let spoken = []; S.speak = u => { spoken.push(u); };
+      S.getVoices = () => [irina]; $("novoice").hidden = true; pickVoice(); home();
+      say(["dinner"], 0.85); speakRu(byN(WORDS[0].n));
+      ok(!spoken.some(u => !/^ru/i.test(u.lang)) && !voice && !$("novoice").hidden, "голос: без английского голоса английское не звучит, плашка видна");
+      spoken = []; S.getVoices = () => [irina, zira]; pickVoice(); say(["dinner"], 0.85);
+      ok(spoken.length === 1 && spoken[0].vName === zira.name && $("novoice").hidden, "голос: при Zira слово звучит Zira, плашка скрыта");
+      openStats(); ok($("voiceName").textContent.includes("Zira") && $("voiceRuName").textContent.includes("Irina") && $("voiceSel").options.length === 2, "голос: на экране для взрослых видно имя голоса и выбор");
+      spoken = []; $("voiceTest").click(); ok(spoken.length === 1 && spoken[0].text === T.voiceSample, "голос: «Проверить голос» произносит контрольную фразу");
+      if (!ownGV) delete S.getVoices; if (!ownSp) delete S.speak; S.cancel(); pickVoice(); home();
+    }
+  }
   document.title = "SELFTEST " + (fails.length ? "FAIL " + JSON.stringify(fails) : "PASS " + cases.length);
   if (parent !== window) parent.postMessage(document.title, "*");
 }
@@ -2243,6 +2310,8 @@ if (location.hash.startsWith("#demo")) {
       if (h === "demo-dict-res") showDictResult(r); else if (h === "demo-dict-list") openMyList(); else if (h === "demo-dict-stats") openStats(); else home();
     }
   }
+  else if (h === "demo-novoice") { if (hasSynth) speechSynthesis.getVoices = () => []; voicesWaited = true; pickVoice(); home(); }
+  else if (h === "demo-voicebox") { openStats(); setTimeout(() => $("voiceBox").scrollIntoView(), 50); }
   else if (h === "demo-divstat") {   // сводка разнообразия «Проверь себя быстро» (один шаг, 4 трудных) и старый отбор для сравнения
     store.best = { s1: { h: 12, t: 16 } }; store.tricky = STEPS[0].list.slice(0, 4).map(x => x.n); const f = {};
     for (let i = 0; i < 30; i++) { const L = repeatPick(10); store.lastRepeat = L.map(x => x.n); L.forEach(x => { f[x.n] = (f[x.n] || 0) + 1; }); }
