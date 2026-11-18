@@ -653,7 +653,7 @@ const T = {
   copyOkHard: "Это слово трудное. Вернёмся к нему в другой день.",                                    // [К]
   panelTitle: "Мёд для улья", panelOf: "из {n}",                                                      // [К] / [Д]
   recordsTitle: "Мои рекорды",                                                                        // [Д]
-  cells: ["ячейка", "ячейки", "ячеек"],                                                               // [К] формы
+  cells: ["сота", "соты", "сот"],                                                               // [К] формы
   nextLine: "Ещё {n} {cells} мёда — и {line}.",                                                       // [К]
   recLine: "Рекорд здесь: {h} из {t}",                                                                // [Д]
   restTitle: "Улей живёт спокойно.", restSub: "В следующий раз соберём больше мёда.",                // [К]
@@ -713,7 +713,7 @@ const T = {
 T.firstLine = T.rule; T.recordsNote = T.rule;
 // ступени роста улья: короткое имя (шкала) · фраза финала · строка «ещё N ячеек мёда — и …»   [К]
 const STEP_T = [
-  { short: "Новые соты", done: "Пчёлы построили новые соты!", line: "пчёлы построят новые соты" },
+  { short: "Новые соты", done: "Пчёлы построили новые соты!", line: "пчёлы возьмутся за новый ряд" },
   { short: "Пчелята", done: "В улье вывелись пчелята!", line: "пчёлы выведут пчелят" },
   { short: "Новая " + QUEEN, done: "В улье родилась новая " + QUEEN + "!", line: "пчёлы вырастят новую " + QUEEN_ACC },
   { short: "Новый рой", done: "Рой отделился: часть пчёл улетела искать новый дом!", line: "рой отделится: часть пчёл улетит искать новый дом" },
@@ -1581,7 +1581,7 @@ function openWordsList(list, title, groups) {
   if (groups) list = groups.flatMap(g => g[1]);
   wordsList = list;
   wordsFrom = !$("done").hidden ? "done" : "home";
-  $("home").hidden = $("done").hidden = $("play").hidden = true; $("words").hidden = false; document.body.dataset.view = "words";
+  for (const s of ["home", "play", "done", "who", "stats", "hivepage", "dictintro", "dictres"]) $(s).hidden = true; $("words").hidden = false; document.body.dataset.view = "words";   // список открывается и с экрана итога теста — прячем все экраны
   $("wtitle").textContent = title;
   const box = $("wlist"); box.innerHTML = "";
   const heads = {}; if (groups) { let i = 0; for (const [t, l] of groups) { heads[i] = t; i += l.length; } }
