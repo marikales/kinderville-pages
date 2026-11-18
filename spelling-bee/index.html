@@ -174,6 +174,8 @@ input.neutral { border-color:var(--line); background:#FAF7F1; color:var(--ink); 
 .dct { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:6px; } .dct span { background:#F6F1E6; border-radius:999px; padding:3px 10px; font-size:13px; color:var(--mute); } .dct b { color:var(--ink); font-weight:600; }
 .dcb { margin:4px 0 0; color:#B4501C; font-size:13.5px; line-height:1.4; } .dcb span { color:var(--mute); }
 #hive[data-mode="dict"] .mini, #hive[data-mode="dict"] .hsmall { display:none; }   /* диктовка: мёда нет — без легенды и улья */
+#mainCard .field::after { content:"✓"; position:absolute; right:14px; top:50%; transform:translateY(-50%) scale(.6); font-size:26px; font-weight:700; color:var(--teal); opacity:0; pointer-events:none; }
+#mainCard.took .field::after { animation:took .5s ease-out; } @keyframes took { 0% { opacity:0; transform:translateY(-50%) scale(.6) } 30% { opacity:1; transform:translateY(-50%) scale(1.1) } 100% { opacity:0; transform:translateY(-50%) scale(1) } }
 .wgrp { font-size:13px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--mute); padding:12px 16px 6px; background:#FBF8F2; border-bottom:1px solid var(--line); }
 @media (max-width:600px) { .dbar { grid-template-columns:minmax(0,1fr) 80px auto; font-size:14px; } .dtit { font-size:26px; } .dlead { font-size:17px; } }
 .pic.ear { background:#EEF6F3; } .pic.ear svg { width:44%; height:auto; opacity:.9; } .pic.ear .cap { color:var(--petrol); font-weight:500; }
@@ -626,6 +628,7 @@ const T = {
   modeDict: "Большой тест: что учить?", modeDictSub: "40 слов, по одной попытке. Когда хочешь узнать, что учить.", dictResumeSub: "не закончен: {d} из {n}", modeDictLog: "Большой тест",
   dictIntro: "40 слов, на каждое — одна попытка. Пиши как знаешь: ошибки здесь нужны, чтобы понять, что учить. Верно или нет — узнаешь в конце. Мёд за тест не даётся.",
   dictNote: "Тест показывает, как ты пишешь слова, а не как знаешь английский. Через месяц повтори — увидишь, что изменилось.", dictStart: "Начать", dictContinue: "Продолжить: {d} из {n}",
+  dictQuitNote: "Тест не закончен — в следующий раз он начнётся заново.", repeatQuitNote: "Проверка не закончена — в следующий раз начнётся заново.", // [Д]
   dictUnknown: "Не знаю", dictSaved: "Записано", dictPanel: "Большой тест", dictDoneTitle: "Тест готов",
   dictScore: "Верно написано: {k} из {n}.", dictTypeLine: "{k} из {n}", dictListLine: "Вот твой список: {n} {words}.", dictToList: "Открыть мой список",
   typeName: { "немые буквы": "Буквы, которых не слышно", "гласные не по звуку": "Гласные не как слышатся", "двойные согласные": "Двойные буквы", "ck / tch / ph": "ck, tch, ph", "ir / ur / or": "ir, ur, or", "длинные слова": "Длинные слова", "числа": "Числа", "заглавная буква": "Большая буква" },
@@ -738,7 +741,7 @@ let store = emptyStore();
 function migrate(s) {
   if (!s || !Array.isArray(s.tricky)) return null;
   const obj = v => v && typeof v === "object" ? v : {};
-  const st = { tricky: s.tricky.filter(n => Number.isInteger(n)), best: { ...obj(s.best) }, okDays: obj(s.okDays), lastOk: obj(s.lastOk), lastMiss: obj(s.lastMiss), archive: { ...obj(s.archive) }, log: Array.isArray(s.log) ? s.log : [], paused: { ...obj(s.paused) }, stepsV: s.stepsV, stage: s.stage, stageDay: obj(s.stageDay), stageMax: obj(s.stageMax), ret: obj(s.ret), dicts: Array.isArray(s.dicts) ? s.dicts : [], mylist: obj(s.mylist) };
+  const st = { tricky: s.tricky.filter(n => Number.isInteger(n)), best: { ...obj(s.best) }, okDays: obj(s.okDays), lastOk: obj(s.lastOk), lastMiss: obj(s.lastMiss), archive: { ...obj(s.archive) }, log: Array.isArray(s.log) ? s.log : [], paused: { ...obj(s.paused) }, stepsV: s.stepsV, stage: s.stage, stageDay: obj(s.stageDay), stageMax: obj(s.stageMax), ret: obj(s.ret), dicts: Array.isArray(s.dicts) ? s.dicts.filter(r => r && r.done) : [], mylist: obj(s.mylist) };
   for (const k of Object.keys(st.best)) if (/^(r\d|l\d|warm)$/.test(k)) { st.archive[k] = st.best[k]; delete st.best[k]; }   // «Разминки» больше нет — её рекорд в архив
   // шаги по 8 слов (s1–s16) → шаги по 15–16 (s1–s8): новый шаг = два прежних подряд; мёд складывается, улей не уменьшается
   if (st.stepsV !== 2) {
@@ -1131,22 +1134,34 @@ function typeStats(st, recent) {
 function weakTypes(st) { const { by, rate } = typeStats(st, true); return Object.values(by).filter(r => r.err >= 3 && r.err / r.n > rate).sort((a, b) => b.err / b.n - a.err / a.n).map(r => r.t); }
 // отбор «Проверь себя быстро»: 1) слова с подошедшей контрольной проверкой; 2) при слабом типе — его слова примерно на половину набора;
 // 3) пройденные слова — трудные и давно не встречавшиеся, затем остальные пройденные; 4) недостающее — из всех 126
-function repeatPick(n) {
-  const picked = [], has = new Set(), add = x => { if (x && picked.length < n && !has.has(x.n)) { picked.push(x); has.add(x.n); } };
-  shuffle(dueWords(store, today())).forEach(k => add(byN(k)));
+// отбор «Проверь себя быстро» (10 слов) — разнообразно, с потолками:
+//   контрольные проверки ≤4 (в первую очередь), трудные ≤4 (давно не встречавшиеся — раньше), слабый тип ≤3,
+//   из пройденных шагов ≤4 всего; остальное — случайно из всех 126.
+//   Слова прошлого захода и встречавшиеся за последние 15 минут не берутся, если есть из чего выбрать.
+const REPEAT_CAP = { due: 4, tricky: 4, weak: 3, pool: 4 }, RECENT_MS = 15 * 60000;
+function repeatPick(n, now) {
+  now = now || Date.now();
   const last = {}; for (const e of store.log || []) last[e[1]] = Math.max(last[e[1]] || 0, e[0]);
-  const pool = shuffle([...repeatPool()]), inPool = new Set(pool.map(x => x.n));
-  const weak = weakTypes(store);
-  if (weak.length) {
-    const isW = x => weak.includes(x.t), want = Math.ceil(n / 2);
-    for (const x of [...shuffle(pool.filter(isW)), ...shuffle(WORDS.filter(x => isW(x) && !inPool.has(x.n)))]) { if (picked.filter(isW).length >= want) break; add(x); }
-  }
-  const pri = [...pool].sort((a, b) => (store.tricky.includes(b.n) - store.tricky.includes(a.n)) || ((last[a.n] || 0) - (last[b.n] || 0)));
-  const top = pri.slice(0, Math.ceil(Math.min(n, pool.length) * 0.6)), rest = shuffle(pool.filter(x => !top.includes(x)));
-  [...top, ...rest, ...shuffle(WORDS.filter(x => !inPool.has(x.n)))].forEach(add);
+  const avoid = new Set([...(store.lastRepeat || []), ...Object.keys(last).filter(k => now - last[k] < RECENT_MS).map(Number)]);
+  const inPool = new Set(repeatPool().map(x => x.n)), weak = new Set(weakTypes(store)), due = new Set(dueWords(store, today()));
+  const isT = x => store.tricky.includes(x.n), isW = x => weak.has(x.t), isP = x => inPool.has(x.n), isD = x => due.has(x.n);
+  const picked = [], has = new Set(), cnt = () => ({ due: picked.filter(isD).length, tricky: picked.filter(isT).length, weak: picked.filter(isW).length, pool: picked.filter(isP).length });
+  const fits = x => { const c = cnt(); return !(isD(x) && c.due >= REPEAT_CAP.due) && !(isT(x) && c.tricky >= REPEAT_CAP.tricky) && !(isW(x) && c.weak >= REPEAT_CAP.weak) && !(isP(x) && !isD(x) && c.pool >= REPEAT_CAP.pool); };
+  const take = (list, strict) => { for (const x of list) { if (picked.length >= n) return; if (has.has(x.n) || (strict && avoid.has(x.n)) || !fits(x)) continue; picked.push(x); has.add(x.n); } };
+  const byOld = l => shuffle([...l]).sort((a, b) => (last[a.n] || 0) - (last[b.n] || 0));
+  const groups = [
+    byOld(WORDS.filter(isD)),                                   // подошёл срок контрольной проверки
+    byOld(WORDS.filter(isT)),                                   // трудные: давно не встречавшиеся первыми
+    shuffle(WORDS.filter(isW)),                                 // слабый тип
+    shuffle(WORDS.filter(isP)),                                 // пройденные шаги
+    shuffle([...WORDS]),                                        // все 126
+  ];
+  for (const g of groups) take(g, true);
+  for (const g of groups) take(g, false);                       // если с исключениями не набралось
+  for (const x of shuffle([...WORDS])) { if (picked.length >= n) break; if (!has.has(x.n)) { picked.push(x); has.add(x.n); } }
   return picked;
 }
-function startRepeat() { if (repeatOpen()) start(repeatPick(10), "repeat"); }
+function startRepeat() { if (!repeatOpen()) return; const L = repeatPick(10); store.lastRepeat = L.map(x => x.n); save(); start(L, "repeat"); }
 
 /* ---------- «Диктовка: узнай, что учить»: 40 слов (по 5 из 8 типов), одна попытка, без разбора; проверка письма ---------- */
 const TYPES = [...new Set(WORDS.map(x => x.t))];
@@ -1161,22 +1176,20 @@ function dictPick() {
 function openDictIntro() {
   if (window.speechSynthesis) speechSynthesis.cancel();
   showOnly("dictintro", true); const r = curDict();
-  $("dictGo").textContent = r ? fill(T.dictContinue, { d: Object.keys(r.ans).length, n: r.list.length }) : T.dictStart;
+  $("dictGo").textContent = T.dictStart;
 }
 function dictStart() {
-  store.dicts = store.dicts || []; let r = curDict();
-  if (!r) { r = { ts: Date.now(), list: dictPick(), ans: {}, done: false }; store.dicts.push(r); save(); }
+  store.dicts = doneDicts(); const r = { ts: Date.now(), list: dictPick(), ans: {}, done: false }; store.dicts.push(r);   // всегда новый заход
   const answered = Object.keys(r.ans).map(Number), tr = {}; answered.forEach(n => { tr[n] = 1; });
   start(r.list.map(byN), "dict", { q: r.list.filter(n => !(n in r.ans)), order: r.list, got: {}, tries: tr, hard: [], missed: [], firstOk: 0, intro: {}, introWrite: {}, streak: 0, maxStreak: 0, fixedN: 0, tally: {}, seen: [] });
 }
-// одна попытка, без разбора: нейтральное «Записано»
+// ответ принят — сразу следующее слово (без экрана «Записано»); о приёме говорят счётчик и короткая галочка
 function dictAnswer(res, typed) {
   const r = curDict(); if (!r) return;
   r.ans[cur.n] = [res, typed]; tries[cur.n] = 1;
-  phase = "shown"; const inp = $("inp"); inp.readOnly = true; inp.className = "neutral"; $("go").textContent = T.next;
-  $("fb").innerHTML = `<div class="yes dictsaved">${T.dictSaved}</div>`; updIntro(true); renderHive();
-  if (r.list.every(n => n in r.ans)) { r.done = true; r.end = Date.now(); applyDictToList(r); }
-  save();
+  if (r.list.every(n => n in r.ans)) { r.done = true; r.end = Date.now(); applyDictToList(r); save(); queue = []; return finish(); }
+  const c = $("mainCard"); c.classList.remove("took"); void c.offsetWidth; c.classList.add("took");
+  next();
 }
 const dictTypeScore = r => TYPES.map(t => { const ns = r.list.filter(n => byN(n).t === t); return { t, ok: ns.filter(n => r.ans[n] && r.ans[n][0] === "ok").length, n: ns.length }; });
 const dictOk = r => r.list.filter(n => r.ans[n] && r.ans[n][0] === "ok").length;
@@ -1201,12 +1214,14 @@ const whyOf = n => store.tricky.includes(n) ? "err" : (store.mylist[n] || {}).wh
 function listPick(k) {
   const last = {}; for (const e of store.log || []) last[e[1]] = Math.max(last[e[1]] || 0, e[0]);
   const rank = { err: 0, dict: 0, type: 1 };
-  const sorted = shuffle(myList()).sort((a, b) => rank[whyOf(a.n)] - rank[whyOf(b.n)] || (last[a.n] || 0) - (last[b.n] || 0));
+  const prev = new Set(myList().length > k ? store.lastList || [] : []);   // сыгранные в прошлой порции — последними
+  const sorted = shuffle(myList()).sort((a, b) => prev.has(a.n) - prev.has(b.n) || rank[whyOf(a.n)] - rank[whyOf(b.n)] || (last[a.n] || 0) - (last[b.n] || 0));
   const cap = Math.ceil(k / 2), cnt = {}, picked = [];
   for (const x of sorted) { if (picked.length >= k) break; if ((cnt[x.t] || 0) >= cap) continue; picked.push(x); cnt[x.t] = (cnt[x.t] || 0) + 1; }
   for (const x of sorted) { if (picked.length >= k) break; if (!picked.includes(x)) picked.push(x); }
   return picked;
 }
+function startList() { const L = listPick(12); store.lastList = L.map(x => x.n); save(); start(L, "tricky"); }   // порядок внутри порции перемешивает start()
 function openMyList() {
   const L = myList(), g = { err: [], dict: [], type: [] }; for (const x of L) g[whyOf(x.n)].push(x);
   openWordsList(L, fill(T.listTitle, { t: T.modeMine, n: L.length + " " + pl(L.length, T.words) }), [[T.grpErr, g.err], [T.grpDict, g.dict], [T.grpType, g.type]].filter(x => x[1].length));
@@ -1233,10 +1248,10 @@ function home() {
     const b = document.createElement("button"); b.className = "mode" + (m.cls ? " " + m.cls : "");
     const n = m.list ? m.list.length : 10;
     b.innerHTML = "<b></b><span></span>"; b.firstChild.textContent = m.title;
-    const dr = m.id === "dict" && curDict();
+    const dr = null;   // незаконченный тест не хранится
     b.lastChild.textContent = m.list ? (n ? n + " " + pl(n, T.words) + (m.id === "tricky" ? T.mineSub : "") : (m.id === "tricky" ? T.mineEmpty : T.empty)) : m.id === "dict" ? (dr ? fill(T.dictResumeSub, { d: Object.keys(dr.ans).length, n: dr.list.length }) : T.modeDictSub) : T.modeRepeatSub;
     b.disabled = !n;
-    b.onclick = () => m.id === "repeat" ? startRepeat() : m.id === "dict" ? openDictIntro() : m.id === "tricky" ? start(listPick(12), "tricky") : start(m.list, m.id);
+    b.onclick = () => m.id === "repeat" ? startRepeat() : m.id === "dict" ? openDictIntro() : m.id === "tricky" ? startList() : start(m.list, m.id);
     box.append(b);
     if (m.id === "repeat") {   // контрольные проверки: неяркая строка, если подошёл срок у 4 и больше слов
       const due = dueWords(store, today()).length;
@@ -1488,7 +1503,9 @@ $("ragain").onclick = () => speakWord(byN(reviewable()[rIdx]), false);
 
 function finish(early) {
   closeReview(true);
-  if (mode === "dict") { clearToasts(); const r = curDict() || doneDicts().slice(-1)[0]; save(); if (early || !r || !r.done) return home(); return showDictResult(r); }
+  // большой тест и «Проверь себя быстро»: выход посреди = заход отбрасывается, в следующий раз — заново
+  if (mode === "dict") { clearToasts(); if (early || !doneDicts().length || curDict()) { const was = !!curDict(); store.dicts = doneDicts(); save(); home(); if (was && early) toast(`<span>${T.dictQuitNote}</span>`); return; } return showDictResult(doneDicts().slice(-1)[0]); }
+  if (mode === "repeat" && early) { clearToasts(); home(); toast(`<span>${T.repeatQuitNote}</span>`); return; }
   const hadBest = !!store.best[mode], lvBefore = isStep(mode) ? levelDone(stepById(mode).level) : true;
   if (isStep(mode)) {
     store.paused = store.paused || {};
@@ -2001,8 +2018,8 @@ if (/^#selftest(&kbd)?$/.test(location.hash)) {
   store.best.s2 = { h: 1, t: 16 };
   const passed = new Set([...STEPS[0].list, STEPS[1].list[0]].map(x => x.n));
   ok(repeatPool().length === 17, "«Проверь себя»: пройденное = шаг 1 + сыгранное слово недописанного шага 2");
-  let allFromPassed = true; for (let i = 0; i < 30; i++) if (!repeatPick(10).every(x => passed.has(x.n))) allFromPassed = false;
-  ok(allFromPassed, "«Проверь себя»: если пройденных хватает — все 10 из пройденного");
+  let passedOk = true; for (let i = 0; i < 30; i++) { const c = repeatPick(10).filter(x => passed.has(x.n)).length; if (c < 1 || c > 4) passedOk = false; }
+  ok(passedOk, "«Проверь себя»: из пройденного 1–4 слова, остальное — из всех");
   store.best = { s1: { h: 3, t: 16 } }; store.paused = { s1: { q: [], order: [], got: { [STEPS[0].list[0].n]: 1, [STEPS[0].list[1].n]: 1, [STEPS[0].list[2].n]: 1 }, tries: {}, hard: [], missed: [], firstOk: 3, intro: {}, introWrite: {}, streak: 0, maxStreak: 0, fixedN: 0, tally: {}, seen: [] } };
   const pk = repeatPick(10), few = new Set(STEPS[0].list.slice(0, 3).map(x => x.n));
   ok(pk.length === 10 && [...few].every(n => pk.some(x => x.n === n)), "«Проверь себя»: пройденные слова берутся первыми, остальное добирается из всех");
@@ -2080,25 +2097,25 @@ if (/^#selftest(&kbd)?$/.test(location.hash)) {
     home(); ok([...document.querySelectorAll("#modes .mode")].some(b => b.textContent.includes(T.modeDict)), "диктовка: плитка на старте");
     openDictIntro(); ok(!$("dictintro").hidden && $("dictintro").textContent.includes(T.dictIntro), "диктовка: перед началом — фраза, что это");
     dictStart(); const r0 = curDict(); ok(mode === "dict" && total === 40 && $("prev").hidden && $("pic").classList.contains("ear") && $("sent").querySelector(".gap") && $("introBtn").textContent === T.dictUnknown, "диктовка: без картинки, предложение есть, «Прошлое слово» скрыто, кнопка «Не знаю»");
-    const plan = {}; let k = 0;
-    const w1 = cur; answer("zzz"); ok(phase === "shown" && $("fb").textContent.includes(T.dictSaved) && !$("copyTask") && r0.ans[w1.n][0] === "bad", "диктовка: одна попытка, «Записано», без списывания");
-    submit(); const w2 = cur; introTap(); ok(r0.ans[w2.n][0] === "unknown" && phase === "shown", "диктовка: «Не знаю» — записано как незнакомое, без перевода");
-    submit(); const w3 = cur; answer(w3.w); submit();
-    const mid = Object.keys(r0.ans).length; $("quit").click();
-    ok(!$("home").hidden && curDict() === r0 && mid === 3, "диктовка: можно прерваться");
-    dictStart(); ok(total === 40 && queue.length + 1 === 37 && !(cur.n in r0.ans), "диктовка: продолжение с того же места");
-    // доиграть: по типу «числа» всё неверно, остальное верно
-    let g = 0; while (!$("play").hidden && g++ < 200) { if (phase === "shown") submit(); else answer(cur.t === "числа" ? "x" : cur.w); }
-    ok(!$("dictres").hidden && r0.done, "диктовка: итог после 40 слов");
-    const sc = dictTypeScore(r0), num = sc.find(x => x.t === "числа"), exp = r0.list.filter(n => r0.ans[n][0] === "ok").length;
-    const numExp = r0.list.filter(n => byN(n).t === "числа" && r0.ans[n][0] === "ok").length;
-    ok(num.ok === numExp && numExp <= 1 && num.n === 5 && dictOk(r0) === exp && $("dictScore").textContent.includes(String(exp)), "диктовка: итог по типам считается верно");
+    const w1 = cur; answer("zzz"); const w2 = cur;
+    ok(w2 !== w1 && phase === "type" && !$("copyTask") && !$("fb").textContent.trim() && r0.ans[w1.n][0] === "bad" && $("pos").textContent.startsWith("2"), "тест: после ответа сразу следующее слово, без «Записано» и без списывания");
+    introTap(); ok(r0.ans[w2.n][0] === "unknown" && cur !== w2 && phase === "type", "тест: «Не знаю» — записано, сразу следующее слово");
+    const mylBefore = JSON.stringify(store.mylist || {}); $("quit").click();
+    ok(!$("home").hidden && !curDict() && !doneDicts().length && JSON.stringify(store.mylist || {}) === mylBefore && document.querySelector(".toast") && [...document.querySelectorAll("#modes .mode")].some(b => b.textContent.includes(T.modeDictSub)), "тест: выход — заход отброшен, в список не идёт, плитка с обычной подписью, предупреждение");
+    ok(rootFrom(JSON.stringify({ v: 2, profiles: [{ id: "a", name: "" }], current: "a", data: { a: { tricky: [], best: {}, dicts: [{ ts: 1, list: [1, 2], ans: { 1: ["ok", "x"] }, done: false }] } } })).data.a.dicts.length === 0, "тест: старый незаконченный заход при загрузке убран");
+    dictStart(); const r1 = curDict(); ok(r1 !== r0 && Object.keys(r1.ans).length === 0 && total === 40, "тест: новый заход — заново");
+    const r0x = r0; let g = 0; while (!$("play").hidden && g++ < 200) answer(cur.t === "числа" ? "x" : cur.w);
+    
+    ok(!$("dictres").hidden && r1.done, "диктовка: итог после 40 слов");
+    const sc = dictTypeScore(r1), num = sc.find(x => x.t === "числа"), exp = r1.list.filter(n => r1.ans[n][0] === "ok").length;
+    const numExp = r1.list.filter(n => byN(n).t === "числа" && r1.ans[n][0] === "ok").length;
+    ok(num.ok === numExp && numExp <= 1 && num.n === 5 && dictOk(r1) === exp && $("dictScore").textContent.includes(String(exp)), "диктовка: итог по типам считается верно");
     ok(JSON.stringify([store.best, store.stage, store.tricky, store.okDays]) === snap && hiveTotal(store.best) === 9, "диктовка: мёд, рекорды, ступени и трудные не меняются");
     ok(store.log.filter(e => e[6] === "dict").length >= 40, "диктовка: попытки в журнале с пометкой «диктовка»");
     // список: (б) неверные и «Не знаю», (в) слабый тип «числа» — его шестое слово, которого не было в диктовке
-    const wrong = r0.list.filter(n => r0.ans[n][0] !== "ok"), sixth = WORDS.filter(x => x.t === "числа" && !r0.list.includes(x.n));
+    const wrong = r1.list.filter(n => r1.ans[n][0] !== "ok"), sixth = WORDS.filter(x => x.t === "числа" && !r1.list.includes(x.n));
     ok(wrong.every(n => store.mylist[n] && store.mylist[n].why === "dict") && sixth.every(x => store.mylist[x.n] && store.mylist[x.n].why === "type"), "список: из диктовки и слабого типа");
-    const weakT = new Set(dictTypeScore(r0).filter(x => x.n - x.ok >= 2).map(x => x.t)), typeW = WORDS.filter(x => weakT.has(x.t) && !r0.list.includes(x.n)).map(x => x.n);
+    const weakT = new Set(dictTypeScore(r1).filter(x => x.n - x.ok >= 2).map(x => x.t)), typeW = WORDS.filter(x => weakT.has(x.t) && !r1.list.includes(x.n)).map(x => x.n);
     store.tricky.push(WORDS[0].n); ok(myList().length === new Set([...wrong, ...typeW, WORDS[0].n]).size && whyOf(WORDS[0].n) === "err", "список: трудные + из диктовки + тип");
     openMyList(); ok([...document.querySelectorAll("#wlist .wgrp")].map(e => e.textContent).join("|") === [T.grpErr, T.grpDict, T.grpType].join("|"), "список: группы по причине");
     // порция 12, не больше половины одного типа
@@ -2108,8 +2125,11 @@ if (/^#selftest(&kbd)?$/.test(location.hash)) {
     // выход из списка: два дня успеха после попадания
     const xn = WORDS[3].n; learnAfter(store, xn, true, "2026-11-02"); ok(store.mylist[xn], "список: один день успеха — слово остаётся");
     learnAfter(store, xn, true, "2026-11-03"); ok(!store.mylist[xn], "список: два дня успеха — слово выходит");
-    // повторная диктовка: сперва слова, которых не было
-    const dp2 = dictPick(); ok(dp2.filter(n => r0.list.includes(n)).length <= 6, "повторная диктовка: в первую очередь новые слова");
+    // повторный тест: сперва слова, которых не было; внутри типа выбор равномерный
+    const dp2 = dictPick(); ok(dp2.filter(n => r1.list.includes(n)).length <= 6, "повторный тест: в первую очередь новые слова");
+    { const keep = store.dicts; store.dicts = []; const capW = WORDS.filter(x => x.t === "заглавная буква"), f = {}; for (let i = 0; i < 260; i++) dictPick().forEach(n => { f[n] = (f[n] || 0) + 1; });
+      const fr = capW.map(x => f[x.n] || 0), expd = 260 * 5 / capW.length; store.dicts = keep;
+      ok(capW.length === 13 && Math.min(...fr) > expd * 0.6 && Math.max(...fr) < expd * 1.4, "тест: в типе «заглавная буква» (13 слов) выбор 5 равномерный (" + Math.min(...fr) + "–" + Math.max(...fr) + " при ожидании " + Math.round(expd) + ")"); }
     // тренировка списка: мёд в улей не идёт
     store.mylist = {}; store.tricky = STEPS[0].list.slice(0, 5).map(x => x.n); const hv = hiveTotal(store.best); home();
     [...document.querySelectorAll("#modes .mode")].find(b => b.textContent.includes(T.modeMine)).click();
@@ -2119,12 +2139,28 @@ if (/^#selftest(&kbd)?$/.test(location.hash)) {
     // миграция: трудные остаются в списке
     const mg = rootFrom(JSON.stringify({ tricky: [7, 8], best: {} })).data.p1; ok(Array.isArray(mg.dicts) && mg.tricky.join() === "7,8" && typeof mg.mylist === "object", "миграция: трудные остаются, диктовок нет");
   }
+  // «Проверь себя быстро»: разнообразие на профиле «один пройденный шаг, 4 трудных слова»
+  { store = emptyStore(); root.data[root.current] = store; store.best = { s1: { h: 12, t: 16 } }; store.tricky = STEPS[0].list.slice(0, 4).map(x => x.n);
+    const f = {}; let maxT = 0, maxP = 0;
+    for (let i = 0; i < 30; i++) { const L = repeatPick(10); store.lastRepeat = L.map(x => x.n); L.forEach(x => { f[x.n] = (f[x.n] || 0) + 1; });
+      maxT = Math.max(maxT, L.filter(x => store.tricky.includes(x.n)).length); maxP = Math.max(maxP, L.filter(x => STEPS[0].list.includes(x)).length); }
+    const top = Math.max(...Object.values(f)), distinct = Object.keys(f).length;
+    ok(top <= 18 && distinct >= 60, "«Проверь себя быстро»: за 30 заходов ни одно слово не чаще 60% (макс. " + top + "), разных слов " + distinct);
+    ok(maxT <= 4 && maxP <= 4, "«Проверь себя быстро»: трудных ≤4 и из пройденного ≤4 в заходе");
+    const L1 = repeatPick(10); store.lastRepeat = L1.map(x => x.n); const L2 = repeatPick(10); ok(!L2.some(x => L1.includes(x)), "«Проверь себя быстро»: слова прошлого захода не повторяются");
+    store.log = WORDS.slice(20, 30).map((x, i) => [Date.now() - 60000, x.n, x.w, "ok", 1, 0, "s1"]); store.lastRepeat = []; ok(!Array.from({ length: 10 }, () => repeatPick(10)).some(L => L.some(x => x.n >= 21 && x.n <= 30)), "«Проверь себя быстро»: недавно (15 мин) встречавшиеся не берутся");
+    store.log = []; startRepeat(); answer(cur.w); $("quit").click(); ok(!$("home").hidden && $("done").hidden, "«Проверь себя быстро»: выход — на старт, без итога");
+    // «Мой список»: сыгранные в прошлой порции — последними
+    store.tricky = []; store.mylist = {}; WORDS.slice(0, 20).forEach(x => { store.mylist[x.n] = { why: "dict", since: "2026-11-01" }; });
+    const P1 = listPick(12); store.lastList = P1.map(x => x.n); const P2 = listPick(12);
+    ok(P2.filter(x => P1.includes(x)).length === 4, "«Мой список»: слова прошлой порции берутся последними (20 в списке → повторяются 4)");
+  }
   // подбор под слабый тип
   { store = emptyStore(); root.data[root.current] = store; const dbl = WORDS.filter(x => x.t === "двойные согласные"), oth = WORDS.filter(x => x.t !== "двойные согласные");
     let ts0 = 1; for (const x of dbl.slice(0, 5)) store.log.push([ts0++, x.n, "q", "bad", 1, 0, "s1"]);
     for (const x of oth.slice(0, 30)) store.log.push([ts0++, x.n, x.w, "ok", 1, 0, "s1"]);
     ok(weakTypes(store)[0] === "двойные согласные", "типы: слабый тип найден (5 ошибок, выше средней)");
-    ok(Array.from({ length: 10 }, () => repeatPick(10).filter(x => x.t === "двойные согласные").length >= 5).every(Boolean), "типы: в «Проверь себя быстро» не меньше половины — слабый тип");
+    ok(Array.from({ length: 10 }, () => repeatPick(10).filter(x => x.t === "двойные согласные").length === 3).every(Boolean), "типы: в «Проверь себя быстро» слабого типа — 3 слова (потолок)");
     store.log = store.log.slice(0, 2).concat(oth.slice(0, 30).map((x, i) => [100 + i, x.n, x.w, "ok", 1, 0, "s1"]));
     ok(!weakTypes(store).length, "типы: меньше 3 ошибок — подбора нет");
     store.log = []; for (const x of dbl.slice(0, 5)) store.log.push([ts0++, x.n, "q", "bad", 1, 0, "s1"]); for (const x of oth.slice(0, 30)) store.log.push([ts0++, x.n, x.w, "ok", 1, 0, "s1"]);
@@ -2135,7 +2171,7 @@ if (/^#selftest(&kbd)?$/.test(location.hash)) {
     // подошедшие проверки: строка на старте и первыми в наборе
     store.ret = {}; const dd = WORDS.slice(40, 45); for (const x of dd) store.ret[x.n] = { k: 1, due: "2020-01-01" };
     home(); ok(document.querySelector(".mdue") && /5/.test(document.querySelector(".mdue").textContent), "контроль: строка «Пора проверить 5 слов»");
-    ok(dd.every(x => repeatPick(10).some(y => y.n === x.n)), "контроль: слова со сроком первыми в «Проверь себя быстро»");
+    ok(Array.from({ length: 10 }, () => repeatPick(10).filter(y => dd.includes(y)).length === 4).every(Boolean), "контроль: слова со сроком первыми в «Проверь себя быстро» (4 из 5 — потолок)");
     store.ret = { [dd[0].n]: { k: 1, due: "2020-01-01" } }; home(); ok(!document.querySelector(".mdue"), "контроль: меньше 4 слов — строки нет");
   }
   root = keepRoot; store = keepStore;
@@ -2197,12 +2233,20 @@ if (location.hash.startsWith("#demo")) {
       r.list.forEach((n, i) => { const x = byN(n); const wrong = bad(x, i); r.ans[n] = wrong ? (i % 7 === 0 ? ["unknown", ""] : ["bad", x.w.slice(0, -1) + (x.w.slice(-1) === "e" ? "" : "e")]) : ["ok", x.w]; });
       r.done = true; r.end = ts + 6e5; applyDictToList(r); return r; };
     if (h === "demo-dict-intro") openDictIntro();
-    else if (h === "demo-dict-word") { const r = { ts: Date.now(), list: dictPick(), ans: {}, done: false }; store.dicts.push(r); r.list.slice(0, 11).forEach(n => { r.ans[n] = ["ok", byN(n).w]; }); dictStart(); }
+    else if (h === "demo-dict-word" || h === "demo-dict-after") {   // after = кадр сразу после ответа: уже следующее слово, галочка в поле
+      dictStart(); for (let i = 0; i < (h === "demo-dict-after" ? 12 : 11); i++) dictAnswer("ok", cur.w);
+      if (h === "demo-dict-after") { const st = document.createElement("style"); st.textContent = "#mainCard.took .field::after{animation-play-state:paused;animation-delay:-.15s}"; document.head.appendChild(st); }
+    }
     else {
       if (h !== "demo-dict-res") run(t0, (x, i) => x.t === "двойные согласные" || x.t === "длинные слова" || i % 5 === 0);
       const r = run(Date.now(), (x, i) => x.t === "двойные согласные" ? i % 2 === 0 : i % 9 === 0);
       if (h === "demo-dict-res") showDictResult(r); else if (h === "demo-dict-list") openMyList(); else if (h === "demo-dict-stats") openStats(); else home();
     }
+  }
+  else if (h === "demo-divstat") {   // сводка разнообразия «Проверь себя быстро» (один шаг, 4 трудных) и старый отбор для сравнения
+    store.best = { s1: { h: 12, t: 16 } }; store.tricky = STEPS[0].list.slice(0, 4).map(x => x.n); const f = {};
+    for (let i = 0; i < 30; i++) { const L = repeatPick(10); store.lastRepeat = L.map(x => x.n); L.forEach(x => { f[x.n] = (f[x.n] || 0) + 1; }); }
+    document.title = "DIV max=" + Math.max(...Object.values(f)) + "/30 distinct=" + Object.keys(f).length;
   }
   else if (h === "demo-repeat") { fillHive(40); startRepeat(); }
   else if (h === "demo-repeat-done") {
