@@ -204,6 +204,13 @@ body[data-view="home"] .hbtn { display:inline-flex; } body[data-view="home"] hea
 .dlist { font-size:17px; font-weight:500; margin:6px 0 14px; }
 input.neutral { border-color:var(--line); background:#FAF7F1; color:var(--ink); }
 .fb .dictsaved { color:var(--mute); font-weight:500; }
+.scards { display:none; flex-direction:column; gap:8px; margin-bottom:6px; }
+.scard { background:var(--paper); border-radius:14px; box-shadow:0 0 0 1px var(--line) inset; padding:10px 12px; font-size:14px; overflow-wrap:anywhere; }
+.scard > b { font-size:16px; font-weight:600; } .scard > small { color:var(--mute); font-size:13px; } .scard > span { display:block; color:var(--mute); margin-top:2px; }
+.scard .bad { margin:4px 0 0; color:#B4501C; line-height:1.4; } .sctag { font-style:normal; font-size:12px; color:var(--petrol); background:#E4F1EE; border-radius:999px; padding:1px 8px; margin-left:6px; white-space:nowrap; }
+.dcb { overflow-wrap:anywhere; }
+/* приложение с домашнего экрана: непрозрачная полоса под строкой состояния — прокручиваемое уходит под неё */
+body::before { content:""; position:fixed; top:0; left:0; right:0; height:env(safe-area-inset-top, 0px); background:var(--cream); z-index:100; pointer-events:none; }
 .dcard { background:var(--paper); border-radius:16px; box-shadow:0 0 0 1px var(--line) inset; padding:12px 14px; margin-bottom:10px; font-size:14px; }
 .dch { display:flex; flex-wrap:wrap; gap:4px 14px; justify-content:space-between; margin-bottom:8px; } .dch span { color:var(--mute); } .dch span b { color:var(--ink); }
 .dct { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:6px; } .dct span { background:#F6F1E6; border-radius:999px; padding:3px 10px; font-size:13px; color:var(--mute); } .dct b { color:var(--ink); font-weight:600; }
@@ -417,7 +424,7 @@ body.vkmode footer { margin-top:20px; }
   .btn { padding:10px 16px; font-size:16px; } .btn.go { padding:12px 22px; font-size:17px; }
   .rrow { flex-wrap:wrap; gap:8px; }
   .wform input { font-size:17px; } #csvArea { font-size:16px; }
-  .stable { overflow-x:auto; } .stable table { font-size:13px; min-width:520px; }
+  .stable table { display:none; } .stable .scards { display:flex; }
   .wtitle { font-size:20px; }
   .done h1, #done h1 { font-size:30px; line-height:1.1; } .dtitle { gap:12px; } .dico, .dico img { width:64px !important; height:64px !important; } .dsub { font-size:16px; }
   #words .top { flex-wrap:wrap; } #words .top .wtitle { order:3; flex:1 1 100%; margin:2px 0 0; } #words .top #wall { padding:8px 14px; font-size:15px; }
@@ -752,6 +759,9 @@ const T = {
   listBtn: "Посмотреть списком", listTitle: "{t} · {n}",
   levelNote: "Слова из списка Cambridge English: Pre A1 Starters — начальный уровень английского.", levelTag: "Pre A1 Starters",
   trBtn: "перевод", exampleBtn: "пример", playAll: "Послушать все", stopAll: "Стоп",
+  // взрослый раздел на телефоне: строки вместо таблиц; дата по-человечески                                 // [Д]
+  scTypeLine: "встречалось {n} {words} · верно с первой попытки {p}% ({ok} из {all})", scWordLine: "написано {n} {times} · с первой попытки {m}", scInList: "в списке трудных", timesW: ["раз", "раза", "раз"],
+  monthsGen: ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"],
   // лист «Как играть» и вход для взрослых                                                                 // [Д]
   howBtn: "Как играть", howLink: "Как играть", howTitle: "Как играть", howPlay: "Играть", howModesTitle: "Режимы",
   howLine: "Слушай слово, пиши его по-английски — и собирай мёд для улья.",
@@ -1828,6 +1838,9 @@ function modeLabel(m) {
   return { warm: T.modeWarm, repeat: T.modeRepeat, dict: T.modeDictLog, tricky: T.modeMine, marked: T.modeMarked, retry: T.retryLabel }[m] || m;
 }
 const pad2 = v => String(v).padStart(2, "0");
+const tName = t => (T.typeName && T.typeName[t]) || t;   // одно имя типа во всём взрослом разделе и в CSV
+// дата для людей: «18 ноября, 10:40» (год — только если не текущий); в CSV остаётся машинная запись
+const humanStamp = ts => { const d = new Date(ts); return d.getDate() + " " + T.monthsGen[d.getMonth()] + (d.getFullYear() !== new Date().getFullYear() ? " " + d.getFullYear() : "") + ", " + pad2(d.getHours()) + ":" + pad2(d.getMinutes()); };
 const stamp = ts => { const d = new Date(ts); return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate()) + " " + pad2(d.getHours()) + ":" + pad2(d.getMinutes()); };
 function summary(st) {
   const by = {};
@@ -1844,12 +1857,12 @@ const csv = rows => "﻿" + rows.map(r => r.map(csvCell).join(";")).join("\r\n")
 function archName(k) { const m = /^(warm|r|l)(\d*)$/.exec(k); if (!m) return k; return m[1] === "warm" ? T.archWarm : (m[1] === "r" ? T.archRound : T.archLevel).replace("{n}", m[2]); }
 function summaryCsv(st) {
   const rows = [[T.csvWord, T.csvRu, T.csvType, T.csvTimes, T.csvFirstOk, T.csvLastBad, T.csvTricky]];
-  for (const r of summary(st)) { const x = byN(r.n); rows.push([x.w, x.ru, x.t, r.times, r.first, r.bad.slice().reverse().join(" | "), st.tricky.includes(r.n) ? T.yesW : T.noW]); }
+  for (const r of summary(st)) { const x = byN(r.n); rows.push([x.w, x.ru, tName(x.t), r.times, r.first, r.bad.slice().reverse().join(" | "), st.tricky.includes(r.n) ? T.yesW : T.noW]); }
   const ts = Object.values(typeStats(st).by);
   if (ts.length) { rows.push([]); rows.push([T.typesTitle]); rows.push([T.csvType, T.csvTypeWords, T.csvTypeShare, T.csvLastBad]);
-    for (const r of ts) rows.push([r.t, r.words.size, Math.round(100 * r.ok / r.n) + "% (" + r.ok + " / " + r.n + ")", r.bad.slice().reverse().join(" | ")]); }
+    for (const r of ts) rows.push([tName(r.t), r.words.size, Math.round(100 * r.ok / r.n) + "% (" + r.ok + " / " + r.n + ")", r.bad.slice().reverse().join(" | ")]); }
   const dd = (st.dicts || []).filter(r => r.done);
-  if (dd.length) { rows.push([]); rows.push([T.dictsTitle]); rows.push([T.csvWhen, T.dictColOk, ...TYPES, T.dictColBad]);
+  if (dd.length) { rows.push([]); rows.push([T.dictsTitle]); rows.push([T.csvWhen, T.dictColOk, ...TYPES.map(tName), T.dictColBad]);
     for (const r of dd) rows.push([stamp(r.end || r.ts), dictOk(r) + " / " + r.list.length, ...dictTypeScore(r).map(x => x.ok + " / " + x.n), r.list.filter(n => r.ans[n] && r.ans[n][0] !== "ok").map(n => (r.ans[n][1] || "—") + " (" + byN(n).w + ")").join(" | ")]); }
   const arch = Object.entries(st.archive || {});
   if (arch.length) { rows.push([]); rows.push([T.archiveTitle]); for (const [k, b] of arch) rows.push([archName(k), "", fmt(b.h) + " / " + b.t]); }
@@ -1857,7 +1870,7 @@ function summaryCsv(st) {
 }
 function logCsv(st) {
   const rows = [[T.csvWhen, T.csvWord, T.csvType, T.csvTyped, T.csvResult, T.csvAttempt, T.csvHint, T.csvSawSent, T.csvStep]];
-  for (const [ts, n, typed, res, att, hint, m, saw] of st.log || []) { const x = byN(n); if (x) rows.push([stamp(ts), x.w, x.t, typed, (RES_T[res] || (() => res))(), att, hint ? T.yesW : T.noW, saw === 1 ? T.yesW : saw === 0 ? T.noW : "", modeLabel(m)]); }
+  for (const [ts, n, typed, res, att, hint, m, saw] of st.log || []) { const x = byN(n); if (x) rows.push([stamp(ts), x.w, tName(x.t), typed, (RES_T[res] || (() => res))(), att, hint ? T.yesW : T.noW, saw === 1 ? T.yesW : saw === 0 ? T.noW : "", modeLabel(m)]); }
   return csv(rows);
 }
 const curProfile = () => root.profiles.find(p => p.id === root.current);
@@ -1924,17 +1937,21 @@ function openStats() {
   // диктовки — карточками: дата и результат (со сравнением с прошлой), результат по типам, неверные с тем, что набрано
   let dh = dd.length ? `<h3 class="sth">${T.dictsTitle}</h3>` + dd.map((r, i) => {
       const prev = dd[i + 1], d = prev ? dictOk(r) - dictOk(prev) : null, bad = r.list.filter(n => r.ans[n] && r.ans[n][0] !== "ok");
-      return `<div class="dcard"><div class="dch"><b>${stamp(r.end || r.ts)}</b><span>${T.dictColOk}: <b>${dictOk(r)} / ${r.list.length}</b>${d === null ? "" : ` · ${fill(T.dictCmp, { d: (d > 0 ? "+" : "") + d })}`}</span></div>`
+      return `<div class="dcard"><div class="dch"><b>${humanStamp(r.end || r.ts)}</b><span>${T.dictColOk}: <b>${dictOk(r)} / ${r.list.length}</b>${d === null ? "" : ` · ${fill(T.dictCmp, { d: (d > 0 ? "+" : "") + d })}`}</span></div>`
         + `<div class="dct">${dictTypeScore(r).map(x => `<span>${esc(T.typeName[x.t] || x.t)} <b>${x.ok}/${x.n}</b></span>`).join("")}</div>`
         + (bad.length ? `<p class="dcb"><span>${T.dictColBad}:</span> ${bad.map(n => esc((r.ans[n][1] || "—") + " (" + byN(n).w + ")")).join(", ")}</p>` : "") + `</div>`;
     }).join("") : "";
   const ts = Object.values(typeStats(store).by).sort((a, b) => a.ok / a.n - b.ok / b.n);
   let h = ts.length ? `<h3 class="sth">${T.typesTitle}</h3><table class="ttab"><thead><tr><th>${T.csvType}</th><th>${T.csvTypeWords}</th><th>${T.csvTypeShare}</th><th>${T.csvLastBad}</th></tr></thead><tbody>`
-    + ts.map(r => `<tr><td><b>${esc(r.t)}</b></td><td>${r.words.size}</td><td>${Math.round(100 * r.ok / r.n)}% <small>(${r.ok} / ${r.n})</small></td><td class="bad">${r.bad.slice().reverse().map(esc).join(", ")}</td></tr>`).join("") + `</tbody></table><h3 class="sth">${T.wordsTableTitle}</h3>` : "";
+    + ts.map(r => `<tr><td><b>${esc(tName(r.t))}</b></td><td>${r.words.size}</td><td>${Math.round(100 * r.ok / r.n)}% <small>(${r.ok} / ${r.n})</small></td><td class="bad">${r.bad.slice().reverse().map(esc).join(", ")}</td></tr>`).join("") + `</tbody></table>`
+    + `<div class="scards">${ts.map(r => `<div class="scard"><b>${esc(tName(r.t))}</b><span>${fill(T.scTypeLine, { n: r.words.size, words: pl(r.words.size, T.words), p: Math.round(100 * r.ok / r.n), ok: r.ok, all: r.n })}</span>${r.bad.length ? `<p class="bad">${r.bad.slice().reverse().map(esc).join(", ")}</p>` : ""}</div>`).join("")}</div>`
+    + `<h3 class="sth">${T.wordsTableTitle}</h3>` : "";
   h = dh + h;
   if (rows.length) h += `<table><thead><tr><th>${T.csvWord}</th><th>${T.csvTimes}</th><th>${T.csvFirstOk}</th><th>${T.csvLastBad}</th><th>${T.csvTricky}</th></tr></thead><tbody>`;
   for (const r of rows.slice(0, 60)) { const x = byN(r.n); h += `<tr><td><b>${esc(x.w)}</b></td><td>${r.times}</td><td>${r.first}</td><td class="bad">${r.bad.slice().reverse().map(esc).join(", ")}</td><td>${store.tricky.includes(r.n) ? T.yesW : ""}</td></tr>`; }
-  box.innerHTML = h + (rows.length ? "</tbody></table>" : "");
+  if (rows.length) h += "</tbody></table><div class=\"scards\">" + rows.slice(0, 60).map(r => { const x = byN(r.n);
+    return `<div class="scard"><b>${esc(x.w)}</b> <small>${esc(x.ru || "")}</small>${store.tricky.includes(r.n) ? `<em class="sctag">${T.scInList}</em>` : ""}<span>${fill(T.scWordLine, { n: r.times, times: pl(r.times, T.timesW), m: r.first })}</span>${r.bad.length ? `<p class="bad">${r.bad.slice().reverse().map(esc).join(", ")}</p>` : ""}</div>`; }).join("") + "</div>";
+  box.innerHTML = h;
 }
 const vDesc = v => v.name + " (" + v.lang + ")";
 function renderVoiceBox() {
@@ -2305,7 +2322,9 @@ if (/^#selftest(&kbd)?$/.test(location.hash)) {
     store.tricky = dbl.slice(0, 3).map(x => x.n); home();
     ok(document.querySelector(".mobs") && /двойных/.test(document.querySelector(".mobs").textContent), "типы: на плитке трудных — строка-наблюдение");
     const sc = summaryCsv(store); ok(/Тип трудности/.test(sc.split("\r\n")[0]) && sc.includes(T.typesTitle) && logCsv(store).split("\r\n")[0].includes(T.csvType), "CSV: колонка «тип» и раздел по типам");
-    openStats(); ok(document.querySelector("#statsTable .ttab") && /двойные согласные/.test($("statsTable").textContent), "статистика: таблица по типам");
+    openStats(); ok(document.querySelector("#statsTable .ttab") && /Двойные буквы/.test($("statsTable").textContent) && !/двойные согласные/.test($("statsTable").textContent), "статистика: таблица по типам — те же имена типов, что в карточке теста");
+    ok(!/двойные согласные|заглавная буква|гласные не по звуку/.test(summaryCsv(store) + logCsv(store)), "CSV: имена типов как в разделе (typeName)");
+    ok(/^\d{1,2} [а-я]+, \d\d:\d\d$/.test(humanStamp(Date.now())) && humanStamp(new Date(new Date().getFullYear(), 10, 18, 10, 40).getTime()) === "18 ноября, 10:40", "дата теста по-человечески: «18 ноября, 10:40»");
     // подошедшие проверки: строка на старте и первыми в наборе
     store.ret = {}; const dd = WORDS.slice(40, 45); for (const x of dd) store.ret[x.n] = { k: 1, due: "2020-01-01" };
     home(); ok(document.querySelector(".mdue") && /5/.test(document.querySelector(".mdue").textContent), "контроль: строка «Пора проверить 5 слов»");
@@ -2331,6 +2350,15 @@ if (/^#selftest(&kbd)?$/.test(location.hash)) {
     answer("zzz"); const fbR = $("fb").getBoundingClientRect(), inR = $("inp").getBoundingClientRect();
     ok(phase === "copy" && fbR.bottom <= inR.top + 1 && $("mainCard").getBoundingClientRect().bottom + scrollY <= vh - RESERVE, "телефон: разбор ошибки над полем, вёрстка не уезжает");
     home();
+    // взрослый раздел на телефоне: ничего не шире окна (заполненная статистика с длинными вариантами)
+    const keepS = store; store = emptyStore(); const t0 = Date.now() - 86400000;
+    WORDS.forEach((x, i) => { store.log.push([t0 + i * 1000, x.n, i % 3 ? x.w : "verylongmisspelledwordwithoutspaces" + x.w, i % 3 ? "ok" : "bad", 1, 0, "s1", 0]); });
+    store.tricky = WORDS.slice(0, 6).map(x => x.n);
+    const dl = dictPick(), dr = { ts: t0, end: t0, list: dl, ans: {}, done: true }; dl.forEach((n, i) => { dr.ans[n] = i % 4 ? ["ok", byN(n).w] : ["bad", "averyveryverylongwrongspelling"]; }); store.dicts = [dr];
+    openStats(); $("asText").click();
+    const wide = [...$("stats").querySelectorAll("*")].filter(e => e.offsetParent !== null && e.clientWidth > 0 && e.scrollWidth > e.clientWidth + 1 && e.tagName !== "TEXTAREA" && e.tagName !== "SELECT").map(e => e.tagName + "." + e.className);
+    ok(!wide.length && document.documentElement.scrollWidth <= innerWidth + 1 && $("statsTable").querySelector(".scards").offsetParent !== null, "телефон: раздел для взрослых не шире окна, таблицы — строками (" + wide.slice(0, 3).join(" ") + ")");
+    store = keepS; home();
   }
   // «Как играть» и вход для взрослых
   {
@@ -2425,6 +2453,11 @@ if (location.hash.startsWith("#demo")) {
     else {
       if (h !== "demo-dict-res") run(t0, (x, i) => x.t === "двойные согласные" || x.t === "длинные слова" || i % 5 === 0);
       const r = run(Date.now(), (x, i) => x.t === "двойные согласные" ? i % 2 === 0 : i % 9 === 0);
+      if (h === "demo-dict-stats") {   // журнал попыток для таблиц по типам и по словам
+        const t1 = Date.now() - 3 * 86400000, typo = w => w.length > 4 ? w.slice(0, -2) + w.slice(-1) + "e" : w + w.slice(-1);
+        WORDS.slice(0, 48).forEach((x, i) => { const bad = i % 4 === 0 || x.t === "двойные согласные" && i % 2; store.log.push([t1 + i * 60000, x.n, bad ? typo(x.w) : x.w, bad ? "bad" : "ok", 1, 0, "s1", 0]); if (bad) store.log.push([t1 + i * 60000 + 9000, x.n, x.w, "ok", 2, 0, "s1", 0]); });
+        store.tricky = WORDS.slice(0, 48).filter((x, i) => i % 8 === 0).map(x => x.n);
+      }
       if (h === "demo-dict-res") showDictResult(r); else if (h === "demo-dict-list") openMyList(); else if (h === "demo-dict-stats") openStats(); else home();
     }
   }
